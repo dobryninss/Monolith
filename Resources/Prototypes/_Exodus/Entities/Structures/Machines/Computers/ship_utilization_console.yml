@@ -1,0 +1,26 @@
+# Ship utilization console — placed only on Camelot. Indestructible and locked in place.
+- type: entity
+  name: ship utilization console
+  parent: [BaseStructureDisableToolUse, BaseStructureIndestructible, BaseComputer]
+  id: ComputerShipUtilization
+  description: A grim terminal for scrapping abandoned and hijacked ships. Authorized for use on Camelot only.
+  components:
+  - type: Sprite
+    sprite: _NF/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shipyard
+    - map: ["computerLayerKeys"]
+      state: telesci_key
+  - type: ShipUtilizationConsole
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.ShipUtilizationConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.ShipUtilizationConsoleUiKey.Key:
+        type: ShipUtilizationConsoleBoundUserInterface

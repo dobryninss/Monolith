@@ -1,0 +1,13 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'ship-utilization-menu-title'}"
+                      SetSize="520 420"
+                      MinSize="480 320">
+    <BoxContainer Orientation="Vertical" Margin="6 6 6 6">
+        <Label Name="HeaderLabel" Text="{Loc 'ship-utilization-menu-header'}" StyleClasses="LabelHeading" />
+        <Label Name="StatusLabel" />
+        <ScrollContainer VerticalExpand="True">
+            <BoxContainer Name="ShipList" Orientation="Vertical" Margin="0 4 0 0" />
+        </ScrollContainer>
+    </BoxContainer>
+</controls:FancyWindow>
