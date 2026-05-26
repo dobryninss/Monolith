@@ -19,6 +19,8 @@ shuttle-console-guest-access-reset = Гостевой доступ сброше�
 shuttle-console-ship-access-enabled = Активирован контроль доступа на шаттле.
 shuttle-console-ship-access-disabled = Контроль доступа на шаттле отключен.
 shuttle-console-access-denied = В доступе отказано.
+# Exodus emag-rework
+shuttle-console-locked-emagged = Консоль повреждена эмагом. Заблокировать невозможно.
 
 ## Shuttle Console Lock Verbs
 

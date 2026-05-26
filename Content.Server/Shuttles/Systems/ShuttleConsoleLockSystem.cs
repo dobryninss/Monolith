@@ -311,6 +311,14 @@ public sealed class ShuttleConsoleLockSystem : SharedShuttleConsoleLockSystem
             // Use grid lock state for ships with deeds
         }
 
+        // Exodus-begin emag-rework: emagged grids can't be relocked
+        if (gridLock is { LockDisabled: true })
+        {
+            Popup.PopupEntity(Loc.GetString("shuttle-console-locked-emagged"), console);
+            return false;
+        }
+        // Exodus-end emag-rework
+
         // Can't lock a console without a shuttle ID
         var shuttleId = gridLock?.ShuttleId ?? lockComp.ShuttleId;
         if (string.IsNullOrEmpty(shuttleId))
@@ -470,6 +478,14 @@ public sealed class ShuttleConsoleLockSystem : SharedShuttleConsoleLockSystem
         {
             // Use grid lock state for ships with deeds
         }
+
+        // Exodus-begin emag-rework: emagged grids can't be relocked
+        if (gridLock is { LockDisabled: true })
+        {
+            Popup.PopupEntity(Loc.GetString("shuttle-console-locked-emagged"), console);
+            return false;
+        }
+        // Exodus-end emag-rework
 
         // If there's no shuttle ID, there's nothing to lock against
         var shuttleId = gridLock?.ShuttleId ?? lockComp.ShuttleId;

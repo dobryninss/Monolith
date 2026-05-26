@@ -52,6 +52,9 @@ public abstract class SharedShuttleConsoleLockSystem : EntitySystem
         // If the grid has a grid lock component, use grid lock state
         if (TryComp<ShipGridLockComponent>(gridUid, out var gridLock))
         {
+            // Exodus emag-rework: emagged grids are forced unlocked
+            if (gridLock.LockDisabled)
+                return false;
             // Grid lock state takes complete precedence over individual console state
             return gridLock.Locked;
         }

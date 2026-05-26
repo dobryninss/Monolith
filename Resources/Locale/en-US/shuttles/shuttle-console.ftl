@@ -18,6 +18,8 @@ shuttle-console-guest-access-reset = Reset guest access for {$count} ID cards.
 shuttle-console-ship-access-enabled = Ship access control enabled.
 shuttle-console-ship-access-disabled = Ship access control disabled.
 shuttle-console-access-denied = Access denied.
+# Exodus emag-rework
+shuttle-console-locked-emagged = The console has been emagged. It can no longer be locked.
 
 ## Shuttle Console Lock Verbs
 shuttle-console-verb-unlock = Unlock Console
