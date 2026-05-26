@@ -44,6 +44,9 @@ public sealed class EmagSystem : EntitySystem
     }
     private void OnAfterInteract(EntityUid uid, EmagComponent comp, AfterInteractEvent args)
     {
+        // Exodus emag-rework: let other systems (e.g. shuttle-console delayed emag) consume the event first.
+        if (args.Handled)
+            return;
         if (!args.CanReach || args.Target is not { } target)
             return;
 

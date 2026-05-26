@@ -315,9 +315,19 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             var lockComp = EnsureComp<ShuttleConsoleLockComponent>(consoleUid);
             _shuttleConsoleLock.SetShuttleId(consoleUid, shuttleUid.ToString(), lockComp);
 
+            // Exodus emag-rework: tag every console present at purchase as "native" — only natives
+            // can mark the ship eligible for utilization via emag.
+            EnsureComp<Content.Shared._Exodus.Shipyard.Utilization.NativeShuttleConsoleComponent>(consoleUid);
+
             // Log for debugging
             Log.Debug("Locked shuttle console {0} to shuttle {1} for deed holder {2}", consoleUid, shuttleUid, targetId);
         }
+
+        // Exodus emag-rework: re-raise ShipBoughtEvent so the SRD snapshot is regenerated with the
+        // newly-applied native-console markers — without this, restored consoles would lose their
+        // "native" status after SRD repair.
+        var resnapshot = new ShipBoughtEvent();
+        RaiseLocalEvent(shuttleUid, resnapshot);
 
         // Register ship ownership for auto-deletion when owner is offline too long
         // We need to get the player's session from their entity

@@ -51,12 +51,9 @@ public sealed partial class ShipUtilizationConsoleMenu : FancyWindow
                 HorizontalExpand = true,
             });
 
-            var payoutKey = ship.VoucherPurchased
-                ? "ship-utilization-menu-row-payout-voucher"
-                : "ship-utilization-menu-row-payout";
             row.AddChild(new Label
             {
-                Text = Loc.GetString(payoutKey, ("payout", ship.Payout.ToString("N0"))),
+                Text = Loc.GetString("ship-utilization-menu-row-payout", ("payout", ship.Payout.ToString("N0"))),
                 Margin = new Robust.Shared.Maths.Thickness(8, 0, 8, 0),
             });
 

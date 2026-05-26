@@ -62,12 +62,10 @@ public sealed class ShipUtilizationConsoleInterfaceState : BoundUserInterfaceSta
 
 /// <summary>
 /// One row in the utilization console UI.
-/// Voucher-purchased ships pay a fixed nominal amount; other ships use a fraction of their appraisal.
 /// </summary>
 [Serializable, NetSerializable]
 public readonly record struct UtilizationShipEntry(
     NetEntity Ship,
     string Name,
     int Payout,
-    bool VoucherPurchased,
     bool LockedByOtherConsole);

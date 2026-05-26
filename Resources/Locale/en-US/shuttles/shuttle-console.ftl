@@ -20,6 +20,7 @@ shuttle-console-ship-access-disabled = Ship access control disabled.
 shuttle-console-access-denied = Access denied.
 # Exodus emag-rework
 shuttle-console-locked-emagged = The console has been emagged. It can no longer be locked.
+shuttle-console-emag-in-progress = WARNING: security circuit breach attempt detected.
 
 ## Shuttle Console Lock Verbs
 shuttle-console-verb-unlock = Unlock Console

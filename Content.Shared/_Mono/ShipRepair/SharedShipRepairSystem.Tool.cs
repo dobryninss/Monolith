@@ -227,6 +227,10 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
             var spawned = Spawn(protoId, coords);
             _transform.SetLocalRotation(spawned, spec.Rotation);
 
+            // Exodus emag-rework: restore native-shuttle-console marker captured at snapshot time.
+            if (spec.NativeShuttleConsole)
+                EnsureComp<Content.Shared._Exodus.Shipyard.Utilization.NativeShuttleConsoleComponent>(spawned);
+
             spec.OriginalEntity = GetNetEntity(spawned);
 
             var dirtMsg = new RepairEntityMessage(GetNetEntity(targetGrid), args.TargetGridIndices, args.RepairId.Value, spec);

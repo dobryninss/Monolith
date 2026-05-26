@@ -53,6 +53,18 @@ public sealed partial class ShipUtilizationConsoleComponent : Component
     public TimeSpan NextUiUpdate;
 
     /// <summary>
+    /// Next time we scan the ship for living beings. While paused this drives the resume check.
+    /// </summary>
+    [DataField]
+    public TimeSpan NextOrganicCheck;
+
+    /// <summary>
+    /// True while utilization is on hold because organic life was detected aboard.
+    /// </summary>
+    [DataField]
+    public bool Paused;
+
+    /// <summary>
     /// Radio channel used for utilization announcements (start, pause, resume, finish, cancel).
     /// </summary>
     [DataField]

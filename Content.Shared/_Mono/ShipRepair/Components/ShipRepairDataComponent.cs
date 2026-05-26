@@ -66,4 +66,8 @@ public sealed partial class ShipRepairEntitySpecifier
     /// </summary>
     [DataField]
     public NetEntity? OriginalEntity;
+
+    // Exodus emag-rework: preserve native-shuttle-console marker through SRD restore.
+    [DataField]
+    public bool NativeShuttleConsole;
 }
