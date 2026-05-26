@@ -57,15 +57,14 @@ public sealed class PressurePowerGeneratorSystem : EntitySystem
 
     private void SetRunning(Entity<PressurePowerGeneratorComponent> ent, bool running)
     {
-        if (ent.Comp.Running == running &&
-            (!TryComp<PowerSupplierComponent>(ent.Owner, out var supplier) || supplier.Enabled == running))
-        {
+        TryComp<PowerSupplierComponent>(ent.Owner, out var supplier);
+
+        if (ent.Comp.Running == running && (supplier == null || supplier.Enabled == running))
             return;
-        }
 
         ent.Comp.Running = running;
 
-        if (TryComp<PowerSupplierComponent>(ent.Owner, out supplier))
+        if (supplier != null)
             supplier.Enabled = running;
 
         _appearance.SetData(ent.Owner, PowerDeviceVisuals.Powered, running);
