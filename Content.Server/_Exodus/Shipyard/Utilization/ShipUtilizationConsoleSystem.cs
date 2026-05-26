@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.Cargo.Systems;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
@@ -5,6 +6,7 @@ using Content.Shared._Exodus.Shipyard.Utilization;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared.Shuttles.Components;
 using Robust.Server.GameObjects;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Exodus.Shipyard.Utilization;
 
@@ -27,8 +29,19 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
     /// </summary>
     private const int VoucherPayout = 50_000;
 
+    /// <summary>
+    /// How long a utilization process runs before completing.
+    /// </summary>
+    private static readonly TimeSpan UtilizationDuration = TimeSpan.FromMinutes(5);
+
+    /// <summary>
+    /// Cadence at which we re-push the UI state for an active console.
+    /// </summary>
+    private static readonly TimeSpan UiTickInterval = TimeSpan.FromSeconds(1);
+
     [Dependency] private readonly DockingSystem _docking = default!;
     [Dependency] private readonly PricingSystem _pricing = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
     public override void Initialize()
@@ -40,34 +53,104 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
         SubscribeLocalEvent<ShipUtilizationConsoleComponent, ShipUtilizationCancelMessage>(OnCancel);
     }
 
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        var now = _timing.CurTime;
+        var query = EntityQueryEnumerator<ShipUtilizationConsoleComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (comp.ActiveShip == null || comp.ActiveEndsAt is not { } endsAt)
+                continue;
+
+            // TODO commit 5: full completion logic — payout, grid delete, organic check pause.
+            // For now, simply finish the session when the timer runs out.
+            if (now >= endsAt)
+            {
+                ClearActive(comp);
+                RefreshState((uid, comp));
+                continue;
+            }
+
+            if (now < comp.NextUiUpdate)
+                continue;
+
+            comp.NextUiUpdate = now + UiTickInterval;
+            RefreshState((uid, comp));
+        }
+    }
+
     private void OnUiOpened(Entity<ShipUtilizationConsoleComponent> ent, ref BoundUIOpenedEvent args)
     {
         RefreshState(ent);
     }
 
-    // TODO commit 5: start the 5-minute utilization process.
     private void OnStart(Entity<ShipUtilizationConsoleComponent> ent, ref ShipUtilizationStartMessage args)
     {
+        if (ent.Comp.ActiveShip != null)
+            return;
+
+        var requested = args.Ship;
+        if (!TryGetEntity(requested, out var shipUid))
+            return;
+
+        var ships = GetEligibleShips(ent);
+        var found = ships.FirstOrDefault(s => s.Ship == requested);
+        if (found.Ship == default || found.LockedByOtherConsole)
+            return;
+
+        var now = _timing.CurTime;
+        ent.Comp.ActiveShip = shipUid;
+        ent.Comp.ActiveStartedAt = now;
+        ent.Comp.ActiveEndsAt = now + UtilizationDuration;
+        ent.Comp.ActivePayout = CalculatePayout(shipUid.Value);
+        ent.Comp.ActiveShipName = Name(shipUid.Value);
+        ent.Comp.NextUiUpdate = now + UiTickInterval;
+
         RefreshState(ent);
     }
 
-    // TODO commit 5: cancel the active utilization.
     private void OnCancel(Entity<ShipUtilizationConsoleComponent> ent, ref ShipUtilizationCancelMessage args)
     {
+        if (ent.Comp.ActiveShip == null)
+            return;
+
+        ClearActive(ent.Comp);
         RefreshState(ent);
+    }
+
+    private static void ClearActive(ShipUtilizationConsoleComponent comp)
+    {
+        comp.ActiveShip = null;
+        comp.ActiveStartedAt = null;
+        comp.ActiveEndsAt = null;
+        comp.ActivePayout = 0;
+        comp.ActiveShipName = null;
     }
 
     private void RefreshState(Entity<ShipUtilizationConsoleComponent> ent)
     {
         var ships = GetEligibleShips(ent);
-        var activePayout = ent.Comp.ActiveShip is { } active ? CalculatePayout(active) : 0;
+
+        var isActive = ent.Comp.ActiveShip != null;
+        var remaining = 0;
+        var total = (int)UtilizationDuration.TotalSeconds;
+
+        if (isActive && ent.Comp.ActiveEndsAt is { } endsAt)
+        {
+            var diff = endsAt - _timing.CurTime;
+            remaining = diff.TotalSeconds > 0 ? (int)Math.Ceiling(diff.TotalSeconds) : 0;
+        }
 
         var state = new ShipUtilizationConsoleInterfaceState(
             ships,
-            isActive: ent.Comp.ActiveShip != null,
+            isActive: isActive,
             activeShip: ent.Comp.ActiveShip is { } activeUid ? GetNetEntity(activeUid) : null,
-            activeSecondsRemaining: 0,
-            activePayout: activePayout);
+            activeShipName: ent.Comp.ActiveShipName,
+            activeSecondsRemaining: remaining,
+            activeTotalSeconds: total,
+            activePayout: ent.Comp.ActivePayout);
 
         _ui.SetUiState(ent.Owner, ShipUtilizationConsoleUiKey.Key, state);
     }

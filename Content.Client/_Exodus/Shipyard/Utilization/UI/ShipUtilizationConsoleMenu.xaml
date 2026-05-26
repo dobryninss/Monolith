@@ -4,10 +4,26 @@
                       SetSize="520 420"
                       MinSize="480 320">
     <BoxContainer Orientation="Vertical" Margin="6 6 6 6">
-        <Label Name="HeaderLabel" Text="{Loc 'ship-utilization-menu-header'}" StyleClasses="LabelHeading" />
-        <Label Name="StatusLabel" />
-        <ScrollContainer VerticalExpand="True">
-            <BoxContainer Name="ShipList" Orientation="Vertical" Margin="0 4 0 0" />
-        </ScrollContainer>
+
+        <!-- Idle view: ship list -->
+        <BoxContainer Name="IdleView" Orientation="Vertical" VerticalExpand="True">
+            <Label Text="{Loc 'ship-utilization-menu-header'}" StyleClasses="LabelHeading" />
+            <Label Name="StatusLabel" />
+            <ScrollContainer VerticalExpand="True">
+                <BoxContainer Name="ShipList" Orientation="Vertical" Margin="0 4 0 0" />
+            </ScrollContainer>
+        </BoxContainer>
+
+        <!-- Active view: progress + cancel -->
+        <BoxContainer Name="ActiveView" Orientation="Vertical" Visible="False" VerticalExpand="True">
+            <Label Text="{Loc 'ship-utilization-menu-active-title'}" StyleClasses="LabelHeading" />
+            <Label Name="ActiveShipNameLabel" />
+            <Label Name="ActivePayoutLabel" />
+            <Label Name="ActiveTimeLabel" />
+            <ProgressBar Name="ProgressBar" MinValue="0" MaxValue="1" Value="0" SetHeight="20" HorizontalExpand="True" Margin="0 6 0 6" />
+            <Control VerticalExpand="True" />
+            <Button Name="CancelButton" Text="{Loc 'ship-utilization-menu-cancel-button'}" StyleClasses="OpenLeft" Margin="0 4 0 0" />
+        </BoxContainer>
+
     </BoxContainer>
 </controls:FancyWindow>

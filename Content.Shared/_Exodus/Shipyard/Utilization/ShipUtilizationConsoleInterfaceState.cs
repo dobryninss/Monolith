@@ -12,7 +12,7 @@ public sealed class ShipUtilizationConsoleInterfaceState : BoundUserInterfaceSta
 
     /// <summary>
     /// True when this console is already running a utilization process — UI hides the ship list and
-    /// shows the active row with cancel button instead.
+    /// shows the progress view with cancel button instead.
     /// </summary>
     public readonly bool IsActive;
 
@@ -22,9 +22,19 @@ public sealed class ShipUtilizationConsoleInterfaceState : BoundUserInterfaceSta
     public readonly NetEntity? ActiveShip;
 
     /// <summary>
-    /// Seconds remaining on the active utilization. 0 when idle or paused on the very first check.
+    /// Display name of the ship being utilized, captured at start.
+    /// </summary>
+    public readonly string? ActiveShipName;
+
+    /// <summary>
+    /// Seconds remaining on the active utilization.
     /// </summary>
     public readonly int ActiveSecondsRemaining;
+
+    /// <summary>
+    /// Total duration of the active utilization in seconds (used to size the progress bar).
+    /// </summary>
+    public readonly int ActiveTotalSeconds;
 
     /// <summary>
     /// Payout for the active utilization, in credits. Zero when idle.
@@ -35,13 +45,17 @@ public sealed class ShipUtilizationConsoleInterfaceState : BoundUserInterfaceSta
         List<UtilizationShipEntry> ships,
         bool isActive,
         NetEntity? activeShip,
+        string? activeShipName,
         int activeSecondsRemaining,
+        int activeTotalSeconds,
         int activePayout)
     {
         Ships = ships;
         IsActive = isActive;
         ActiveShip = activeShip;
+        ActiveShipName = activeShipName;
         ActiveSecondsRemaining = activeSecondsRemaining;
+        ActiveTotalSeconds = activeTotalSeconds;
         ActivePayout = activePayout;
     }
 }

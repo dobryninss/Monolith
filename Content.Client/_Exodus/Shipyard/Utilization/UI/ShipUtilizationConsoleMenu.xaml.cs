@@ -15,39 +15,23 @@ public sealed partial class ShipUtilizationConsoleMenu : FancyWindow
     public ShipUtilizationConsoleMenu()
     {
         RobustXamlLoader.Load(this);
+        CancelButton.OnPressed += _ => OnCancel?.Invoke();
     }
 
     public void UpdateState(ShipUtilizationConsoleInterfaceState state)
     {
-        ShipList.RemoveAllChildren();
-
         if (state.IsActive)
-        {
-            StatusLabel.Text = Loc.GetString("ship-utilization-menu-status-active",
-                ("seconds", state.ActiveSecondsRemaining),
-                ("payout", state.ActivePayout.ToString("N0")));
+            ShowActive(state);
+        else
+            ShowIdle(state);
+    }
 
-            var cancelRow = new BoxContainer
-            {
-                Orientation = BoxContainer.LayoutOrientation.Horizontal,
-                Margin = new Robust.Shared.Maths.Thickness(0, 2),
-                HorizontalExpand = true,
-            };
-            cancelRow.AddChild(new Label
-            {
-                Text = Loc.GetString("ship-utilization-menu-active-row"),
-                HorizontalExpand = true,
-            });
-            var cancelBtn = new Button
-            {
-                Text = Loc.GetString("ship-utilization-menu-cancel-button"),
-                StyleClasses = { "OpenRight" },
-            };
-            cancelBtn.OnPressed += _ => OnCancel?.Invoke();
-            cancelRow.AddChild(cancelBtn);
-            ShipList.AddChild(cancelRow);
-            return;
-        }
+    private void ShowIdle(ShipUtilizationConsoleInterfaceState state)
+    {
+        IdleView.Visible = true;
+        ActiveView.Visible = false;
+
+        ShipList.RemoveAllChildren();
 
         StatusLabel.Text = state.Ships.Count == 0
             ? Loc.GetString("ship-utilization-menu-status-empty")
@@ -90,5 +74,23 @@ public sealed partial class ShipUtilizationConsoleMenu : FancyWindow
 
             ShipList.AddChild(row);
         }
+    }
+
+    private void ShowActive(ShipUtilizationConsoleInterfaceState state)
+    {
+        IdleView.Visible = false;
+        ActiveView.Visible = true;
+
+        ActiveShipNameLabel.Text = Loc.GetString("ship-utilization-menu-active-ship",
+            ("name", state.ActiveShipName ?? string.Empty));
+        ActivePayoutLabel.Text = Loc.GetString("ship-utilization-menu-active-payout",
+            ("payout", state.ActivePayout.ToString("N0")));
+        ActiveTimeLabel.Text = Loc.GetString("ship-utilization-menu-active-time",
+            ("seconds", state.ActiveSecondsRemaining));
+
+        ProgressBar.MaxValue = state.ActiveTotalSeconds > 0 ? state.ActiveTotalSeconds : 1;
+        ProgressBar.Value = state.ActiveTotalSeconds > 0
+            ? state.ActiveTotalSeconds - state.ActiveSecondsRemaining
+            : 0;
     }
 }

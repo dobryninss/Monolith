@@ -20,6 +20,39 @@ public sealed partial class ShipUtilizationConsoleComponent : Component
     public EntityUid? ActiveShip;
 
     /// <summary>
+    /// Game time at which the active utilization started. Null when idle.
+    /// </summary>
+    [DataField]
+    public TimeSpan? ActiveStartedAt;
+
+    /// <summary>
+    /// Game time at which the active utilization will finish. Null when idle.
+    /// </summary>
+    [DataField]
+    public TimeSpan? ActiveEndsAt;
+
+    /// <summary>
+    /// Payout (in credits) computed when the utilization started — locked in so UI doesn't flicker
+    /// if the ship's appraisal changes mid-process.
+    /// </summary>
+    [DataField]
+    public int ActivePayout;
+
+    /// <summary>
+    /// Display name of the ship being utilized, captured at start so UI shows the right name even
+    /// if the grid gets renamed.
+    /// </summary>
+    [DataField]
+    public string? ActiveShipName;
+
+    /// <summary>
+    /// Next time we push a UI state refresh for this console — limits update rate to ~1 Hz while
+    /// the timer is running.
+    /// </summary>
+    [DataField]
+    public TimeSpan NextUiUpdate;
+
+    /// <summary>
     /// Radio channel used for utilization announcements (start, pause, resume, finish, cancel).
     /// </summary>
     [DataField]
