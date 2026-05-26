@@ -13,13 +13,10 @@
     sprite: Objects/Tools/emag.rsi
     storedRotation: -90
 
-# Exodus-begin emag-rework: single-use emag, no auto-recharge.
 - type: entity
   parent: EmagUnlimited
   id: Emag
   suffix: Limited
   components:
   - type: LimitedCharges
-    maxCharges: 1
-    charges: 1
-# Exodus-end emag-rework
+  - type: AutoRecharge
