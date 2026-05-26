@@ -68,7 +68,6 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
             return;
 
         var emaggerName = gridLock.EmaggerName ?? Loc.GetString("emag-paper-unknown-name");
-        var emaggerJob = gridLock.EmaggerJob ?? Loc.GetString("emag-paper-unknown-job");
 
         gridLock.LockDisabled = false;
         gridLock.EmaggedBy = null;
@@ -77,12 +76,12 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         gridLock.EmaggedAt = null;
         Dirty(gridUid, gridLock);
 
-        SpawnDemagPaper(args.UserUid, emaggerName, emaggerJob);
+        SpawnDemagPaper(args.UserUid, emaggerName);
 
         args.Handled = true;
     }
 
-    private void SpawnDemagPaper(EntityUid user, string emaggerName, string emaggerJob)
+    private void SpawnDemagPaper(EntityUid user, string emaggerName)
     {
         var paper = Spawn(PaperProto, _transform.GetMapCoordinates(user));
 
@@ -90,9 +89,7 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
 
         if (TryComp<PaperComponent>(paper, out var paperComp))
         {
-            var body = Loc.GetString("emag-paper-body",
-                ("name", emaggerName),
-                ("job", emaggerJob));
+            var body = Loc.GetString("emag-paper-body", ("name", emaggerName));
             _paper.SetContent((paper, paperComp), body);
         }
 

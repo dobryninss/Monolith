@@ -753,7 +753,7 @@
       moduleId: Operative # Frontier
       items:
       - Crowbar
-      - Emag
+      - EmagBorg # Exodus emag-rework: separate borg emag with auto-recharge
       - AccessBreaker
       - WeaponGrapplingGun # Mono
       - PinpointerSyndicateNuclear

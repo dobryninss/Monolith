@@ -1,0 +1,11 @@
+# Cyborg-only emag: 1 charge, recharges every 120 seconds.
+- type: entity
+  parent: EmagUnlimited
+  id: EmagBorg
+  suffix: Borg
+  components:
+  - type: LimitedCharges
+    maxCharges: 1
+    charges: 1
+  - type: AutoRecharge
+    rechargeDuration: 120
