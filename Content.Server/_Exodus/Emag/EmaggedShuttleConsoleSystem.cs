@@ -55,10 +55,9 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         SubscribeLocalEvent<ShuttleConsoleComponent, GotUnEmaggedEvent>(OnUnemagged);
         SubscribeLocalEvent<NativeShuttleConsoleComponent, ComponentStartup>(OnNativeStartup);
 
-        // Run before EmagSystem.OnAfterInteract so we can intercept shuttle-console targets and
-        // start a DoAfter instead of an instant emag. EmagSystem now respects args.Handled.
-        SubscribeLocalEvent<EmagComponent, AfterInteractEvent>(OnEmagAfterInteract,
-            before: new[] { typeof(EmagSystem) });
+        // EmagSystem.OnAfterInteract skips shuttle consoles, letting AfterInteractUsingEvent fire
+        // on the target. We pick it up here and start a 20-second hack DoAfter instead.
+        SubscribeLocalEvent<ShuttleConsoleComponent, AfterInteractUsingEvent>(OnShuttleConsoleInteractUsing);
         SubscribeLocalEvent<EmagComponent, ShuttleConsoleEmagDoAfterEvent>(OnEmagDoAfter);
     }
 
@@ -127,29 +126,29 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Intercept emag interactions against shuttle consoles to start a 20-second hack DoAfter
-    /// instead of applying the emag instantly. Non-shuttle-console targets fall through to the
-    /// regular <see cref="EmagSystem"/> flow.
+    /// Intercept emag tool interactions on shuttle consoles and start a 20-second hack DoAfter
+    /// instead of applying the emag instantly. The companion change in
+    /// <see cref="EmagSystem.OnAfterInteract"/> exits early for shuttle-console targets so this
+    /// handler gets to run.
     /// </summary>
-    private void OnEmagAfterInteract(Entity<EmagComponent> emag, ref AfterInteractEvent args)
+    private void OnShuttleConsoleInteractUsing(Entity<ShuttleConsoleComponent> console, ref AfterInteractUsingEvent args)
     {
-        if (args.Handled || !args.CanReach || args.Target is not { } target)
+        if (args.Handled || !args.CanReach)
+            return;
+
+        if (!TryComp<EmagComponent>(args.Used, out var emagComp))
             return;
 
         // Demag tools still operate instantly — only emag tools get the hack delay.
-        if (emag.Comp.Demag)
+        if (emagComp.Demag)
             return;
 
-        if (!HasComp<ShuttleConsoleComponent>(target))
+        // Foreign / freshly-built consoles can't be emagged at all.
+        if (!HasComp<NativeShuttleConsoleComponent>(console))
             return;
 
-        // Foreign / freshly-built consoles can't be emagged at all — let EmagSystem run so the
-        // tool's "no effect" feedback (charge check, popup) still fires.
-        if (!HasComp<NativeShuttleConsoleComponent>(target))
-            return;
-
-        // Already emag-broken at the grid level — bail so charges aren't wasted on a re-hack.
-        if (Transform(target).GridUid is { } gridUid
+        // Already emag-broken at the grid level — claim the event so charges aren't wasted.
+        if (Transform(console).GridUid is { } gridUid
             && TryComp<ShipGridLockComponent>(gridUid, out var gridLock)
             && gridLock.LockDisabled)
         {
@@ -157,12 +156,13 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
             return;
         }
 
-        // If the emag has no charges left, let EmagSystem show its "no charges" popup naturally.
-        if (TryComp<LimitedChargesComponent>(emag, out var charges) && _charges.IsEmpty(emag, charges))
+        // If the emag has no charges left, leave the event alone so the tool's normal "no charges"
+        // path can run later (e.g. on next click via a different code path).
+        if (TryComp<LimitedChargesComponent>(args.Used, out var charges) && _charges.IsEmpty(args.Used, charges))
             return;
 
         var ev = new ShuttleConsoleEmagDoAfterEvent();
-        var doAfterArgs = new DoAfterArgs(EntityManager, args.User, ShuttleConsoleEmagDelay, ev, emag.Owner, target: target, used: emag.Owner)
+        var doAfterArgs = new DoAfterArgs(EntityManager, args.User, ShuttleConsoleEmagDelay, ev, args.Used, target: console.Owner, used: args.Used)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
@@ -173,7 +173,7 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         if (!_doAfter.TryStartDoAfter(doAfterArgs))
             return;
 
-        _chat.TrySendInGameICMessage(target,
+        _chat.TrySendInGameICMessage(console.Owner,
             Loc.GetString("shuttle-console-emag-in-progress"),
             InGameICChatType.Speak,
             ChatTransmitRange.Normal,
