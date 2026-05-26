@@ -1,10 +1,12 @@
-using Content.Server.Hands.Systems;
 using Content.Server.Shuttles.Components;
 using Content.Shared.Access.Components;
 using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Paper;
 using Content.Shared.PDA;
 using Content.Shared.Shuttles.Components;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Exodus.Emag;
@@ -15,11 +17,17 @@ namespace Content.Server._Exodus.Emag;
 /// no card or voucher can lock it again until a demag clears the state.
 /// SRD-restored consoles inherit the emag state via <see cref="ShipGridLockComponent"/>,
 /// which lives on the grid and survives individual console rebuilds.
+/// Demagging spawns a paper into the demagger's hands with the emagger's name and job.
 /// </summary>
 public sealed class EmaggedShuttleConsoleSystem : EntitySystem
 {
+    private static readonly EntProtoId PaperProto = "Paper";
+
     [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly HandsSystem _hands = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly MetaDataSystem _meta = default!;
+    [Dependency] private readonly PaperSystem _paper = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {
@@ -59,6 +67,9 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         if (!TryComp<ShipGridLockComponent>(gridUid, out var gridLock) || !gridLock.LockDisabled)
             return;
 
+        var emaggerName = gridLock.EmaggerName ?? Loc.GetString("emag-paper-unknown-name");
+        var emaggerJob = gridLock.EmaggerJob ?? Loc.GetString("emag-paper-unknown-job");
+
         gridLock.LockDisabled = false;
         gridLock.EmaggedBy = null;
         gridLock.EmaggerName = null;
@@ -66,7 +77,26 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         gridLock.EmaggedAt = null;
         Dirty(gridUid, gridLock);
 
+        SpawnDemagPaper(args.UserUid, emaggerName, emaggerJob);
+
         args.Handled = true;
+    }
+
+    private void SpawnDemagPaper(EntityUid user, string emaggerName, string emaggerJob)
+    {
+        var paper = Spawn(PaperProto, _transform.GetMapCoordinates(user));
+
+        _meta.SetEntityName(paper, Loc.GetString("emag-paper-title"));
+
+        if (TryComp<PaperComponent>(paper, out var paperComp))
+        {
+            var body = Loc.GetString("emag-paper-body",
+                ("name", emaggerName),
+                ("job", emaggerJob));
+            _paper.SetContent((paper, paperComp), body);
+        }
+
+        _hands.PickupOrDrop(user, paper, checkActionBlocker: false);
     }
 
     /// <summary>
