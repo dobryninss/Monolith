@@ -3,14 +3,11 @@ using Content.Server.Shuttles.Components;
 using Content.Shared._Exodus.Emag;
 using Content.Shared._Exodus.Shipyard.Utilization;
 using Content.Shared.Access.Components;
-using Content.Shared.Charges.Components;
-using Content.Shared.Charges.Systems;
 using Content.Shared.Chat;
 using Content.Shared.DoAfter;
 using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Hands.EntitySystems;
-using Content.Shared.Interaction;
 using Content.Shared.Paper;
 using Content.Shared.PDA;
 using Content.Shared.Shuttles.Components;
@@ -43,9 +40,14 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
     [Dependency] private readonly PaperSystem _paper = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedChargesSystem _charges = default!;
     [Dependency] private readonly EmagSystem _emagSystem = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
+
+    /// <summary>
+    /// Consoles whose <see cref="GotEmaggedEvent"/> is being raised as the completion of a hack
+    /// DoAfter, not as a fresh interaction. Cleared by <see cref="OnEmagged"/> on the second pass.
+    /// </summary>
+    private readonly HashSet<EntityUid> _pendingApplications = new();
 
     public override void Initialize()
     {
@@ -54,10 +56,6 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         SubscribeLocalEvent<ShuttleConsoleComponent, GotEmaggedEvent>(OnEmagged);
         SubscribeLocalEvent<ShuttleConsoleComponent, GotUnEmaggedEvent>(OnUnemagged);
         SubscribeLocalEvent<NativeShuttleConsoleComponent, ComponentStartup>(OnNativeStartup);
-
-        // EmagSystem.OnAfterInteract skips shuttle consoles, letting AfterInteractUsingEvent fire
-        // on the target. We pick it up here and start a 20-second hack DoAfter instead.
-        SubscribeLocalEvent<ShuttleConsoleComponent, AfterInteractUsingEvent>(OnShuttleConsoleInteractUsing);
         SubscribeLocalEvent<EmagComponent, ShuttleConsoleEmagDoAfterEvent>(OnEmagDoAfter);
     }
 
@@ -77,6 +75,17 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         if (gridLock.LockDisabled)
             return;
 
+        // If this isn't the DoAfter-completion pass, kick off the hack instead of applying state.
+        // The emag tool gets no Handled/charge consumption; the DoAfter UI tells the player it's
+        // working and the console announces the breach in local chat.
+        if (!_pendingApplications.Remove(ent.Owner))
+        {
+            TryStartEmagDoAfter(args.UserUid, ent.Owner);
+            // Suppress EmaggedComponent — it gets added properly on the completion pass.
+            args.Repeatable = true;
+            return;
+        }
+
         gridLock.LockDisabled = true;
         gridLock.Locked = false;
         gridLock.EmaggedBy = args.UserUid;
@@ -86,6 +95,52 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         Dirty(gridUid, gridLock);
 
         args.Handled = true;
+    }
+
+    /// <summary>
+    /// Attempts to start the 20-second hack DoAfter on the user. Looks up the emag tool from the
+    /// user's hands; if none is found (e.g. the emag was just placed away), bails silently.
+    /// </summary>
+    private void TryStartEmagDoAfter(EntityUid user, EntityUid console)
+    {
+        if (!TryFindHeldEmag(user, out var emag))
+            return;
+
+        var ev = new ShuttleConsoleEmagDoAfterEvent();
+        var doAfterArgs = new DoAfterArgs(EntityManager, user, ShuttleConsoleEmagDelay, ev, emag.Owner, target: console, used: emag.Owner)
+        {
+            BreakOnMove = true,
+            BreakOnDamage = true,
+            NeedHand = true,
+            DuplicateCondition = DuplicateConditions.SameTool | DuplicateConditions.SameTarget,
+        };
+
+        if (!_doAfter.TryStartDoAfter(doAfterArgs))
+            return;
+
+        _chat.TrySendInGameICMessage(console,
+            Loc.GetString("shuttle-console-emag-in-progress"),
+            InGameICChatType.Speak,
+            ChatTransmitRange.Normal,
+            false);
+    }
+
+    private bool TryFindHeldEmag(EntityUid user, out Entity<EmagComponent> emag)
+    {
+        foreach (var hand in _hands.EnumerateHands(user))
+        {
+            if (hand.HeldEntity is not { } held)
+                continue;
+
+            if (TryComp<EmagComponent>(held, out var emagComp) && !emagComp.Demag)
+            {
+                emag = (held, emagComp);
+                return true;
+            }
+        }
+
+        emag = default;
+        return false;
     }
 
     private void OnUnemagged(Entity<ShuttleConsoleComponent> ent, ref GotUnEmaggedEvent args)
@@ -125,63 +180,6 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         _hands.PickupOrDrop(user, paper, checkActionBlocker: false);
     }
 
-    /// <summary>
-    /// Intercept emag tool interactions on shuttle consoles and start a 20-second hack DoAfter
-    /// instead of applying the emag instantly. The companion change in
-    /// <see cref="EmagSystem.OnAfterInteract"/> exits early for shuttle-console targets so this
-    /// handler gets to run.
-    /// </summary>
-    private void OnShuttleConsoleInteractUsing(Entity<ShuttleConsoleComponent> console, ref AfterInteractUsingEvent args)
-    {
-        if (args.Handled || !args.CanReach)
-            return;
-
-        if (!TryComp<EmagComponent>(args.Used, out var emagComp))
-            return;
-
-        // Demag tools still operate instantly — only emag tools get the hack delay.
-        if (emagComp.Demag)
-            return;
-
-        // Foreign / freshly-built consoles can't be emagged at all.
-        if (!HasComp<NativeShuttleConsoleComponent>(console))
-            return;
-
-        // Already emag-broken at the grid level — claim the event so charges aren't wasted.
-        if (Transform(console).GridUid is { } gridUid
-            && TryComp<ShipGridLockComponent>(gridUid, out var gridLock)
-            && gridLock.LockDisabled)
-        {
-            args.Handled = true;
-            return;
-        }
-
-        // If the emag has no charges left, leave the event alone so the tool's normal "no charges"
-        // path can run later (e.g. on next click via a different code path).
-        if (TryComp<LimitedChargesComponent>(args.Used, out var charges) && _charges.IsEmpty(args.Used, charges))
-            return;
-
-        var ev = new ShuttleConsoleEmagDoAfterEvent();
-        var doAfterArgs = new DoAfterArgs(EntityManager, args.User, ShuttleConsoleEmagDelay, ev, args.Used, target: console.Owner, used: args.Used)
-        {
-            BreakOnMove = true,
-            BreakOnDamage = true,
-            NeedHand = true,
-            DuplicateCondition = DuplicateConditions.SameTool | DuplicateConditions.SameTarget,
-        };
-
-        if (!_doAfter.TryStartDoAfter(doAfterArgs))
-            return;
-
-        _chat.TrySendInGameICMessage(console.Owner,
-            Loc.GetString("shuttle-console-emag-in-progress"),
-            InGameICChatType.Speak,
-            ChatTransmitRange.Normal,
-            false);
-
-        args.Handled = true;
-    }
-
     private void OnEmagDoAfter(Entity<EmagComponent> emag, ref ShuttleConsoleEmagDoAfterEvent args)
     {
         if (args.Cancelled || args.Handled)
@@ -194,8 +192,14 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         if (Deleted(target) || !HasComp<ShuttleConsoleComponent>(target) || !HasComp<NativeShuttleConsoleComponent>(target))
             return;
 
-        _emagSystem.TryEmagEffect((emag.Owner, emag.Comp), args.User, target);
-        args.Handled = true;
+        // Flag this console so the upcoming GotEmaggedEvent applies state instead of restarting
+        // the DoAfter.
+        _pendingApplications.Add(target);
+        var result = _emagSystem.TryEmagEffect((emag.Owner, emag.Comp), args.User, target);
+        // Clean up in case TryEmagEffect bailed before reaching OnEmagged (e.g. no charges).
+        _pendingApplications.Remove(target);
+
+        args.Handled = result;
     }
 
     /// <summary>

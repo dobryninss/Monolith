@@ -6,7 +6,6 @@ using Content.Shared.Emag.Components;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
-using Content.Shared.Shuttles.Components;
 using Content.Shared.Tag;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Serialization;
@@ -45,16 +44,7 @@ public sealed class EmagSystem : EntitySystem
     }
     private void OnAfterInteract(EntityUid uid, EmagComponent comp, AfterInteractEvent args)
     {
-        // Exodus emag-rework: let other systems consume the event first.
-        if (args.Handled)
-            return;
         if (!args.CanReach || args.Target is not { } target)
-            return;
-
-        // Exodus emag-rework: shuttle consoles route through a 20-second hack handled by
-        // EmaggedShuttleConsoleSystem via AfterInteractUsingEvent on the target. Skip them here so
-        // the target-side handler gets a chance to run.
-        if (!comp.Demag && HasComp<SharedShuttleConsoleComponent>(target))
             return;
 
         // Frontier: unemag
