@@ -21,6 +21,7 @@ shuttle-console-access-denied = Access denied.
 # Exodus emag-rework
 shuttle-console-locked-emagged = The console has been emagged. It can no longer be locked.
 shuttle-console-emag-in-progress = WARNING: security circuit breach attempt detected on "{ $vessel }".
+shuttle-console-emagged-unanchor-blocked = The emag seal on the console prevents unanchoring.
 
 ## Shuttle Console Lock Verbs
 shuttle-console-verb-unlock = Unlock Console

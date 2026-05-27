@@ -4,12 +4,14 @@ using Content.Server.Shuttles.Components;
 using Content.Shared._Exodus.Emag;
 using Content.Shared.Access.Components;
 using Content.Shared.Chat;
+using Content.Shared.Construction.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Paper;
 using Content.Shared.PDA;
+using Content.Shared.Popups;
 using Content.Shared.Radio;
 using Content.Shared.Shuttles.Components;
 using Robust.Shared.Prototypes;
@@ -48,6 +50,7 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
     [Dependency] private readonly EmagSystem _emagSystem = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
 
     /// <summary>
     /// Consoles whose <see cref="GotEmaggedEvent"/> is being raised as the completion of a hack
@@ -62,7 +65,27 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         SubscribeLocalEvent<ShuttleConsoleComponent, GotEmaggedEvent>(OnEmagged);
         SubscribeLocalEvent<ShuttleConsoleComponent, GotUnEmaggedEvent>(OnUnemagged);
         SubscribeLocalEvent<ShuttleConsoleComponent, MapInitEvent>(OnConsoleMapInit);
+        SubscribeLocalEvent<ShuttleConsoleComponent, UnanchorAttemptEvent>(OnUnanchorAttempt);
         SubscribeLocalEvent<EmagComponent, ShuttleConsoleEmagDoAfterEvent>(OnEmagDoAfter);
+    }
+
+    /// <summary>
+    /// Block wrenching an emagged shuttle console off its grid. Otherwise the console could be
+    /// detached, carried away and the emag state abused on other grids.
+    /// </summary>
+    private void OnUnanchorAttempt(Entity<ShuttleConsoleComponent> ent, ref UnanchorAttemptEvent args)
+    {
+        if (args.Cancelled)
+            return;
+
+        if (Transform(ent).GridUid is not { } gridUid)
+            return;
+
+        if (!TryComp<ShipGridLockComponent>(gridUid, out var gridLock) || !gridLock.LockDisabled)
+            return;
+
+        _popup.PopupEntity(Loc.GetString("shuttle-console-emagged-unanchor-blocked"), ent.Owner, args.User);
+        args.Cancel();
     }
 
     /// <summary>

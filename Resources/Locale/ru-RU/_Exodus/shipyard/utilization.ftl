@@ -19,7 +19,7 @@ ship-utilization-announce-finish = Утилизация судна "{ $vessel }"
 ship-utilization-announce-cancel-operator = Утилизация судна "{ $vessel }" отменена пользователем.
 ship-utilization-announce-cancel-undock = Утилизация судна "{ $vessel }" прервана: судно отстыковано.
 ship-utilization-announce-cancel-console = Утилизация судна "{ $vessel }" прервана: разрушена консоль управления.
-ship-utilization-announce-cancel-demag = Утилизация судна "{ $vessel }" прервана: ситемы защиты консоли восстановлена.
+ship-utilization-announce-cancel-demag = Утилизация судна "{ $vessel }" прервана: системы защиты консоли восстановлены.
 
 ent-ComputerShipUtilization = консоль утилизации судов
     .desc = Терминал для разборки подбитых и угнанных судов. Требует некоторое время для утилизации.

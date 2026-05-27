@@ -22,6 +22,7 @@ shuttle-console-access-denied = В доступе отказано.
 # Exodus emag-rework
 shuttle-console-locked-emagged = Консоль взломана. Заблокировать невозможно.
 shuttle-console-emag-in-progress = ВНИМАНИЕ: фиксируется попытка взлома защитных систем консоли управления шатлом судна "{ $vessel }".
+shuttle-console-emagged-unanchor-blocked = Защитная пломба взломанной консоли блокирует откручивание.
 
 ## Shuttle Console Lock Verbs
 
