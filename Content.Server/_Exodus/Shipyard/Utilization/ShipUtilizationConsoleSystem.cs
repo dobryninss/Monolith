@@ -30,11 +30,16 @@ namespace Content.Server._Exodus.Shipyard.Utilization;
 public sealed class ShipUtilizationConsoleSystem : EntitySystem
 {
     /// <summary>
-    /// Multiplier applied to the appraisal of a ship to compute the utilization payout.
-    /// Owner-driven shipyard sales pay 0.85 × appraisal; utilization pays 25 percentage points
-    /// less (absolute).
+    /// Multiplier applied to the appraisal of a non-voucher ship to compute the utilization
+    /// payout.
     /// </summary>
-    private const float UtilizationSaleRate = 0.60f;
+    private const float UtilizationSaleRate = 0.75f;
+
+    /// <summary>
+    /// Flat credit payout for voucher-purchased ships (which were free to buy and so don't have a
+    /// meaningful resale appraisal).
+    /// </summary>
+    private const int VoucherPayout = 50_000;
 
     private const string CashProtoId = "SpaceCash";
 
@@ -180,14 +185,10 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// If a native shuttle console of the ship being utilized is destroyed, abort the process.
-    /// Non-native consoles (foreign or freshly built) don't count.
+    /// Any shuttle console destroyed on the ship being utilized aborts the process.
     /// </summary>
     private void OnShuttleConsoleTerminating(Entity<ShuttleConsoleComponent> ent, ref EntityTerminatingEvent args)
     {
-        if (!HasComp<NativeShuttleConsoleComponent>(ent))
-            return;
-
         if (Transform(ent).GridUid is not { } gridUid)
             return;
 
@@ -325,17 +326,23 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Computes the utilization payout — <see cref="UtilizationSaleRate"/> of the grid appraisal.
+    /// Voucher-purchased ships pay a flat <see cref="VoucherPayout"/>; everything else pays
+    /// <see cref="UtilizationSaleRate"/> of the appraisal.
     /// </summary>
     public int CalculatePayout(EntityUid shipGrid)
     {
+        if (TryComp<ShuttleDeedComponent>(shipGrid, out var deed) && deed.PurchasedWithVoucher)
+            return VoucherPayout;
+
         var appraisal = _pricing.AppraiseGrid(shipGrid, null);
         return (int)(appraisal * UtilizationSaleRate);
     }
 
     /// <summary>
-    /// Walks the docks on the console's own grid (Camelot) to find docked ships whose grid lock has
-    /// been emag-broken and which still own at least one native shuttle console.
+    /// Walks the docks on the console's own grid to find docked ships eligible for utilization.
+    /// A ship qualifies when its grid lock has been emag-broken AND it has a
+    /// <see cref="ShuttleDeedComponent"/> — i.e. it was actually purchased through the shipyard.
+    /// Event-spawned and other deed-less ships are silently excluded.
     /// </summary>
     private List<UtilizationShipEntry> GetEligibleShips(Entity<ShipUtilizationConsoleComponent> ent)
     {
@@ -361,7 +368,7 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
             if (!TryComp<ShipGridLockComponent>(shipGrid, out var gridLock) || !gridLock.LockDisabled)
                 continue;
 
-            if (!HasNativeShuttleConsole(shipGrid, gridLock.ShuttleId))
+            if (!HasComp<ShuttleDeedComponent>(shipGrid))
                 continue;
 
             result.Add(new UtilizationShipEntry(
@@ -372,24 +379,6 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
         }
 
         return result;
-    }
-
-    private bool HasNativeShuttleConsole(EntityUid shipGrid, string? expectedShuttleId)
-    {
-        if (string.IsNullOrEmpty(expectedShuttleId))
-            return false;
-
-        var query = EntityQueryEnumerator<ShuttleConsoleComponent, ShuttleConsoleLockComponent, TransformComponent>();
-        while (query.MoveNext(out _, out _, out var lockComp, out var xform))
-        {
-            if (xform.GridUid != shipGrid)
-                continue;
-
-            if (lockComp.ShuttleId == expectedShuttleId)
-                return true;
-        }
-
-        return false;
     }
 
     private bool IsShipActiveOnAnyConsole(EntityUid shipGrid, EntityUid exceptConsole)

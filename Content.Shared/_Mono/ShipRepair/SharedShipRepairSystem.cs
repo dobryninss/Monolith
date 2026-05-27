@@ -110,9 +110,7 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
                 ProtoIndex = paletteIndex,
                 OriginalEntity = GetNetEntity(childEnt),
                 Rotation = childXform.LocalRotation,
-                LocalPosition = localPos,
-                // Exodus emag-rework: remember native-shuttle-console marker so SRD restores it.
-                NativeShuttleConsole = HasComp<Content.Shared._Exodus.Shipyard.Utilization.NativeShuttleConsoleComponent>(childEnt),
+                LocalPosition = localPos
             };
         }
 

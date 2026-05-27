@@ -1,7 +1,6 @@
 using Content.Server.Chat.Systems;
 using Content.Server.Shuttles.Components;
 using Content.Shared._Exodus.Emag;
-using Content.Shared._Exodus.Shipyard.Utilization;
 using Content.Shared.Access.Components;
 using Content.Shared.Chat;
 using Content.Shared.DoAfter;
@@ -18,19 +17,16 @@ namespace Content.Server._Exodus.Emag;
 
 /// <summary>
 /// Handles emag/demag interactions on shuttle consoles.
-/// Emagging a shuttle console permanently disables the grid lock on the parent ship —
-/// no card or voucher can lock it again until a demag clears the state.
-/// SRD-restored consoles inherit the emag state via <see cref="ShipGridLockComponent"/>,
-/// which lives on the grid and survives individual console rebuilds.
-/// Demagging spawns a paper into the demagger's hands with the emagger's name and job.
+/// Emagging any shuttle console kicks off a 20-second hack DoAfter; on completion the parent grid
+/// has its lock permanently disabled (until demag). Demagging spawns a paper with the emagger's
+/// name into the demagger's hands.
 /// </summary>
 public sealed class EmaggedShuttleConsoleSystem : EntitySystem
 {
     private static readonly EntProtoId PaperProto = "Paper";
 
     /// <summary>
-    /// Hack delay for emagging a shuttle console. The user must stand still next to it for the
-    /// entire duration; the console announces the breach over local chat while the hack runs.
+    /// Hack delay applied to every shuttle console emag attempt.
     /// </summary>
     private static readonly TimeSpan ShuttleConsoleEmagDelay = TimeSpan.FromSeconds(20);
 
@@ -55,18 +51,11 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
 
         SubscribeLocalEvent<ShuttleConsoleComponent, GotEmaggedEvent>(OnEmagged);
         SubscribeLocalEvent<ShuttleConsoleComponent, GotUnEmaggedEvent>(OnUnemagged);
-        SubscribeLocalEvent<NativeShuttleConsoleComponent, ComponentStartup>(OnNativeStartup);
         SubscribeLocalEvent<EmagComponent, ShuttleConsoleEmagDoAfterEvent>(OnEmagDoAfter);
     }
 
     private void OnEmagged(Entity<ShuttleConsoleComponent> ent, ref GotEmaggedEvent args)
     {
-        // Only consoles that were on the ship at purchase time (or SRD-restored copies of them)
-        // can mark the ship as emagged. Foreign or freshly-built consoles silently no-op so the
-        // emag tool keeps its charge.
-        if (!HasComp<NativeShuttleConsoleComponent>(ent))
-            return;
-
         if (Transform(ent).GridUid is not { } gridUid)
             return;
 
@@ -80,8 +69,8 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         // working and the console announces the breach in local chat.
         if (!_pendingApplications.Remove(ent.Owner))
         {
-            TryStartEmagDoAfter(args.UserUid, ent.Owner);
-            // Suppress EmaggedComponent — it gets added properly on the completion pass.
+            TryStartEmagDoAfter(args.UserUid, ent.Owner, gridUid);
+            // Suppress EmaggedComponent on the no-Handled pass.
             args.Repeatable = true;
             return;
         }
@@ -97,11 +86,7 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         args.Handled = true;
     }
 
-    /// <summary>
-    /// Attempts to start the 20-second hack DoAfter on the user. Looks up the emag tool from the
-    /// user's hands; if none is found (e.g. the emag was just placed away), bails silently.
-    /// </summary>
-    private void TryStartEmagDoAfter(EntityUid user, EntityUid console)
+    private void TryStartEmagDoAfter(EntityUid user, EntityUid console, EntityUid shipGrid)
     {
         if (!TryFindHeldEmag(user, out var emag))
             return;
@@ -119,7 +104,7 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
             return;
 
         _chat.TrySendInGameICMessage(console,
-            Loc.GetString("shuttle-console-emag-in-progress"),
+            Loc.GetString("shuttle-console-emag-in-progress", ("vessel", Name(shipGrid))),
             InGameICChatType.Speak,
             ChatTransmitRange.Normal,
             false);
@@ -188,8 +173,7 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         if (args.Target is not { } target)
             return;
 
-        // Sanity: the target must still be a valid, non-emagged native shuttle console.
-        if (Deleted(target) || !HasComp<ShuttleConsoleComponent>(target) || !HasComp<NativeShuttleConsoleComponent>(target))
+        if (Deleted(target) || !HasComp<ShuttleConsoleComponent>(target))
             return;
 
         // Flag this console so the upcoming GotEmaggedEvent applies state instead of restarting
@@ -200,26 +184,6 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         _pendingApplications.Remove(target);
 
         args.Handled = result;
-    }
-
-    /// <summary>
-    /// When a native shuttle console comes online on a grid whose lock has been emag-broken,
-    /// mark this console with <see cref="EmaggedComponent"/> so future demag attempts find it.
-    /// Triggered on both map-load init and SRD restoration: SRD attaches
-    /// <see cref="NativeShuttleConsoleComponent"/> after the entity is spawned, which fires this
-    /// hook even though MapInit has already run by then.
-    /// </summary>
-    private void OnNativeStartup(Entity<NativeShuttleConsoleComponent> ent, ref ComponentStartup args)
-    {
-        if (Transform(ent).GridUid is not { } gridUid)
-            return;
-
-        if (!TryComp<ShipGridLockComponent>(gridUid, out var gridLock) || !gridLock.LockDisabled)
-            return;
-
-        var emagged = EnsureComp<EmaggedComponent>(ent.Owner);
-        emagged.EmagType |= EmagType.Interaction;
-        Dirty(ent.Owner, emagged);
     }
 
     private string GetEmaggerName(EntityUid user)
