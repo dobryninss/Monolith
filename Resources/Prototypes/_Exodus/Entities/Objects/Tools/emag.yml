@@ -1,0 +1,10 @@
+# Bounty-vend variant of Emag sold at VendingMachineBountyVendPOI for 10 000 credits.
+# Inherits the standard limited-charges + auto-recharge behavior from Emag.
+- type: entity
+  parent: Emag
+  id: EmagBountyVend
+  suffix: BountyVend
+  components:
+  - type: StaticPrice
+    price: 0
+    vendPrice: 10000
