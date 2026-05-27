@@ -20,8 +20,8 @@ shuttle-console-ship-access-enabled = Активирован контроль д
 shuttle-console-ship-access-disabled = Контроль доступа на шаттле отключен.
 shuttle-console-access-denied = В доступе отказано.
 # Exodus emag-rework
-shuttle-console-locked-emagged = Консоль повреждена эмагом. Заблокировать невозможно.
-shuttle-console-emag-in-progress = ВНИМАНИЕ: фиксируется попытка взлома защитного контура судна "{ $vessel }".
+shuttle-console-locked-emagged = Консоль взломана. Заблокировать невозможно.
+shuttle-console-emag-in-progress = ВНИМАНИЕ: фиксируется попытка взлома защитных систем консоли управления шатлом судна "{ $vessel }".
 
 ## Shuttle Console Lock Verbs
 

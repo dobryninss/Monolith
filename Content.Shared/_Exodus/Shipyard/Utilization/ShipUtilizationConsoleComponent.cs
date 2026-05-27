@@ -46,6 +46,12 @@ public sealed partial class ShipUtilizationConsoleComponent : Component
     public string? ActiveShipName;
 
     /// <summary>
+    /// The player entity that initiated the utilization (for admin logs / forensics).
+    /// </summary>
+    [DataField]
+    public EntityUid? ActiveInitiator;
+
+    /// <summary>
     /// Next time we push a UI state refresh for this console — limits update rate to ~1 Hz while
     /// the timer is running.
     /// </summary>

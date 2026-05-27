@@ -1,4 +1,5 @@
 using Content.Server.Chat.Systems;
+using Content.Server.Radio.EntitySystems;
 using Content.Server.Shuttles.Components;
 using Content.Shared._Exodus.Emag;
 using Content.Shared.Access.Components;
@@ -9,6 +10,7 @@ using Content.Shared.Emag.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Paper;
 using Content.Shared.PDA;
+using Content.Shared.Radio;
 using Content.Shared.Shuttles.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -30,7 +32,14 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
     /// </summary>
     private static readonly TimeSpan ShuttleConsoleEmagDelay = TimeSpan.FromSeconds(20);
 
+    /// <summary>
+    /// Radio channel the hack announcement is broadcast on (the local <c>:л</c> channel).
+    /// </summary>
+    private static readonly ProtoId<RadioChannelPrototype> HackAnnounceChannel = "Traffic";
+
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly MetaDataSystem _meta = default!;
     [Dependency] private readonly PaperSystem _paper = default!;
@@ -38,6 +47,7 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] private readonly EmagSystem _emagSystem = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
+    [Dependency] private readonly RadioSystem _radio = default!;
 
     /// <summary>
     /// Consoles whose <see cref="GotEmaggedEvent"/> is being raised as the completion of a hack
@@ -51,7 +61,38 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
 
         SubscribeLocalEvent<ShuttleConsoleComponent, GotEmaggedEvent>(OnEmagged);
         SubscribeLocalEvent<ShuttleConsoleComponent, GotUnEmaggedEvent>(OnUnemagged);
+        SubscribeLocalEvent<ShuttleConsoleComponent, MapInitEvent>(OnConsoleMapInit);
         SubscribeLocalEvent<EmagComponent, ShuttleConsoleEmagDoAfterEvent>(OnEmagDoAfter);
+    }
+
+    /// <summary>
+    /// Newly-spawned shuttle consoles (purchase, SRD restore, mapper placement) inherit the
+    /// emagged screen sprite if their grid is already emag-broken.
+    /// </summary>
+    private void OnConsoleMapInit(Entity<ShuttleConsoleComponent> ent, ref MapInitEvent args)
+    {
+        if (Transform(ent).GridUid is not { } gridUid)
+            return;
+
+        if (!TryComp<ShipGridLockComponent>(gridUid, out var gridLock) || !gridLock.LockDisabled)
+            return;
+
+        _appearance.SetData(ent.Owner, ShuttleConsoleEmagVisuals.Emagged, true);
+    }
+
+    /// <summary>
+    /// Mirrors the grid-level emag state onto every shuttle console on the grid via Appearance.
+    /// </summary>
+    private void SetGridConsoleVisuals(EntityUid gridUid, bool emagged)
+    {
+        var query = EntityQueryEnumerator<ShuttleConsoleComponent, TransformComponent>();
+        while (query.MoveNext(out var consoleUid, out _, out var xform))
+        {
+            if (xform.GridUid != gridUid)
+                continue;
+
+            _appearance.SetData(consoleUid, ShuttleConsoleEmagVisuals.Emagged, emagged);
+        }
     }
 
     private void OnEmagged(Entity<ShuttleConsoleComponent> ent, ref GotEmaggedEvent args)
@@ -83,6 +124,8 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         gridLock.EmaggedAt = _timing.CurTime;
         Dirty(gridUid, gridLock);
 
+        SetGridConsoleVisuals(gridUid, true);
+
         args.Handled = true;
     }
 
@@ -103,11 +146,16 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         if (!_doAfter.TryStartDoAfter(doAfterArgs))
             return;
 
+        var message = Loc.GetString("shuttle-console-emag-in-progress", ("vessel", Name(shipGrid)));
+
         _chat.TrySendInGameICMessage(console,
-            Loc.GetString("shuttle-console-emag-in-progress", ("vessel", Name(shipGrid))),
+            message,
             InGameICChatType.Speak,
             ChatTransmitRange.Normal,
             false);
+
+        if (_proto.TryIndex(HackAnnounceChannel, out var channel))
+            _radio.SendRadioMessage(console, message, channel, console);
     }
 
     private bool TryFindHeldEmag(EntityUid user, out Entity<EmagComponent> emag)
@@ -144,6 +192,8 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         gridLock.EmaggerJob = null;
         gridLock.EmaggedAt = null;
         Dirty(gridUid, gridLock);
+
+        SetGridConsoleVisuals(gridUid, false);
 
         SpawnDemagPaper(args.UserUid, emaggerName);
 

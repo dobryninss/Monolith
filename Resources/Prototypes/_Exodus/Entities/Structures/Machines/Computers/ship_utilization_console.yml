@@ -9,13 +9,13 @@
     sprite: _NF/Structures/Machines/computers.rsi
     layers:
     - map: ["computerLayerBody"]
-      state: computer
+      state: computer_blackmarket
     - map: ["computerLayerKeyboard"]
       state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: shipyard
+      state: shipyard_blackmarket
     - map: ["computerLayerKeys"]
-      state: telesci_key
+      state: blackmarket_key
   - type: ShipUtilizationConsole
   - type: ActivatableUI
     singleUser: true

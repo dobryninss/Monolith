@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server.Administration.Logs;
 using Content.Server.Cargo.Systems;
 using Content.Server.Chat.Systems;
 using Content.Server.Mind;
@@ -11,6 +12,7 @@ using Content.Server.Station.Systems;
 using Content.Shared._Exodus.Shipyard.Utilization;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared.Chat;
+using Content.Shared.Database;
 using Content.Shared.Ghost;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Radio;
@@ -39,7 +41,7 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
     /// Flat credit payout for voucher-purchased ships (which were free to buy and so don't have a
     /// meaningful resale appraisal).
     /// </summary>
-    private const int VoucherPayout = 50_000;
+    private const int VoucherPayout = 25_000;
 
     private const string CashProtoId = "SpaceCash";
 
@@ -58,6 +60,7 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
     /// </summary>
     private static readonly TimeSpan OrganicCheckInterval = TimeSpan.FromSeconds(10);
 
+    [Dependency] private readonly IAdminLogManager _adminLogger = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly DockingSystem _docking = default!;
     [Dependency] private readonly MindSystem _mind = default!;
@@ -158,6 +161,7 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
         ent.Comp.ActiveEndsAt = now + UtilizationDuration;
         ent.Comp.ActivePayout = CalculatePayout(shipUid.Value);
         ent.Comp.ActiveShipName = Name(shipUid.Value);
+        ent.Comp.ActiveInitiator = args.Actor;
         ent.Comp.NextUiUpdate = now + UiTickInterval;
         ent.Comp.NextOrganicCheck = now + OrganicCheckInterval;
         ent.Comp.Paused = false;
@@ -165,6 +169,9 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
         Announce(ent, "ship-utilization-announce-start",
             ("vessel", ent.Comp.ActiveShipName!),
             ("station", GetConsoleStationName(ent)));
+
+        _adminLogger.Add(LogType.ShipYardUsage, LogImpact.High,
+            $"{ToPrettyString(args.Actor):actor} started utilization of {ToPrettyString(shipUid.Value):ship} via {ToPrettyString(ent.Owner):console}; payout {ent.Comp.ActivePayout} cr.");
 
         _audio.PlayPvs(ent.Comp.ConfirmSound, ent.Owner);
         RefreshState(ent);
@@ -212,6 +219,10 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
         var name = ent.Comp.ActiveShipName ?? string.Empty;
         Announce(ent, locKey, ("vessel", name));
         _audio.PlayPvs(ent.Comp.ErrorSound, ent.Owner);
+
+        _adminLogger.Add(LogType.ShipYardUsage, LogImpact.Medium,
+            $"Utilization of {name} via {ToPrettyString(ent.Owner):console} aborted (reason key: {locKey}); initiator was {ToPrettyString(ent.Comp.ActiveInitiator):actor}.");
+
         ClearActive(ent.Comp);
         RefreshState(ent);
     }
@@ -253,6 +264,9 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
 
         Announce(ent, "ship-utilization-announce-finish", ("vessel", name));
         _audio.PlayPvs(ent.Comp.ConfirmSound, ent.Owner);
+
+        _adminLogger.Add(LogType.ShipYardUsage, LogImpact.High,
+            $"Utilization of {ToPrettyString(shipUid):ship} ({name}) via {ToPrettyString(ent.Owner):console} completed; payout {payout} cr; initiator was {ToPrettyString(ent.Comp.ActiveInitiator):actor}.");
 
         SpawnPayout(ent.Owner, payout);
         StripDeeds(shipUid);
@@ -296,6 +310,7 @@ public sealed class ShipUtilizationConsoleSystem : EntitySystem
         comp.ActiveEndsAt = null;
         comp.ActivePayout = 0;
         comp.ActiveShipName = null;
+        comp.ActiveInitiator = null;
         comp.Paused = false;
     }
 

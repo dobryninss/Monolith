@@ -218,6 +218,13 @@
       state: generic_keys
     - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
       state: generic_panel_open
+  # Exodus emag-rework: swap screen to the syndie variant when the parent ship is emagged.
+  - type: GenericVisualizer
+    visuals:
+      enum.ShuttleConsoleEmagVisuals.Emagged:
+        computerLayerScreen:
+          True: { state: syndishuttle }
+          False: { state: shuttle }
   - type: Computer
     board: ShuttleConsoleCircuitboard
   # Frontier: shuttle intercom
