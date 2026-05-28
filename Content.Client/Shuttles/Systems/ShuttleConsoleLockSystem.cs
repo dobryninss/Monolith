@@ -28,7 +28,10 @@ public sealed class ShuttleConsoleLockSystem : SharedShuttleConsoleLockSystem
     {
         base.OnUIOpenAttempt(uid, component, args);
 
-        if(Timing.IsFirstTimePredicted && args.Cancelled)
+        // Exodus emag-rework: only show the lock popup when the console is actually locked.
+        // Other systems (e.g. no-power) also cancel the open attempt, and we don't want to claim
+        // it's a lock issue then — especially for emagged consoles, which aren't locked at all.
+        if (Timing.IsFirstTimePredicted && args.Cancelled && GetEffectiveLockState(uid, component))
             Popup.PopupEntity(Loc.GetString("shuttle-console-locked"), uid, args.User);
     }
 }

@@ -89,8 +89,9 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Newly-spawned shuttle consoles (purchase, SRD restore, mapper placement) inherit the
-    /// emagged screen sprite if their grid is already emag-broken.
+    /// A freshly-built or SRD-restored shuttle console rebuilds the ship's security circuitry, so
+    /// it clears any lingering emag state from the grid (lock restored, red screen reverted,
+    /// no longer eligible for utilization).
     /// </summary>
     private void OnConsoleMapInit(Entity<ShuttleConsoleComponent> ent, ref MapInitEvent args)
     {
@@ -100,7 +101,31 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
         if (!TryComp<ShipGridLockComponent>(gridUid, out var gridLock) || !gridLock.LockDisabled)
             return;
 
-        _appearance.SetData(ent.Owner, ShuttleConsoleEmagVisuals.Emagged, true);
+        ClearGridEmag(gridUid, gridLock);
+    }
+
+    /// <summary>
+    /// Clears the grid emag state: restores the lock, reverts the red screen and removes the
+    /// emagged marker from every shuttle console on the grid.
+    /// </summary>
+    private void ClearGridEmag(EntityUid gridUid, ShipGridLockComponent gridLock)
+    {
+        gridLock.LockDisabled = false;
+        gridLock.EmaggedBy = null;
+        gridLock.EmaggerName = null;
+        gridLock.EmaggerJob = null;
+        gridLock.EmaggedAt = null;
+        Dirty(gridUid, gridLock);
+
+        var query = EntityQueryEnumerator<ShuttleConsoleComponent, TransformComponent>();
+        while (query.MoveNext(out var consoleUid, out _, out var xform))
+        {
+            if (xform.GridUid != gridUid)
+                continue;
+
+            _appearance.SetData(consoleUid, ShuttleConsoleEmagVisuals.Emagged, false);
+            RemComp<EmaggedComponent>(consoleUid);
+        }
     }
 
     /// <summary>
@@ -139,8 +164,9 @@ public sealed class EmaggedShuttleConsoleSystem : EntitySystem
             return;
         }
 
+        // Don't touch gridLock.Locked — LockDisabled overrides it while emagged, and preserving the
+        // original value means the ship re-locks correctly once the emag is cleared (demag / SRD).
         gridLock.LockDisabled = true;
-        gridLock.Locked = false;
         gridLock.EmaggedBy = args.UserUid;
         gridLock.EmaggerName = GetEmaggerName(args.UserUid);
         gridLock.EmaggerJob = GetEmaggerJob(args.UserUid);
