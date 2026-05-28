@@ -4,8 +4,8 @@ meta:
   engineVersion: 272.0.0
   forkId: ""
   forkVersion: ""
-  time: 04/23/2026 10:52:34
-  entityCount: 11244
+  time: 05/28/2026 08:56:45
+  entityCount: 11246
 maps: []
 grids:
 - 1
@@ -3283,10 +3283,10 @@ entities:
             3429: -28,12
     - type: SpreaderGrid
       spreadQueues:
-        Smoke: []
         MetalFoam: []
-        Puddle: []
+        Smoke: []
         Kudzu: []
+        Puddle: []
     - type: GridAtmosphere
       version: 2
       data:
@@ -31507,6 +31507,37 @@ entities:
       powerLoad: 5
     - type: Battery
       startingCharge: 0
+- proto: ComputerShipUtilization
+  entities:
+  - uid: 9116
+    components:
+    - type: Transform
+      pos: -27.5,24.5
+      parent: 1
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 11245
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -6.5,17.5
+      parent: 1
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 11246
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -4.5,17.5
+      parent: 1
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
 - proto: ComputerShipyard
   entities:
   - uid: 5198
@@ -58682,20 +58713,6 @@ entities:
     - type: Transform
       pos: -34.5,-13.5
       parent: 1
-- proto: StructureGunRackSalvage
-  entities:
-  - uid: 9115
-    components:
-    - type: Transform
-      pos: -28.5,24.5
-      parent: 1
-- proto: StructureMeleeWeaponRackSalvage
-  entities:
-  - uid: 9116
-    components:
-    - type: Transform
-      pos: -27.5,24.5
-      parent: 1
 - proto: SubstationBasic
   entities:
   - uid: 9117
@@ -70110,6 +70127,12 @@ entities:
       parent: 1
 - proto: WindowReinforcedDirectional
   entities:
+  - uid: 9115
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -27.5,24.5
+      parent: 1
   - uid: 11239
     components:
     - type: Transform
