@@ -4,7 +4,7 @@ meta:
   engineVersion: 272.0.0
   forkId: ""
   forkVersion: ""
-  time: 05/28/2026 08:56:45
+  time: 05/28/2026 09:05:47
   entityCount: 11246
 maps: []
 grids:
@@ -3283,10 +3283,10 @@ entities:
             3429: -28,12
     - type: SpreaderGrid
       spreadQueues:
-        MetalFoam: []
-        Smoke: []
-        Kudzu: []
         Puddle: []
+        Smoke: []
+        MetalFoam: []
+        Kudzu: []
     - type: GridAtmosphere
       version: 2
       data:
@@ -31521,18 +31521,18 @@ entities:
   - uid: 11245
     components:
     - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -6.5,17.5
+      pos: -8.5,24.5
       parent: 1
     - type: ApcPowerReceiver
       powerLoad: 5
     - type: Battery
-      startingCharge: 0
+      startingCharge: 2.5
+    - type: ApcPowerReceiverBattery
+      enabled: True
   - uid: 11246
     components:
     - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -4.5,17.5
+      pos: -5.5,24.5
       parent: 1
     - type: ApcPowerReceiver
       powerLoad: 5
