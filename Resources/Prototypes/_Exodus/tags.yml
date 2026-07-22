@@ -5,6 +5,9 @@
   id: SpaceLeviathan
 
 - type: Tag
+  id: SpaceMegaJellyfish
+
+- type: Tag
   id: POI
 
 - type: Tag

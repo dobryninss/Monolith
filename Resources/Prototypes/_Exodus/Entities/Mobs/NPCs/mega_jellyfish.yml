@@ -1,0 +1,226 @@
+- type: entity
+  id: SpaceMegaJellyfish
+  parent: [ SimpleSpaceMobBase, FlyingMobBase, MobCombat ]
+  name: space mega jellyfish
+  description: A colossal bioluminescent creature drifting through the void.
+  suffix: admin spawn
+  components:
+  - type: Damageable
+    damageModifierSet: Leviathan
+    damageContainer: Biological
+  - type: PointLight
+    color: "#55DDFFFF"
+    radius: 10
+    energy: 4
+  - type: TailedEntity
+    amount: 9
+    spacing: 1.45
+    startSpacingMultiplier: 0.45
+    prototype: SpaceMegaJellyfishTentacleSegment
+    startOffsets:
+    - "-2.4,3.1"
+    - "-0.8,3.4"
+    - "0.8,3.4"
+    - "2.4,3.1"
+    startAngleOffsets: [ 12, 4, -4, -12 ]
+    anchorAOffset: 0,0
+    anchorBOffset: 0,0
+    followSharpness: 7
+    maxSegmentSpeed: 25
+  - type: MovementSpeedModifier
+    baseSprintSpeed: 12
+    baseWalkSpeed: 12
+  - type: NoRotateOnMove
+  - type: SmoothRotationOnMove
+    rotationSpeed: 120
+    disableInCombatMode: true
+  - type: RadarBlip
+    scale: 8
+    shape: hexagon
+    visibleFromOtherGrids: true
+  - type: UserInterface
+    interfaces:
+      enum.RadarConsoleUiKey.Key:
+        type: RadarConsoleBoundUserInterface
+      enum.FireControlConsoleUiKey.Key:
+        type: FireControlConsoleBoundUserInterface
+        requireInputValidation: false
+  - type: IntrinsicUI
+    uis:
+      enum.RadarConsoleUiKey.Key:
+        toggleAction: ActionAGhostShowRadar
+      enum.FireControlConsoleUiKey.Key:
+        toggleAction: ActionSpaceMegaJellyfishFireControl
+  - type: RadarConsole
+    followEntity: true
+    hideCoords: false
+    maxRange: 1500
+    maxIffRange: null
+  - type: IntrinsicFireControl
+    maxRange: 1500
+    weaponName: space-mega-jellyfish-destructive-beam-name
+  - type: MovementIgnoreGravity
+    gravityState: true
+  - type: ContentEye
+    maxZoom: 2,2
+  - type: Physics
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      body:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-3.7,-3.2,3.7,3.2"
+        density: 137992
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: MeleeWeapon
+    altDisarm: false
+    attackRate: 0.3
+    angle: 0
+    range: 5
+    animation: WeaponArcBite
+    soundHit:
+      path: /Audio/Effects/bite.ogg
+    damage:
+      types:
+        Blunt: 50
+        Slash: 45
+        Structural: 800
+  - type: Gun
+    fireRate: 2
+    useKey: false
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    recoil: 0
+    cameraRecoilScalar: 0
+    minAngle: 0
+    maxAngle: 0
+    shootThermalSignature: 4000000
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser_cannon2.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/EmptyAlarm/smg_empty_alarm.ogg
+  - type: HitscanBatteryAmmoProvider
+    proto: SpaceMegaJellyfishSunderLaser
+    fireCost: 100
+  - type: Battery
+    maxCharge: 1000
+    startingCharge: 1000
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 200
+  - type: ShipGunType
+    shipType: Energy
+  - type: ShipGunClass
+    shipClass: Medium
+  - type: Speech
+    speechVerb: LargeMob
+  - type: Sprite
+    sprite: _Exodus/Mobs/Space/mega_jellyfish.rsi
+    noRot: false
+    layers:
+    - state: body
+    - state: glow
+      shader: unshaded
+  - type: NightVision
+    color: "#808080"
+    activateSound: null
+    deactivateSound: null
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      16000: Dead
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 16000
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      8000: 0.7
+      12800: 0.5
+  - type: Tag
+    tags:
+    - SpaceMegaJellyfish
+  - type: DamageContacts
+    damage:
+      types:
+        Structural: 4000
+        Blunt: 10
+    ignoreWhitelist:
+      tags:
+      - SpaceMegaJellyfish
+
+- type: entity
+  id: ActionSpaceMegaJellyfishFireControl
+  name: Jellyfish Weapons Interface
+  description: Open the space mega jellyfish's long-range weapons interface.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    icon: { sprite: _Exodus/Mobs/Space/mega_jellyfish.rsi, state: body }
+    iconOn: { sprite: _Exodus/Mobs/Space/mega_jellyfish.rsi, state: body }
+    priority: -5
+    event: !type:ToggleIntrinsicUIEvent { key: enum.FireControlConsoleUiKey.Key }
+
+- type: entity
+  id: SpaceMegaJellyfishSunderLaser
+  parent: BasicHitscan
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: HitscanBasicVisuals
+    muzzleFlash:
+      sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+      state: muzzle_blue
+    travelFlash:
+      sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+      state: beam_blue
+    impactFlash:
+      sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+      state: impact_blue
+  - type: HitscanRadarSignature
+    radarColor: "#299CFF"
+  - type: HitscanBasicDamage
+    damage:
+      types:
+        Heat: 300
+        Structural: 10000
+  - type: HitscanBasicRaycast
+    maxDistance: 1500
+
+- type: entity
+  id: SpaceMegaJellyfishTentacleSegment
+  parent: FlyingMobBase
+  name: space mega jellyfish tentacle
+  description: A segment of a colossal bioluminescent tentacle.
+  suffix: do not spawn
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Exodus/Mobs/Space/mega_jellyfish_tentacle.rsi
+    drawdepth: BelowMobs
+    noRot: false
+    layers:
+    - state: segment
+    - state: glow
+      shader: unshaded
+  - type: Physics
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      movement:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.1
+        hard: false
+  - type: Tag
+    tags:
+    - SpaceMegaJellyfish
+    - HideContextMenu

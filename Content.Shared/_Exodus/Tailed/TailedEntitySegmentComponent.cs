@@ -12,4 +12,7 @@ public sealed partial class TailedEntitySegmentComponent : Component
 
     [DataField, AutoNetworkedField]
     public int Index;
+
+    [DataField, AutoNetworkedField]
+    public int TailIndex;
 }

@@ -30,6 +30,26 @@ public sealed partial class TailedEntityComponent : Component
     [DataField, AutoNetworkedField]
     public float Spacing = 1f;
 
+    /// <summary>
+    /// Multiplier applied only to the distance between the head and the first segment.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float StartSpacingMultiplier = 1f;
+
+    /// <summary>
+    /// Local offsets on the head where individual tails are attached.
+    /// A single zero offset preserves the original one-tail behavior.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public List<Vector2> StartOffsets = new() { Vector2.Zero };
+
+    /// <summary>
+    /// Initial direction offsets in degrees for individual tails.
+    /// Missing entries default to the head rotation.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public List<float> StartAngleOffsets = new() { 0f };
+
     // oh my gosh, it so many fucking variables, to make it move smooth
     [DataField, AutoNetworkedField]
     public float Stiffness = 50.0f;

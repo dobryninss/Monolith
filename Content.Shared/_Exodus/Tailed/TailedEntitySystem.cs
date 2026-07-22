@@ -25,9 +25,13 @@ public sealed partial class TailedEntitySystem : EntitySystem
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private IGameTiming _timing = default!;
 
+    private EntityQuery<PhysicsComponent> _physicsQuery;
+
     public override void Initialize()
     {
         base.Initialize();
+
+        _physicsQuery = GetEntityQuery<PhysicsComponent>();
 
         SubscribeLocalEvent<TailedEntityComponent, ComponentStartup>(OnComponentStartup);
         SubscribeLocalEvent<TailedEntityComponent, ComponentShutdown>(OnComponentShutdown);
@@ -46,26 +50,26 @@ public sealed partial class TailedEntitySystem : EntitySystem
         }
     }
 
-    private void OnDamageChanged(EntityUid uid, TailedEntitySegmentComponent component, DamageChangedEvent args)
+    private void OnDamageChanged(Entity<TailedEntitySegmentComponent> ent, ref DamageChangedEvent args)
     {
-        if (!TryComp<DamageableComponent>(component.HeadEntity, out var headDamageable))
+        if (!TryComp<DamageableComponent>(ent.Comp.HeadEntity, out var headDamageable))
             return;
 
         if (args.DamageDelta is not { } damage)
-            _damageable.SetDamage(component.HeadEntity, headDamageable, args.Damageable.Damage);
+            _damageable.SetDamage(ent.Comp.HeadEntity, headDamageable, args.Damageable.Damage);
         else
-            _damageable.TryChangeDamage(component.HeadEntity, damage, true, true, headDamageable, args.Origin);
+            _damageable.TryChangeDamage(ent.Comp.HeadEntity, damage, true, true, headDamageable, args.Origin);
     }
 
-    private void OnComponentStartup(EntityUid uid, TailedEntityComponent component, ComponentStartup args)
+    private void OnComponentStartup(Entity<TailedEntityComponent> ent, ref ComponentStartup args)
     {
-        if (component.TailSegments.Count == 0)
-            InitializeTailSegments((uid, component, Transform(uid)));
+        if (ent.Comp.TailSegments.Count == 0)
+            InitializeTailSegments((ent.Owner, ent.Comp, Transform(ent.Owner)));
     }
 
-    private void OnComponentShutdown(EntityUid uid, TailedEntityComponent component, ComponentShutdown args)
+    private void OnComponentShutdown(Entity<TailedEntityComponent> ent, ref ComponentShutdown args)
     {
-        foreach (var segment in component.TailSegments)
+        foreach (var segment in ent.Comp.TailSegments)
         {
             if (!TerminatingOrDeleted(segment) && !EntityManager.IsQueuedForDeletion(segment))
             {
@@ -73,16 +77,19 @@ public sealed partial class TailedEntitySystem : EntitySystem
                 QueueDel(segment);
             }
         }
-        component.TailSegments.Clear();
+
+        ent.Comp.TailSegments.Clear();
     }
 
-    private void OnSegmentShutdown(EntityUid uid, TailedEntitySegmentComponent component, ComponentShutdown args)
+    private void OnSegmentShutdown(Entity<TailedEntitySegmentComponent> ent, ref ComponentShutdown args)
     {
         if (!_timing.IsFirstTimePredicted)
             return;
 
-        _joint.ClearJoints(uid);
-        QueueDel(component.HeadEntity);
+        _joint.ClearJoints(ent.Owner);
+
+        if (!TerminatingOrDeleted(ent.Comp.HeadEntity))
+            QueueDel(ent.Comp.HeadEntity);
     }
 
     private void InitializeTailSegments(Entity<TailedEntityComponent, TransformComponent> ent)
@@ -102,53 +109,76 @@ public sealed partial class TailedEntitySystem : EntitySystem
 
         comp.TailSegments.Clear();
 
-        for (var i = 0; i < comp.Amount; i++)
+        for (var tailIndex = 0; tailIndex < comp.StartOffsets.Count; tailIndex++)
         {
-            var offset = headRot.ToWorldVec() * comp.Spacing * (i + 1);
-            var spawnPos = headPos - offset;
+            var startPos = headPos + headRot.RotateVec(comp.StartOffsets[tailIndex]);
+            var startRotation = GetStartRotation(comp, headRot, tailIndex);
 
-            var segment = PredictedSpawnAtPosition(comp.Prototype, new EntityCoordinates(mapUid.Value, spawnPos));
+            for (var i = 0; i < comp.Amount; i++)
+            {
+                var distance = comp.Spacing * (i + comp.StartSpacingMultiplier);
+                var offset = startRotation.ToWorldVec() * distance;
+                var spawnPos = startPos - offset;
 
-            _transform.SetWorldRotation(segment, headRot);
+                var segment = PredictedSpawnAtPosition(comp.Prototype, new EntityCoordinates(mapUid.Value, spawnPos));
 
-            var tail = EnsureComp<TailedEntitySegmentComponent>(segment);
-            tail.HeadEntity = uid;
-            tail.Index = i;
-            comp.TailSegments.Add(segment);
+                var segmentRotation = new Angle(startRotation.ToWorldVec()) + comp.RotationModifier;
+                _transform.SetWorldRotation(segment, NormalizeAngle(segmentRotation));
+
+                var tail = EnsureComp<TailedEntitySegmentComponent>(segment);
+                tail.HeadEntity = uid;
+                tail.Index = i;
+                tail.TailIndex = tailIndex;
+                comp.TailSegments.Add(segment);
+            }
         }
 
-        var prev = uid;
+        var segmentIndex = 0;
 
-        foreach (var segment in comp.TailSegments)
+        for (var tailIndex = 0; tailIndex < comp.StartOffsets.Count; tailIndex++)
         {
-            // Ensure segment has physics before creating joint
-            if (!HasComp<PhysicsComponent>(segment))
-                continue;
+            var prev = uid;
 
-            var joint = _joint.CreateDistanceJoint(
-                bodyA: prev,
-                bodyB: segment,
-                anchorA: comp.AnchorAOffset,
-                anchorB: comp.AnchorBOffset,
-                minimumDistance: comp.Spacing * 0.8f
-            );
+            for (var i = 0; i < comp.Amount; i++)
+            {
+                var segment = comp.TailSegments[segmentIndex++];
 
-            joint.Length = comp.Spacing;
-            joint.MinLength = comp.Spacing * comp.MinLengthMultiplier;
-            joint.MaxLength = comp.Spacing * comp.MaxLengthMultiplier;
+                // Ensure segment has physics before creating joint
+                if (!HasComp<PhysicsComponent>(segment))
+                    continue;
 
-            joint.Stiffness = comp.Stiffness;
-            joint.Damping = comp.Damping;
+                var anchorA = i == 0
+                    ? comp.StartOffsets[tailIndex] + comp.AnchorAOffset
+                    : comp.AnchorAOffset;
+                var jointLength = i == 0
+                    ? comp.Spacing * comp.StartSpacingMultiplier
+                    : comp.Spacing;
+                var joint = _joint.CreateDistanceJoint(
+                    bodyA: prev,
+                    bodyB: segment,
+                    anchorA: anchorA,
+                    anchorB: comp.AnchorBOffset,
+                    minimumDistance: jointLength * 0.8f
+                );
 
-            joint.ID = $"TailJoint_{prev}_{segment}";
+                joint.Length = jointLength;
+                joint.MinLength = jointLength * comp.MinLengthMultiplier;
+                joint.MaxLength = jointLength * comp.MaxLengthMultiplier;
 
-            prev = segment;
+                joint.Stiffness = comp.Stiffness;
+                joint.Damping = comp.Damping;
+
+                joint.ID = $"TailJoint_{prev}_{segment}";
+
+                prev = segment;
+            }
         }
     }
 
     private void UpdateTailedMob(Entity<TailedEntityComponent> head, float frameTime)
     {
-        if (head.Comp.TailSegments.Count == 0)
+        var expectedSegments = head.Comp.Amount * head.Comp.StartOffsets.Count;
+        if (expectedSegments == 0 || head.Comp.TailSegments.Count != expectedSegments)
             return;
 
         foreach (var segment in head.Comp.TailSegments)
@@ -157,96 +187,74 @@ public sealed partial class TailedEntitySystem : EntitySystem
                 return;
         }
 
-        CalculateSegmentTargets(head, out var targetPositions);
-
-        ApplySegmentVelocities(head.Comp, targetPositions, frameTime);
+        ApplySegmentVelocities(head, frameTime);
 
         UpdateSegmentRotation(head, frameTime);
     }
 
-    private void CalculateSegmentTargets(
-        Entity<TailedEntityComponent> head,
-        out Vector2[] targetPositions)
-    {
-        targetPositions = new Vector2[head.Comp.TailSegments.Count];
-
-        var headPos = _transform.GetWorldPosition(head);
-        var headDir = _transform.GetWorldRotation(head).ToWorldVec();
-
-        targetPositions[0] = headPos - headDir * head.Comp.Spacing;
-
-        for (var i = 1; i < head.Comp.TailSegments.Count; i++)
-        {
-            var prevSegment = head.Comp.TailSegments[i - 1];
-            var prevPos = _transform.GetWorldPosition(prevSegment);
-            var prevDir = _transform.GetWorldRotation(prevSegment).ToWorldVec();
-
-            targetPositions[i] = prevPos - prevDir * head.Comp.Spacing;
-        }
-    }
-
     private void ApplySegmentVelocities(
-        TailedEntityComponent tail,
-        Vector2[] targetPositions,
+        Entity<TailedEntityComponent> head,
         float frameTime)
     {
-        var prevPos = Vector2.Zero;
-        EntityUid? prevEntity = null;
+        var tail = head.Comp;
+        var headPos = _transform.GetWorldPosition(head);
+        var headRotation = _transform.GetWorldRotation(head);
+        var segmentIndex = 0;
 
-        for (var i = 0; i < tail.TailSegments.Count; i++)
+        for (var tailIndex = 0; tailIndex < tail.StartOffsets.Count; tailIndex++)
         {
-            var segment = tail.TailSegments[i];
+            var prevPos = headPos + headRotation.RotateVec(tail.StartOffsets[tailIndex]);
+            var prevDirection = GetStartRotation(tail, headRotation, tailIndex).ToWorldVec();
 
-            if (!TryComp<PhysicsComponent>(segment, out var physics))
-                continue;
-
-            var currentPos = _transform.GetWorldPosition(segment);
-            Vector2 desiredVelocity;
-
-            if (prevEntity != null)
+            for (var i = 0; i < tail.Amount; i++)
             {
+                var segment = tail.TailSegments[segmentIndex++];
+
+                if (!_physicsQuery.TryGetComponent(segment, out var physics))
+                    continue;
+
+                var currentPos = _transform.GetWorldPosition(segment);
+                var targetDistance = i == 0
+                    ? tail.Spacing * tail.StartSpacingMultiplier
+                    : tail.Spacing;
+                var targetPos = prevPos - prevDirection * targetDistance;
+                Vector2 desiredVelocity;
                 var toPrev = prevPos - currentPos;
                 var currentDistance = toPrev.Length();
-                var directionToPrev = toPrev.Normalized();
+                var directionToPrev = currentDistance > 0f
+                    ? toPrev / currentDistance
+                    : Vector2.Zero;
 
-                if (currentDistance < tail.Spacing * tail.MinLengthMultiplier)
+                if (i > 0 && currentDistance < tail.Spacing * tail.MinLengthMultiplier)
                 {
                     desiredVelocity = -directionToPrev * tail.MaxSegmentSpeed * 0.5f;
                 }
-                else if (currentDistance > tail.Spacing * tail.MaxLengthMultiplier)
+                else if (i > 0 && currentDistance > tail.Spacing * tail.MaxLengthMultiplier)
                 {
                     desiredVelocity = directionToPrev * tail.MaxSegmentSpeed;
                 }
                 else
                 {
-                    var targetPos = targetPositions[i];
                     var toTarget = targetPos - currentPos;
                     desiredVelocity = toTarget * tail.FollowSharpness;
                 }
+
+                if (desiredVelocity.LengthSquared() > tail.MaxSegmentSpeed * tail.MaxSegmentSpeed)
+                    desiredVelocity = desiredVelocity.Normalized() * tail.MaxSegmentSpeed;
+
+                var currentVelocity = physics.LinearVelocity;
+
+                var newVelocity = Vector2.Lerp(
+                    currentVelocity,
+                    desiredVelocity,
+                    frameTime * tail.VelocitySmoothing);
+
+                _physics.SetLinearVelocity(segment, newVelocity, body: physics);
+
+                prevPos = currentPos;
+                if (currentDistance > 0f)
+                    prevDirection = directionToPrev;
             }
-            else
-            {
-                var targetPos = targetPositions[i];
-                var toTarget = targetPos - currentPos;
-                desiredVelocity = toTarget * tail.FollowSharpness;
-            }
-
-            if (desiredVelocity.Length() > tail.MaxSegmentSpeed)
-            {
-                desiredVelocity = desiredVelocity.Normalized() * tail.MaxSegmentSpeed;
-            }
-
-            var currentVelocity = physics.LinearVelocity;
-
-            var newVelocity = Vector2.Lerp(
-                currentVelocity,
-                desiredVelocity,
-                frameTime * tail.VelocitySmoothing);
-
-            _physics.SetLinearVelocity(segment, newVelocity, body: physics);
-
-            prevEntity = segment;
-            prevPos = currentPos;
         }
     }
 
@@ -254,33 +262,40 @@ public sealed partial class TailedEntitySystem : EntitySystem
         Entity<TailedEntityComponent> head,
         float frameTime)
     {
-        if (!head.Comp.EnableRotationControl) return;
+        if (!head.Comp.EnableRotationControl)
+            return;
 
-        var prevPos = _transform.GetWorldPosition(head);
+        var headPos = _transform.GetWorldPosition(head);
+        var headRotation = _transform.GetWorldRotation(head);
+        var segmentIndex = 0;
 
-        for (var i = 0; i < head.Comp.TailSegments.Count; i++)
+        foreach (var startOffset in head.Comp.StartOffsets)
         {
-            var segment = head.Comp.TailSegments[i];
+            var prevPos = headPos + headRotation.RotateVec(startOffset);
 
-            var segmentPos = _transform.GetWorldPosition(segment);
-
-            var direction = prevPos - segmentPos;
-
-            if (direction.LengthSquared() > 0.1f)
+            for (var i = 0; i < head.Comp.Amount; i++)
             {
-                var targetAngle = NormalizeAngle(MathF.Atan2(direction.Y, direction.X) + head.Comp.RotationModifier);
+                var segment = head.Comp.TailSegments[segmentIndex++];
+                var segmentPos = _transform.GetWorldPosition(segment);
 
-                var currentAngle = _transform.GetWorldRotation(segment);
+                var direction = prevPos - segmentPos;
 
-                var newAngle = Angle.Lerp(
-                    currentAngle,
-                    targetAngle,
-                    frameTime * head.Comp.RotationLerpSpeed);
+                if (direction.LengthSquared() > 0.1f)
+                {
+                    var targetAngle = NormalizeAngle(MathF.Atan2(direction.Y, direction.X) + head.Comp.RotationModifier);
 
-                _transform.SetWorldRotation(segment, newAngle);
+                    var currentAngle = _transform.GetWorldRotation(segment);
+
+                    var newAngle = Angle.Lerp(
+                        currentAngle,
+                        targetAngle,
+                        frameTime * head.Comp.RotationLerpSpeed);
+
+                    _transform.SetWorldRotation(segment, newAngle);
+                }
+
+                prevPos = segmentPos;
             }
-
-            prevPos = segmentPos;
         }
     }
 
@@ -290,5 +305,13 @@ public sealed partial class TailedEntitySystem : EntitySystem
         if (angle < 0)
             angle += MathHelper.TwoPi;
         return angle;
+    }
+
+    private static Angle GetStartRotation(TailedEntityComponent component, Angle headRotation, int tailIndex)
+    {
+        if (tailIndex >= component.StartAngleOffsets.Count)
+            return headRotation;
+
+        return headRotation + Angle.FromDegrees(component.StartAngleOffsets[tailIndex]);
     }
 }
