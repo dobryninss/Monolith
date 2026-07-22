@@ -8,6 +8,18 @@
   id: SpaceMegaJellyfish
 
 - type: Tag
+  id: SpaceLeviathanChitin
+
+- type: Tag
+  id: ArmorPlateSpeed
+
+- type: Tag
+  id: ArmorPlatePierce
+
+- type: Tag
+  id: CombatGloves
+
+- type: Tag
   id: POI
 
 - type: Tag

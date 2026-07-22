@@ -46,6 +46,17 @@
 
 - type: entity
   parent: BaseFlatpack
+  id: GunneryServerSuperFlatpack
+  name: super-high-power gunnery control server flatpack
+  description: A flatpack used for constructing a gunnery control server with 120 processing power.
+  components:
+  - type: Flatpack
+    entity: GunneryServerSuper
+  - type: StaticPrice
+    price: 385000
+
+- type: entity
+  parent: BaseFlatpack
   id: ShipArmorModuleFlatpack
   name: dynamic armor module flatpack
   description: A flatpack used for constructing a dynamic armor module.
