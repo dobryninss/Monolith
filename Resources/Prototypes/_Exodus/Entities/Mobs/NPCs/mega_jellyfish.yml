@@ -6,8 +6,10 @@
   suffix: admin spawn
   components:
   - type: Damageable
-    damageModifierSet: Leviathan
+    damageModifierSet: Medusa
     damageContainer: Biological
+  - type: Insulated
+    coefficient: 0
   - type: PassiveDamage
     allowedStates:
     - Alive
@@ -39,7 +41,11 @@
   - type: ShipNpcTarget
     needGrid: NoGrid
     priority: 1
-    factionCoresOnly: true
+  - type: BluespaceMapBlip
+    shape: Ring
+    color: "#55DDFF"
+    scale: 1.5
+    label: bluespace-map-blip-space-mega-jellyfish
   - type: NpcFactionMember
     factions:
     - Medusa
@@ -138,30 +144,45 @@
     - sprite: Effects/spookysmoke.rsi
       state: spookysmoke
       scale: 0.6666667,1
-      offset: 2.25,4
-      color: "#7468FF99"
+      offset: 2.75,3.5
+      color: "#7468FFCC"
+      visible: false
       map: [ gasTop ]
     - sprite: Effects/spookysmoke.rsi
       state: spookysmoke
       scale: 0.6666667,1
       offset: 0.75,4
-      color: "#7468FF99"
+      color: "#7468FFCC"
+      visible: false
       map: [ gasUpperMiddle ]
     - sprite: Effects/spookysmoke.rsi
       state: spookysmoke
       scale: 0.6666667,1
       offset: -0.75,4
-      color: "#7468FF99"
+      color: "#7468FFCC"
+      visible: false
       map: [ gasLowerMiddle ]
     - sprite: Effects/spookysmoke.rsi
       state: spookysmoke
       scale: 0.6666667,1
-      offset: -2.25,4
-      color: "#7468FF99"
+      offset: -2.75,3.5
+      color: "#7468FFCC"
+      visible: false
       map: [ gasBottom ]
     - state: body
     - state: glow
       shader: unshaded
+  - type: SpriteMovement
+    movementLayers:
+      gasTop: { visible: true }
+      gasUpperMiddle: { visible: true }
+      gasLowerMiddle: { visible: true }
+      gasBottom: { visible: true }
+    noMovementLayers:
+      gasTop: { visible: false }
+      gasUpperMiddle: { visible: false }
+      gasLowerMiddle: { visible: false }
+      gasBottom: { visible: false }
   - type: OptionsVisualizer
     visuals:
       gasTop:
