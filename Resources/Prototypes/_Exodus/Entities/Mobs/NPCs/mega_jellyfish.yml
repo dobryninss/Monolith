@@ -1,6 +1,6 @@
 - type: entity
   id: SpaceMegaJellyfish
-  parent: [ SimpleSpaceMobBase, FlyingMobBase, MobCombat ]
+  parent: [ SimpleSpaceMobBase, FlyingMobBase, MobCombat, ShowMedicalIcons ]
   name: space mega jellyfish
   description: A colossal bioluminescent creature drifting through the void.
   suffix: admin spawn
@@ -8,25 +8,23 @@
   - type: Damageable
     damageModifierSet: Leviathan
     damageContainer: Biological
+  - type: PassiveDamage
+    allowedStates:
+    - Alive
+    damage:
+      groups:
+        Brute: -25
+        Burn: -25
+        Toxin: -25
+      types:
+        Bloodloss: -3
+  - type: RadialDamageFieldTarget
+    profiles:
+    - Medusa
   - type: PointLight
     color: "#55DDFFFF"
     radius: 10
     energy: 4
-  - type: TailedEntity
-    amount: 9
-    spacing: 1.45
-    startSpacingMultiplier: 0.45
-    prototype: SpaceMegaJellyfishTentacleSegment
-    startOffsets:
-    - "-2.4,3.1"
-    - "-0.8,3.4"
-    - "0.8,3.4"
-    - "2.4,3.1"
-    startAngleOffsets: [ 12, 4, -4, -12 ]
-    anchorAOffset: 0,0
-    anchorBOffset: 0,0
-    followSharpness: 7
-    maxSegmentSpeed: 25
   - type: MovementSpeedModifier
     baseSprintSpeed: 12
     baseWalkSpeed: 12
@@ -38,10 +36,19 @@
     scale: 8
     shape: hexagon
     visibleFromOtherGrids: true
+  - type: ShipNpcTarget
+    needGrid: NoGrid
+    priority: 1
+    factionCoresOnly: true
+  - type: NpcFactionMember
+    factions:
+    - Medusa
   - type: UserInterface
     interfaces:
       enum.RadarConsoleUiKey.Key:
         type: RadarConsoleBoundUserInterface
+      enum.ReadOnlyBluespaceMapUiKey.Key:
+        type: ReadOnlyBluespaceMapBoundUserInterface
       enum.FireControlConsoleUiKey.Key:
         type: FireControlConsoleBoundUserInterface
         requireInputValidation: false
@@ -49,6 +56,8 @@
     uis:
       enum.RadarConsoleUiKey.Key:
         toggleAction: ActionAGhostShowRadar
+      enum.ReadOnlyBluespaceMapUiKey.Key:
+        toggleAction: ActionShowBluespaceMap
       enum.FireControlConsoleUiKey.Key:
         toggleAction: ActionSpaceMegaJellyfishFireControl
   - type: RadarConsole
@@ -61,8 +70,11 @@
     weaponName: space-mega-jellyfish-destructive-beam-name
   - type: MovementIgnoreGravity
     gravityState: true
+  - type: Eye
+    pvsScale: 4.458052
   - type: ContentEye
-    maxZoom: 2,2
+    targetZoom: 4.458052,4.458052
+    maxZoom: 4.458052,4.458052
   - type: Physics
     bodyType: KinematicController
   - type: Fixtures
@@ -123,9 +135,55 @@
     sprite: _Exodus/Mobs/Space/mega_jellyfish.rsi
     noRot: false
     layers:
+    - sprite: Effects/spookysmoke.rsi
+      state: spookysmoke
+      scale: 0.6666667,1
+      offset: 2.25,4
+      color: "#7468FF99"
+      map: [ gasTop ]
+    - sprite: Effects/spookysmoke.rsi
+      state: spookysmoke
+      scale: 0.6666667,1
+      offset: 0.75,4
+      color: "#7468FF99"
+      map: [ gasUpperMiddle ]
+    - sprite: Effects/spookysmoke.rsi
+      state: spookysmoke
+      scale: 0.6666667,1
+      offset: -0.75,4
+      color: "#7468FF99"
+      map: [ gasLowerMiddle ]
+    - sprite: Effects/spookysmoke.rsi
+      state: spookysmoke
+      scale: 0.6666667,1
+      offset: -2.25,4
+      color: "#7468FF99"
+      map: [ gasBottom ]
     - state: body
     - state: glow
       shader: unshaded
+  - type: OptionsVisualizer
+    visuals:
+      gasTop:
+      - options: Default
+        data: { state: spookysmoke }
+      - options: ReducedMotion
+        data: { state: spookysmoke_static }
+      gasUpperMiddle:
+      - options: Default
+        data: { state: spookysmoke }
+      - options: ReducedMotion
+        data: { state: spookysmoke_static }
+      gasLowerMiddle:
+      - options: Default
+        data: { state: spookysmoke }
+      - options: ReducedMotion
+        data: { state: spookysmoke_static }
+      gasBottom:
+      - options: Default
+        data: { state: spookysmoke }
+      - options: ReducedMotion
+        data: { state: spookysmoke_static }
   - type: NightVision
     color: "#808080"
     activateSound: null
@@ -165,9 +223,9 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: InstantAction
-    icon: { sprite: _Exodus/Mobs/Space/mega_jellyfish.rsi, state: body }
-    iconOn: { sprite: _Exodus/Mobs/Space/mega_jellyfish.rsi, state: body }
-    priority: -5
+    icon: { sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi, state: beam_blue }
+    iconOn: { sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi, state: beam_blue }
+    priority: -4
     event: !type:ToggleIntrinsicUIEvent { key: enum.FireControlConsoleUiKey.Key }
 
 - type: entity
@@ -194,33 +252,3 @@
         Structural: 10000
   - type: HitscanBasicRaycast
     maxDistance: 1500
-
-- type: entity
-  id: SpaceMegaJellyfishTentacleSegment
-  parent: FlyingMobBase
-  name: space mega jellyfish tentacle
-  description: A segment of a colossal bioluminescent tentacle.
-  suffix: do not spawn
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Sprite
-    sprite: _Exodus/Mobs/Space/mega_jellyfish_tentacle.rsi
-    drawdepth: BelowMobs
-    noRot: false
-    layers:
-    - state: segment
-    - state: glow
-      shader: unshaded
-  - type: Physics
-    bodyType: KinematicController
-  - type: Fixtures
-    fixtures:
-      movement:
-        shape:
-          !type:PhysShapeCircle
-          radius: 0.1
-        hard: false
-  - type: Tag
-    tags:
-    - SpaceMegaJellyfish
-    - HideContextMenu

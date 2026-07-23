@@ -3,6 +3,7 @@
   range: 512
   targetProfiles:
   - Leviathan
+  - Medusa
   damage:
     types:
       Heat: 1000

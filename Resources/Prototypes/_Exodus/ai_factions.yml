@@ -3,6 +3,10 @@
   defaultHostile: true
 
 - type: npcFaction
+  id: Medusa
+  defaultHostile: true
+
+- type: npcFaction
   id: SecColossus
   name: npc-faction-name-sec-colossus
   coreControlName: npc-faction-core-control-name-sec-colossus
