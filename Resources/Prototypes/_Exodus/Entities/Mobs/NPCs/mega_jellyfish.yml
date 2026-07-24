@@ -28,8 +28,8 @@
     radius: 10
     energy: 4
   - type: MovementSpeedModifier
-    baseSprintSpeed: 12
-    baseWalkSpeed: 12
+    baseSprintSpeed: 60
+    baseWalkSpeed: 60
   - type: NoRotateOnMove
   - type: SmoothRotationOnMove
     rotationSpeed: 120
