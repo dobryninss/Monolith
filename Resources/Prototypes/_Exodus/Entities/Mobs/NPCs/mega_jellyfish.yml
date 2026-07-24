@@ -34,6 +34,16 @@
   - type: SmoothRotationOnMove
     rotationSpeed: 120
     disableInCombatMode: true
+  - type: ActionGrant
+    actions:
+    - ActionSpaceMegaJellyfishDirectionalTeleport
+  - type: DirectionalTeleport
+    distance: 600
+    alternativeDistanceOffsets:
+    - 100
+    - -100
+    preparationTime: 0.5
+    blockedPopup: space-mega-jellyfish-teleport-blocked
   - type: RadarBlip
     scale: 8
     shape: hexagon
@@ -248,6 +258,18 @@
     iconOn: { sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi, state: beam_blue }
     priority: -4
     event: !type:ToggleIntrinsicUIEvent { key: enum.FireControlConsoleUiKey.Key }
+
+- type: entity
+  id: ActionSpaceMegaJellyfishDirectionalTeleport
+  name: Bluespace leap
+  description: Teleport a great distance in the direction the jellyfish is facing.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    icon: { sprite: Structures/Specific/anomaly.rsi, state: anom4 }
+    useDelay: 30
+    checkCanInteract: false
+    event: !type:DirectionalTeleportActionEvent
 
 - type: entity
   id: SpaceMegaJellyfishSunderLaser
