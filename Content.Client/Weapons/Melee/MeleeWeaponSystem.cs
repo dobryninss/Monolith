@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Client.Gameplay;
 using Content.Shared._White.Blink;
+using Content.Shared._Exodus.Weapons.Melee; // Exodus: primary-only melee input
 using Content.Shared.CombatMode;
 using Content.Shared.Effects;
 using Content.Shared.Hands.Components;
@@ -35,6 +36,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
     [Dependency] private TransformSystem _transform = default!; // Goobstation
 
     private EntityQuery<TransformComponent> _xformQuery;
+    private EntityQuery<MeleePrimaryOnlyComponent> _primaryOnlyQuery; // Exodus: primary-only melee input
 
     private const string MeleeLungeKey = "melee-lunge";
 
@@ -42,6 +44,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
     {
         base.Initialize();
         _xformQuery = GetEntityQuery<TransformComponent>();
+        _primaryOnlyQuery = GetEntityQuery<MeleePrimaryOnlyComponent>(); // Exodus: primary-only melee input
         SubscribeNetworkEvent<MeleeLungeEvent>(OnMeleeLunge);
         UpdatesOutsidePrediction = true;
     }
@@ -78,6 +81,16 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 
         var useDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.Use);
         var altDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.UseSecondary);
+
+        // Exodus-begin: do not turn a secondary-input gun shot into a melee attack.
+        if (_primaryOnlyQuery.HasComponent(weaponUid) && useDown != BoundKeyState.Down)
+        {
+            if (weapon.Attacking)
+                RaisePredictiveEvent(new StopAttackEvent(GetNetEntity(weaponUid)));
+
+            return;
+        }
+        // Exodus-end
 
         if (weapon.AutoAttack || useDown != BoundKeyState.Down && altDown != BoundKeyState.Down)
         {
