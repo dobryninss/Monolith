@@ -1,0 +1,24 @@
+- type: language
+  id: Jellyfish
+  isVisibleLanguage: true
+  speech:
+    color: '#4D7CFF'
+  obfuscation:
+    !type:SyllableObfuscation
+    minSyllables: 1
+    maxSyllables: 4
+    replacement:
+    - пуль
+    - са
+    - луми
+    - нор
+    - зе
+    - ли
+    - фос
+    - си
+    - ва
+    - ми
+    - эла
+    - кси
+    - ри
+    - ша

@@ -9,3 +9,9 @@
   name: collective-mind-leviathan
   keycode: 'й'
   color: "#ff8227"
+
+- type: collectiveMind
+  id: Jellyfish
+  name: collective-mind-jellyfish
+  keycode: 'ж'
+  color: "#4D7CFF"

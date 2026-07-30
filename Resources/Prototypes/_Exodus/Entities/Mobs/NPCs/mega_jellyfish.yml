@@ -25,20 +25,18 @@
     bloodRefreshAmount: 100
   - type: LanguageKnowledge
     speaks:
-    - Leviathan
+    - TauCetiBasic
+    - Jellyfish
     understands:
-    - Leviathan
+    - TauCetiBasic
+    - Jellyfish
   - type: CollectiveMind
     channels:
-    - Leviathan
-    defaultChannel: Leviathan
+    - Jellyfish
+    defaultChannel: Jellyfish
   - type: RadialDamageFieldTarget
     profiles:
     - Medusa
-  - type: WorldChunkLoadingExempt
-    retainLoadedChunks: true
-    ensureParentDebrisChunkLoaded: true
-    retainLoadedChunksRadius: 2
   - type: PointLight
     color: "#55DDFFFF"
     radius: 10
@@ -165,7 +163,7 @@
   - type: Speech
     speechVerb: LargeMob
   - type: TTS
-    voice: dragon_knight_dragon_dota_2
+    voice: enigma_dota_2
   - type: Sprite
     sprite: _Exodus/Mobs/Space/mega_jellyfish.rsi
     noRot: false
@@ -241,8 +239,8 @@
     viewCircleCount: 4
     viewCircleSpacing: 1250
     action: ActionToggleNightVision
-    phosphorColor: "#55DDFF"
-    lightingColor: "#FFFFFF32"
+    phosphorColor: "#4D7CFF"
+    lightingColor: "#244CFF40"
   - type: MobThresholds
     thresholds:
       0: Alive
