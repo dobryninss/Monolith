@@ -25,10 +25,8 @@
     bloodRefreshAmount: 100
   - type: LanguageKnowledge
     speaks:
-    - TauCetiBasic
     - Jellyfish
     understands:
-    - TauCetiBasic
     - Jellyfish
   - type: CollectiveMind
     channels:
@@ -134,7 +132,7 @@
         Structural: 5000
   - type: MeleePrimaryOnly
   - type: Gun
-    fireRate: 2
+    fireRate: 3
     useKey: false
     selectedMode: FullAuto
     availableModes:
