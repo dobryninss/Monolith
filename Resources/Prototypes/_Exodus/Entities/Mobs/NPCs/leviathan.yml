@@ -18,6 +18,18 @@
         Toxin: -25
       types:
         Bloodloss: -3
+  - type: Bloodstream
+    bloodMaxVolume: 1000
+    bloodRefreshAmount: 100
+  - type: LanguageKnowledge
+    speaks:
+    - Leviathan
+    understands:
+    - Leviathan
+  - type: CollectiveMind
+    channels:
+    - Leviathan
+    defaultChannel: Leviathan
   - type: RadialDamageFieldTarget
     profiles:
     - Leviathan
@@ -37,12 +49,17 @@
       settings: default
   - type: GhostTakeoverAvailable
   - type: WorldChunkLoadingExempt
+    retainLoadedChunks: true
+    ensureParentDebrisChunkLoaded: true
+    ensureTailDebrisChunksLoaded: true
+    retainLoadedChunksRadius: 2
   - type: CleanupImmune
   - type: PointLight
     color: "#FF8227FF"
     radius: 3
     energy: 3
   - type: TailedEntity
+    aggregateSegmentExplosionDamage: false
     amount: 65
     spacing: 1
     prototype: SpaceWhaleSegment
@@ -88,10 +105,11 @@
         toggleAction: ActionShowBluespaceMap
   - type: RadarConsole
     followEntity: true
+    noRotate: true
     hideCoords: false # Frontier
     maxIffRange: null # Frontier
   - type: MovementIgnoreGravity
-    gravityState: true
+    weightless: true
   - type: WarpPoint
     follow: true
     location: space leviathan
@@ -136,6 +154,8 @@
         Structural: 3000
   - type: Speech
     speechVerb: LargeMob
+  - type: TTS
+    voice: dragon_knight_dragon_dota_2
   - type: InteractionPopup
     interactSuccessString: petting-success-leviathan
     interactFailureString: petting-failure-leviathan
@@ -145,10 +165,15 @@
     sprite: _Exodus/Mobs/Monolith/leviathan.rsi
     state: head
     noRot: false
-  - type: NightVision # Goobstation - Nigthvision
-    color: "#808080"
-    activateSound: null
-    deactivateSound: null
+  - type: NightVision # Exodus: toggleable Leviathan PNV
+    relayOverlay: false
+    goggleEffect: true
+    viewCircleRadius: 2000 # Exodus: matches the Leviathan's 4.458x view range.
+    viewCircleCount: 4
+    viewCircleSpacing: 1250 # Exodus: matches the Leviathan's 4.458x view range.
+    action: ActionToggleNightVision
+    phosphorColor: "#FF8A2A"
+    lightingColor: "#FFFFFF32"
   - type: AmbientSound
     enabled: true
     volume: 1
@@ -276,7 +301,8 @@
     - id: ClothingBackpackDroneLootT22
       amount: 4
     - id: ClothingBackpackFleetLootT1
-      prob: 0.3
+      amount: 1
+      maxAmount: 4
     - id: ClothingHeadHatLeviathanChitinCrown
       prob: 0.2
     - id: ClothingHandsGlovesLeviathanChitin

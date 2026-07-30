@@ -20,9 +20,25 @@
         Toxin: -25
       types:
         Bloodloss: -3
+  - type: Bloodstream
+    bloodMaxVolume: 1000
+    bloodRefreshAmount: 100
+  - type: LanguageKnowledge
+    speaks:
+    - Leviathan
+    understands:
+    - Leviathan
+  - type: CollectiveMind
+    channels:
+    - Leviathan
+    defaultChannel: Leviathan
   - type: RadialDamageFieldTarget
     profiles:
     - Medusa
+  - type: WorldChunkLoadingExempt
+    retainLoadedChunks: true
+    ensureParentDebrisChunkLoaded: true
+    retainLoadedChunksRadius: 2
   - type: PointLight
     color: "#55DDFFFF"
     radius: 10
@@ -78,6 +94,7 @@
         toggleAction: ActionSpaceMegaJellyfishFireControl
   - type: RadarConsole
     followEntity: true
+    noRotate: true
     hideCoords: false
     maxRange: 1500
     maxIffRange: null
@@ -85,7 +102,7 @@
     maxRange: 1500
     weaponName: space-mega-jellyfish-destructive-beam-name
   - type: MovementIgnoreGravity
-    gravityState: true
+    weightless: true
   - type: Eye
     pvsScale: 4.458052
   - type: ContentEye
@@ -147,6 +164,8 @@
     shipClass: Medium
   - type: Speech
     speechVerb: LargeMob
+  - type: TTS
+    voice: dragon_knight_dragon_dota_2
   - type: Sprite
     sprite: _Exodus/Mobs/Space/mega_jellyfish.rsi
     noRot: false
@@ -216,9 +235,14 @@
       - options: ReducedMotion
         data: { state: spookysmoke_static }
   - type: NightVision
-    color: "#808080"
-    activateSound: null
-    deactivateSound: null
+    relayOverlay: false
+    goggleEffect: true
+    viewCircleRadius: 2000
+    viewCircleCount: 4
+    viewCircleSpacing: 1250
+    action: ActionToggleNightVision
+    phosphorColor: "#55DDFF"
+    lightingColor: "#FFFFFF32"
   - type: MobThresholds
     thresholds:
       0: Alive

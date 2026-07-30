@@ -6,6 +6,6 @@
   - Medusa
   damage:
     types:
-      Heat: 1000
+      Heat: 500
   ignoreResistances: true
   targetPopup: tower-8g-target-popup

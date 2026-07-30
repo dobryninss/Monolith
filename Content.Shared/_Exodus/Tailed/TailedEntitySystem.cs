@@ -3,6 +3,8 @@
 using System.Numerics;
 using Content.Shared.Damage;
 using Robust.Shared.Map;
+using Robust.Shared.Network;
+using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
@@ -24,6 +26,7 @@ public sealed partial class TailedEntitySystem : EntitySystem
     [Dependency] private SharedJointSystem _joint = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private INetManager _netManager = default!;
 
     private EntityQuery<PhysicsComponent> _physicsQuery;
 
@@ -52,7 +55,8 @@ public sealed partial class TailedEntitySystem : EntitySystem
 
     private void OnDamageChanged(Entity<TailedEntitySegmentComponent> ent, ref DamageChangedEvent args)
     {
-        if (!TryComp<DamageableComponent>(ent.Comp.HeadEntity, out var headDamageable))
+        if (ent.Comp.HeadEntity == EntityUid.Invalid ||
+            !TryComp<DamageableComponent>(ent.Comp.HeadEntity, out var headDamageable))
             return;
 
         if (args.DamageDelta is not { } damage)
@@ -63,14 +67,23 @@ public sealed partial class TailedEntitySystem : EntitySystem
 
     private void OnComponentStartup(Entity<TailedEntityComponent> ent, ref ComponentStartup args)
     {
+        if (_netManager.IsClient)
+            return;
+
         if (ent.Comp.TailSegments.Count == 0)
             InitializeTailSegments((ent.Owner, ent.Comp, Transform(ent.Owner)));
     }
 
     private void OnComponentShutdown(Entity<TailedEntityComponent> ent, ref ComponentShutdown args)
     {
+        if (_netManager.IsClient)
+            return;
+
         foreach (var segment in ent.Comp.TailSegments)
         {
+            if (segment == EntityUid.Invalid)
+                continue;
+
             if (!TerminatingOrDeleted(segment) && !EntityManager.IsQueuedForDeletion(segment))
             {
                 _joint.ClearJoints(segment);
@@ -83,7 +96,9 @@ public sealed partial class TailedEntitySystem : EntitySystem
 
     private void OnSegmentShutdown(Entity<TailedEntitySegmentComponent> ent, ref ComponentShutdown args)
     {
-        if (!_timing.IsFirstTimePredicted ||
+        if (_netManager.IsClient ||
+            !_timing.IsFirstTimePredicted ||
+            ent.Comp.HeadEntity == EntityUid.Invalid ||
             TerminatingOrDeleted(ent.Comp.HeadEntity) ||
             EntityManager.IsQueuedForDeletion(ent.Comp.HeadEntity))
             return;
@@ -135,6 +150,8 @@ public sealed partial class TailedEntitySystem : EntitySystem
 
         var segmentIndex = 0;
 
+        DisableTailJointNetworking(uid);
+
         for (var tailIndex = 0; tailIndex < comp.StartOffsets.Count; tailIndex++)
         {
             var prev = uid;
@@ -143,8 +160,13 @@ public sealed partial class TailedEntitySystem : EntitySystem
             {
                 var segment = comp.TailSegments[segmentIndex++];
 
-                // Ensure segment has physics before creating joint
-                if (!HasComp<PhysicsComponent>(segment))
+                if (segment == EntityUid.Invalid)
+                    continue;
+
+                DisableTailJointNetworking(segment);
+
+                // Ensure both bodies have physics before creating joint
+                if (!HasComp<PhysicsComponent>(prev) || !HasComp<PhysicsComponent>(segment))
                     continue;
 
                 var anchorA = i == 0
@@ -158,6 +180,7 @@ public sealed partial class TailedEntitySystem : EntitySystem
                     bodyB: segment,
                     anchorA: anchorA,
                     anchorB: comp.AnchorBOffset,
+                    id: $"TailJoint_{prev}_{segment}",
                     minimumDistance: jointLength * 0.8f
                 );
 
@@ -168,11 +191,21 @@ public sealed partial class TailedEntitySystem : EntitySystem
                 joint.Stiffness = comp.Stiffness;
                 joint.Damping = comp.Damping;
 
-                joint.ID = $"TailJoint_{prev}_{segment}";
-
                 prev = segment;
             }
         }
+    }
+
+    private void DisableTailJointNetworking(EntityUid uid)
+    {
+        if (TryComp<JointComponent>(uid, out var joint))
+        {
+            joint.NetSyncEnabled = false;
+            return;
+        }
+
+        joint = new JointComponent { NetSyncEnabled = false };
+        AddComp(uid, joint);
     }
 
     private void UpdateTailedMob(Entity<TailedEntityComponent> head, float frameTime)
@@ -183,7 +216,7 @@ public sealed partial class TailedEntitySystem : EntitySystem
 
         foreach (var segment in head.Comp.TailSegments)
         {
-            if (TerminatingOrDeleted(segment))
+            if (segment == EntityUid.Invalid || TerminatingOrDeleted(segment))
                 return;
         }
 
