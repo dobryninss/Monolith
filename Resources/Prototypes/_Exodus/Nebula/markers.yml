@@ -43,7 +43,6 @@
       types:
         Heat: 30
         Blunt: 30
-  - type: NebulaBlocksDebris
 
 - type: entity
   parent: NebulaBaseMarker
@@ -101,7 +100,6 @@
       types:
         Heat: 40
         Blunt: 40
-  - type: NebulaBlocksDebris
 
 # Death zone — outer concentric sub-zone (>90k from origin). Boundary is invisible.
 # Only superheavy grid strikes (every 8s), no small/heavy. Personal lightning at default
@@ -131,4 +129,3 @@
       types:
         Heat: 100
         Blunt: 100
-  - type: NebulaBlocksDebris

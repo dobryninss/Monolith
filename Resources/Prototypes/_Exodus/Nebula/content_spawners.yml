@@ -1,0 +1,124 @@
+# Exodus nebula content biomes. The standard worldgen pipeline determines timing and density;
+# each profile only selects the content table used inside matching nebulas.
+# The current test payload in every profile is one small asteroid.
+
+# =============================================================================
+# Blue nebula
+# =============================================================================
+# Near ring: 0 - 25,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaBlueContentNear
+  markers: [ NebulaBlueMarker ]
+  distanceRange: 0, 25000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# Middle ring: 25,000 - 50,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaBlueContentMiddle
+  markers: [ NebulaBlueMarker ]
+  distanceRange: 25000, 50000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# Far ring: 50,000 - 75,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaBlueContentFar
+  markers: [ NebulaBlueMarker ]
+  distanceRange: 50000, 75000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# =============================================================================
+# Red nebula
+# =============================================================================
+# Near ring: 0 - 25,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaRedContentNear
+  markers: [ NebulaRedMarker ]
+  distanceRange: 0, 25000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# Middle ring: 25,000 - 50,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaRedContentMiddle
+  markers: [ NebulaRedMarker ]
+  distanceRange: 25000, 50000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# Far ring: 50,000 - 75,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaRedContentFar
+  markers: [ NebulaRedMarker ]
+  distanceRange: 50000, 75000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# =============================================================================
+# Green nebula
+# =============================================================================
+# Near ring: 0 - 25,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaGreenContentNear
+  markers: [ NebulaGreenMarker ]
+  distanceRange: 0, 25000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# Middle ring: 25,000 - 50,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaGreenContentMiddle
+  markers: [ NebulaGreenMarker ]
+  distanceRange: 25000, 50000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# Far ring: 50,000 - 75,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaGreenContentFar
+  markers: [ NebulaGreenMarker ]
+  distanceRange: 50000, 75000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# =============================================================================
+# Purple nebula
+# =============================================================================
+# Near ring: 0 - 25,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaPurpleContentNear
+  markers: [ NebulaPurpleMarker ]
+  distanceRange: 0, 25000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# Middle ring: 25,000 - 50,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaPurpleContentMiddle
+  markers: [ NebulaPurpleMarker ]
+  distanceRange: 25000, 50000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
+# Far ring: 50,000 - 75,000 from the map center.
+- type: nebulaContentSpawnProfile
+  id: NebulaPurpleContentFar
+  markers: [ NebulaPurpleMarker ]
+  distanceRange: 50000, 75000
+  spawns:
+  - id: NFAsteroidDebrisSmall
+    prob: 1
+
