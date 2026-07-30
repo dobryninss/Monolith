@@ -1,7 +1,7 @@
 - type: entity
   id: SpaceMegaJellyfish
   parent: [ SimpleSpaceMobBase, FlyingMobBase, MobCombat, ShowMedicalIcons ]
-  name: space mega jellyfish
+  name: Luminaria
   description: A colossal bioluminescent creature drifting through the void.
   suffix: admin spawn
   components:
@@ -271,8 +271,8 @@
 
 - type: entity
   id: ActionSpaceMegaJellyfishFireControl
-  name: Jellyfish Weapons Interface
-  description: Open the space mega jellyfish's long-range weapons interface.
+  name: Luminaria Weapons Interface
+  description: Open Luminaria's long-range weapons interface.
   categories: [ HideSpawnMenu ]
   components:
   - type: InstantAction

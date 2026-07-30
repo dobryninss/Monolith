@@ -1,8 +1,8 @@
 # Exodus
-ent-SpaceMegaJellyfish = Космическая Мега Медуза
+ent-SpaceMegaJellyfish = Люминария
     .desc = Колоссальное биолюминесцентное существо, дрейфующее в космической пустоте.
 
-ent-ActionSpaceMegaJellyfishFireControl = Дальняя стрельба медузы
-    .desc = Открыть дальнобойный орудийный интерфейс Космической Мега Медузы.
+ent-ActionSpaceMegaJellyfishFireControl = Дальняя стрельба Люминарии
+    .desc = Открыть дальнобойный орудийный интерфейс Люминарии.
 
 space-mega-jellyfish-destructive-beam-name = Разрушительный луч медузы
