@@ -1,6 +1,7 @@
 # Exodus nebula content biomes. The standard worldgen pipeline determines timing and density;
 # each profile only selects the content table used inside matching nebulas.
-# The current test payload in every profile is one small asteroid.
+# Every spawn entry in a profile belongs to one weighted group, so each accepted worldgen
+# candidate becomes exactly one asteroid.
 
 # =============================================================================
 # Blue nebula
@@ -11,8 +12,30 @@
   markers: [ NebulaBlueMarker ]
   distanceRange: 0, 40000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidCryoBluespaceDebrisSmall
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisMedium
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisLarge
+    prob: 20
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisExtraLarge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisExtraHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisEnormous
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisMassive
+    prob: 15
+    orGroup: debris
 
 # Middle ring: 40,000 - 55,000 from the map center.
 - type: nebulaContentSpawnProfile
@@ -20,8 +43,27 @@
   markers: [ NebulaBlueMarker ]
   distanceRange: 40000, 55000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidCryoBluespaceDebrisMedium
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisLarge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisExtraLarge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisExtraHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisEnormous
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisMassive
+    prob: 25
+    orGroup: debris
 
 # Far ring: 55,000 - 75,000 from the map center.
 - type: nebulaContentSpawnProfile
@@ -29,38 +71,30 @@
   markers: [ NebulaBlueMarker ]
   distanceRange: 55000, 75000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidCryoBluespaceDebrisLarge
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisExtraLarge
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisExtraHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisEnormous
+    prob: 25
+    orGroup: debris
+  - id: ExodusAsteroidCryoBluespaceDebrisMassive
+    prob: 40
+    orGroup: debris
 
 # =============================================================================
 # Red nebula
 # =============================================================================
-# Near ring: 0 - 40,000 from the map center.
-- type: nebulaContentSpawnProfile
-  id: NebulaRedContentNear
-  markers: [ NebulaRedMarker ]
-  distanceRange: 0, 40000
-  spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
-
-# Middle ring: 40,000 - 55,000 from the map center.
-- type: nebulaContentSpawnProfile
-  id: NebulaRedContentMiddle
-  markers: [ NebulaRedMarker ]
-  distanceRange: 40000, 55000
-  spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
-
-# Far ring: 55,000 - 75,000 from the map center.
-- type: nebulaContentSpawnProfile
-  id: NebulaRedContentFar
-  markers: [ NebulaRedMarker ]
-  distanceRange: 55000, 75000
-  spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+# Red nebulas intentionally have no content profile. The nebula debris exclusion system blocks
+# ordinary space debris when no matching profile exists, so no asteroids generate inside them.
 
 # =============================================================================
 # Green nebula
@@ -71,8 +105,30 @@
   markers: [ NebulaGreenMarker ]
   distanceRange: 0, 40000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidBioelectricDebrisSmall
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisMedium
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisLarge
+    prob: 20
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisExtraLarge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisExtraHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisEnormous
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisMassive
+    prob: 15
+    orGroup: debris
 
 # Middle ring: 40,000 - 55,000 from the map center.
 - type: nebulaContentSpawnProfile
@@ -80,8 +136,27 @@
   markers: [ NebulaGreenMarker ]
   distanceRange: 40000, 55000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidBioelectricDebrisMedium
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisLarge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisExtraLarge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisExtraHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisEnormous
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisMassive
+    prob: 25
+    orGroup: debris
 
 # Far ring: 55,000 - 75,000 from the map center.
 - type: nebulaContentSpawnProfile
@@ -89,8 +164,24 @@
   markers: [ NebulaGreenMarker ]
   distanceRange: 55000, 75000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidBioelectricDebrisLarge
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisExtraLarge
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisExtraHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisEnormous
+    prob: 25
+    orGroup: debris
+  - id: ExodusAsteroidBioelectricDebrisMassive
+    prob: 40
+    orGroup: debris
 
 # =============================================================================
 # Purple nebula
@@ -101,8 +192,30 @@
   markers: [ NebulaPurpleMarker ]
   distanceRange: 0, 40000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidPlasmaDebrisSmall
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisMedium
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisLarge
+    prob: 20
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisExtraLarge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisExtraHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisEnormous
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisMassive
+    prob: 15
+    orGroup: debris
 
 # Middle ring: 40,000 - 55,000 from the map center.
 - type: nebulaContentSpawnProfile
@@ -110,8 +223,27 @@
   markers: [ NebulaPurpleMarker ]
   distanceRange: 40000, 55000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidPlasmaDebrisMedium
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisLarge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisExtraLarge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisExtraHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisEnormous
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisMassive
+    prob: 25
+    orGroup: debris
 
 # Far ring: 55,000 - 75,000 from the map center.
 - type: nebulaContentSpawnProfile
@@ -119,6 +251,22 @@
   markers: [ NebulaPurpleMarker ]
   distanceRange: 55000, 75000
   spawns:
-  - id: NFAsteroidDebrisSmall
-    prob: 1
+  - id: ExodusAsteroidPlasmaDebrisLarge
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisExtraLarge
+    prob: 5
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisHuge
+    prob: 10
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisExtraHuge
+    prob: 15
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisEnormous
+    prob: 25
+    orGroup: debris
+  - id: ExodusAsteroidPlasmaDebrisMassive
+    prob: 40
+    orGroup: debris
 

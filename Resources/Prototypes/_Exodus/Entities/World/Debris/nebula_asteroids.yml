@@ -1,0 +1,391 @@
+# Exodus nebula asteroid families. Placement density is still controlled by ordinary worldgen;
+# these prototypes only define the generated grid's size and contents.
+
+# Finite frezon deposits for cryo-bluespace asteroids. Mono deep deposits are intentionally not
+# used here because they provide a renewable yield.
+- type: entity
+  id: ExodusNebulaGasDepositFrezon
+  parent: BaseGasDeposit
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RandomGasDeposit
+    depositPrototype: Frezon
+  - type: GasDeposit
+    outputTemperature: 23.15
+  - type: Sprite
+    color: '#AADDFF'
+
+- type: entity
+  id: ExodusNebulaGasDepositFrezonVerySmall
+  parent: [ BaseGasDepositVerySmall, ExodusNebulaGasDepositFrezon ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusNebulaGasDepositFrezonSmall
+  parent: [ BaseGasDepositSmall, ExodusNebulaGasDepositFrezon ]
+  categories: [ HideSpawnMenu ]
+
+# Nebula decorations must disappear with their supporting asteroid tile.
+- type: entity
+  id: ExodusNebulaCrystalCyan
+  parent: CrystalCyan
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RequiresTile
+
+- type: entity
+  id: ExodusNebulaCrystalPink
+  parent: CrystalPink
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RequiresTile
+
+- type: entity
+  id: ExodusNebulaCrystalGreen
+  parent: CrystalGreen
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RequiresTile
+
+- type: entity
+  id: ExodusNebulaLiquidPlasma
+  parent: FloorLiquidPlasmaEntity
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RequiresTile
+
+# One-shot decal markers provide lightweight organic patches and delete themselves after map init.
+- type: entity
+  id: ExodusNebulaDecalSpawnerBushes
+  parent: DecalSpawnerBushesAC
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RandomDecalSpawner
+    tileWhitelist:
+    - FloorCaveDrought
+
+- type: entity
+  id: ExodusNebulaDecalSpawnerGrass
+  parent: DecalSpawnerGrassC
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RandomDecalSpawner
+    tileWhitelist:
+    - FloorCaveDrought
+
+- type: entity
+  id: ExodusNebulaDecalSpawnerFlowers
+  parent: DecalSpawnerFlowers
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RandomDecalSpawner
+    tileWhitelist:
+    - FloorCaveDrought
+
+# =============================================================================
+# Cryo-bluespace asteroids
+# =============================================================================
+- type: entity
+  id: ExodusBaseAsteroidCryoBluespaceDebris
+  parent: NFBaseDebris
+  abstract: true
+  components:
+  - type: BlobFloorPlanBuilder
+    floorTileset:
+    - FloorIce
+  - type: SimpleFloorPlanPopulator
+    entries:
+      FloorIce:
+      - id: WallRockSnow
+        prob: 0.6698
+        orGroup: rock
+      - id: NFWallIce
+        prob: 0.12
+        orGroup: rock
+      - id: WallRockSnowQuartz
+        prob: 0.09
+        orGroup: rock
+      - id: WallRockSnowSilver
+        prob: 0.055
+        orGroup: rock
+      - id: WallRockSnowCopper
+        prob: 0.035
+        orGroup: rock
+      - id: WallRockSnowBluespace
+        prob: 0.018
+        orGroup: rock
+      - id: NFWallIceBluespace
+        prob: 0.002
+        orGroup: rock
+      - id: ExodusNebulaCrystalCyan
+        prob: 0.01
+        orGroup: rock
+      - id: NFSnowRoomMarker
+        prob: 0.0002
+        orGroup: rock
+  - type: IFF
+    color: '#61B3FF'
+
+- type: entity
+  id: ExodusBaseAsteroidCryoBluespaceGas
+  abstract: true
+  components:
+  - type: RandomEntityPopulator
+    entries:
+    - params:
+        prob: 0.5
+        min: 1
+        max: 2
+        canBeAirSealed: true
+      entries:
+      - id: ExodusNebulaGasDepositFrezonVerySmall
+        prob: 4
+        orGroup: deposit
+      - id: ExodusNebulaGasDepositFrezonSmall
+        prob: 2
+        orGroup: deposit
+      - id: GasDepositWaterVaporSmall
+        prob: 2
+        orGroup: deposit
+      - id: GasDepositNitrogenSmall
+        prob: 1
+        orGroup: deposit
+
+- type: entity
+  id: ExodusAsteroidCryoBluespaceDebrisSmall
+  parent: [ ExodusBaseAsteroidCryoBluespaceDebris, NFBaseAsteroidSmall ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidCryoBluespaceDebrisMedium
+  parent: [ ExodusBaseAsteroidCryoBluespaceDebris, NFBaseAsteroidMedium ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidCryoBluespaceDebrisLarge
+  parent: [ ExodusBaseAsteroidCryoBluespaceDebris, NFBaseAsteroidLarge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidCryoBluespaceDebrisExtraLarge
+  parent: [ ExodusBaseAsteroidCryoBluespaceDebris, NFBaseAsteroidExtraLarge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidCryoBluespaceDebrisHuge
+  parent: [ ExodusBaseAsteroidCryoBluespaceDebris, NFBaseAsteroidHuge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidCryoBluespaceDebrisExtraHuge
+  parent: [ ExodusBaseAsteroidCryoBluespaceDebris, NFBaseAsteroidExtraHuge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidCryoBluespaceDebrisEnormous
+  parent: [ ExodusBaseAsteroidCryoBluespaceDebris, ExodusBaseAsteroidCryoBluespaceGas, NFBaseAsteroidEnormous ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidCryoBluespaceDebrisMassive
+  parent: [ ExodusBaseAsteroidCryoBluespaceDebris, ExodusBaseAsteroidCryoBluespaceGas, NFBaseAsteroidMassive ]
+  categories: [ HideSpawnMenu ]
+
+# =============================================================================
+# Plasma asteroids
+# =============================================================================
+- type: entity
+  id: ExodusBaseAsteroidPlasmaDebris
+  parent: NFBaseDebris
+  abstract: true
+  components:
+  - type: BlobFloorPlanBuilder
+    floorTileset:
+    - FloorChromite
+  - type: SimpleFloorPlanPopulator
+    entries:
+      FloorChromite:
+      - id: WallRockChromite
+        prob: 0.4798
+        orGroup: rock
+      - id: NFWallChromiteCobblebrick
+        prob: 0.1
+        orGroup: rock
+      - id: WallRockChromitePlasma
+        prob: 0.28
+        orGroup: rock
+      - id: NFWallChromiteCobblebrickPlasma
+        prob: 0.06
+        orGroup: rock
+      - id: WallRockChromiteUranium
+        prob: 0.025
+        orGroup: rock
+      - id: WallRockChromiteLithium
+        prob: 0.02
+        orGroup: rock
+      - id: WallRockChromiteCopper
+        prob: 0.015
+        orGroup: rock
+      - id: ExodusNebulaLiquidPlasma
+        prob: 0.01
+        orGroup: rock
+      - id: ExodusNebulaCrystalPink
+        prob: 0.01
+        orGroup: rock
+      - id: NFChromiteRoomMarker
+        prob: 0.0002
+        orGroup: rock
+  - type: IFF
+    color: '#BA66FF'
+
+- type: entity
+  id: ExodusBaseAsteroidPlasmaGas
+  abstract: true
+  components:
+  - type: RandomEntityPopulator
+    entries:
+    - params:
+        prob: 0.8
+        min: 2
+        max: 4
+        canBeAirSealed: true
+      entries:
+      - id: GasDepositPlasmaSmall
+        prob: 1
+        orGroup: deposit
+      - id: GasDepositPlasma
+        prob: 2
+        orGroup: deposit
+      - id: GasDepositPlasmaLarge
+        prob: 3
+        orGroup: deposit
+
+- type: entity
+  id: ExodusAsteroidPlasmaDebrisSmall
+  parent: [ ExodusBaseAsteroidPlasmaDebris, NFBaseAsteroidSmall ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidPlasmaDebrisMedium
+  parent: [ ExodusBaseAsteroidPlasmaDebris, NFBaseAsteroidMedium ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidPlasmaDebrisLarge
+  parent: [ ExodusBaseAsteroidPlasmaDebris, NFBaseAsteroidLarge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidPlasmaDebrisExtraLarge
+  parent: [ ExodusBaseAsteroidPlasmaDebris, NFBaseAsteroidExtraLarge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidPlasmaDebrisHuge
+  parent: [ ExodusBaseAsteroidPlasmaDebris, NFBaseAsteroidHuge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidPlasmaDebrisExtraHuge
+  parent: [ ExodusBaseAsteroidPlasmaDebris, NFBaseAsteroidExtraHuge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidPlasmaDebrisEnormous
+  parent: [ ExodusBaseAsteroidPlasmaDebris, ExodusBaseAsteroidPlasmaGas, NFBaseAsteroidEnormous ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidPlasmaDebrisMassive
+  parent: [ ExodusBaseAsteroidPlasmaDebris, ExodusBaseAsteroidPlasmaGas, NFBaseAsteroidMassive ]
+  categories: [ HideSpawnMenu ]
+
+# =============================================================================
+# Bioelectric asteroid reefs
+# =============================================================================
+- type: entity
+  id: ExodusBaseAsteroidBioelectricDebris
+  parent: NFBaseDebris
+  abstract: true
+  components:
+  - type: BlobFloorPlanBuilder
+    floorTileset:
+    - FloorCaveDrought
+  - type: SimpleFloorPlanPopulator
+    entries:
+      FloorCaveDrought:
+      - id: WallRockAndesite
+        prob: 0.509
+        orGroup: rock
+      - id: NFWallAndesiteCobblebrick
+        prob: 0.12
+        orGroup: rock
+      - id: WallRockAndesiteCopper
+        prob: 0.12
+        orGroup: rock
+      - id: WallRockAndesiteLithium
+        prob: 0.1
+        orGroup: rock
+      - id: WallRockAndesiteUranium
+        prob: 0.04
+        orGroup: rock
+      - id: WallRockAndesiteQuartz
+        prob: 0.04
+        orGroup: rock
+      - id: ExodusNebulaCrystalGreen
+        prob: 0.015
+        orGroup: rock
+      - id: NFAndesiteRoomMarker
+        prob: 0.001
+        orGroup: rock
+      - id: ExodusNebulaDecalSpawnerBushes
+        prob: 0.025
+        orGroup: rock
+      - id: ExodusNebulaDecalSpawnerGrass
+        prob: 0.025
+        orGroup: rock
+      - id: ExodusNebulaDecalSpawnerFlowers
+        prob: 0.005
+        orGroup: rock
+  - type: IFF
+    color: '#52E57A'
+
+- type: entity
+  id: ExodusAsteroidBioelectricDebrisSmall
+  parent: [ ExodusBaseAsteroidBioelectricDebris, NFBaseAsteroidSmall ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidBioelectricDebrisMedium
+  parent: [ ExodusBaseAsteroidBioelectricDebris, NFBaseAsteroidMedium ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidBioelectricDebrisLarge
+  parent: [ ExodusBaseAsteroidBioelectricDebris, NFBaseAsteroidLarge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidBioelectricDebrisExtraLarge
+  parent: [ ExodusBaseAsteroidBioelectricDebris, NFBaseAsteroidExtraLarge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidBioelectricDebrisHuge
+  parent: [ ExodusBaseAsteroidBioelectricDebris, NFBaseAsteroidHuge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidBioelectricDebrisExtraHuge
+  parent: [ ExodusBaseAsteroidBioelectricDebris, NFBaseAsteroidExtraHuge ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidBioelectricDebrisEnormous
+  parent: [ ExodusBaseAsteroidBioelectricDebris, NFBaseAsteroidEnormous ]
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ExodusAsteroidBioelectricDebrisMassive
+  parent: [ ExodusBaseAsteroidBioelectricDebris, NFBaseAsteroidMassive ]
+  categories: [ HideSpawnMenu ]
