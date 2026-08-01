@@ -154,7 +154,7 @@
     startingCharge: 1000
   - type: BatterySelfRecharger
     autoRecharge: true
-    autoRechargeRate: 200
+    autoRechargeRate: 400
   - type: ShipGunType
     shipType: Energy
   - type: ShipGunClass
