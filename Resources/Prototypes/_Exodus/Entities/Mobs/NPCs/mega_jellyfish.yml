@@ -197,9 +197,21 @@
       color: "#7468FFCC"
       visible: false
       map: [ gasBottom ]
-    - state: body
-    - state: glow
+    - state: body_motion
+      map: [ shellBody ]
+    - state: glow_motion
       shader: unshaded
+      map: [ shellGlow ]
+    # The internal crop is centered 8 pixels above the full sprite's center.
+    - sprite: _Exodus/Mobs/Space/mega_jellyfish_internal.rsi
+      state: body
+      offset: 0,0.25
+      map: [ internalBody ]
+    - sprite: _Exodus/Mobs/Space/mega_jellyfish_internal.rsi
+      state: glow
+      shader: unshaded
+      offset: 0,0.25
+      map: [ internalGlow ]
   - type: SpriteMovement
     movementLayers:
       gasTop: { visible: true }
@@ -233,6 +245,27 @@
         data: { state: spookysmoke }
       - options: ReducedMotion
         data: { state: spookysmoke_static }
+      shellBody:
+      - options: Default
+        data: { state: body_motion }
+      - options: ReducedMotion
+        data: { state: body }
+      shellGlow:
+      - options: Default
+        data: { state: glow_motion }
+      - options: ReducedMotion
+        data: { state: glow }
+      # Restart both internal layers with the shell when leaving reduced motion.
+      internalBody:
+      - options: Default
+        data: { state: body, visible: true }
+      - options: ReducedMotion
+        data: { visible: false }
+      internalGlow:
+      - options: Default
+        data: { state: glow, visible: true }
+      - options: ReducedMotion
+        data: { visible: false }
   - type: NightVision
     relayOverlay: false
     goggleEffect: true

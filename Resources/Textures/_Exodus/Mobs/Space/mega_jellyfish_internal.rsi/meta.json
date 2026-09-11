@@ -3,18 +3,12 @@
   "license": "CC-BY-SA-3.0",
   "copyright": "for Exodus by Renascitur (discord: renascitur).",
   "size": {
-    "x": 256,
-    "y": 224
+    "x": 144,
+    "y": 96
   },
   "states": [
     {
-      "name": "body"
-    },
-    {
-      "name": "glow"
-    },
-    {
-      "name": "body_motion",
+      "name": "body",
       "delays": [
         [
           0.1,
@@ -69,7 +63,7 @@
       ]
     },
     {
-      "name": "glow_motion",
+      "name": "glow",
       "delays": [
         [
           0.1,
