@@ -1,0 +1,660 @@
+meta:
+  format: 7
+  category: Grid
+  entityCount: 80
+maps: []
+grids:
+- 1
+orphans:
+- 1
+nullspace: []
+tilemap:
+  0: Space
+  1: Plating
+  2: FloorShuttleWhite
+  3: FloorShuttleOrange
+entities:
+- proto: ''
+  entities:
+  - uid: 1
+    components:
+    - type: MetaData
+      name: Спасательная капсула
+    - type: Transform
+      parent: invalid
+    - type: MapGrid
+      chunks:
+        0,0:
+          ind: 0,0
+          tiles: AQAAAAAAAAEAAAAAAAADAAAAAAAAAQAAAAAAAAEAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAACAAAAAAAAAwAAAAAAAAIAAAAAAAACAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAgAAAAAAAAMAAAAAAAACAAAAAAAAAgAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAIAAAAAAAADAAAAAAAAAgAAAAAAAAIAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAACAAAAAAAAAgAAAAAAAAIAAAAAAAACAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAQAAAAAAAAEAAAAAAAABAAAAAAAAAQAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+          version: 7
+    - type: Physics
+      bodyType: Dynamic
+      fixedRotation: false
+    - type: Fixtures
+      fixtures: {}
+    - type: Shuttle
+    - type: Gravity
+      enabled: true
+      inherent: true
+    - type: GridAtmosphere
+      version: 2
+      data:
+        tiles:
+          0,0:
+            '0': 60644
+          0,1:
+            '0': 10
+          1,0:
+            '0': 4096
+          1,1:
+            '0': 1
+        uniqueMixes:
+        - volume: 2500
+          temperature: 293.15
+          moles:
+            Oxygen: 21.824879
+            Nitrogen: 82.10312
+        chunkSize: 4
+- proto: WallShuttle
+  entities:
+  - uid: 2
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 3
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 4
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 5
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 6
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 7
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 8
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 9
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 10
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 11
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 12
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 13
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 14
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 15
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 16
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 17
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 20
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,5.5
+      rot: 0.0
+      anchored: true
+- proto: ShuttleWindow
+  entities:
+  - uid: 18
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 19
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,5.5
+      rot: 0.0
+      anchored: true
+- proto: CableApcExtension
+  entities:
+  - uid: 21
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 22
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 23
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 24
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 25
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 26
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,0.5
+      rot: 0.0
+      anchored: true
+  - uid: 27
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 28
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 29
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 30
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 31
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 32
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,1.5
+      rot: 0.0
+      anchored: true
+  - uid: 33
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 34
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 35
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 36
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 37
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 38
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 39
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 40
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 41
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 42
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 43
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 44
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 45
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 46
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 47
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 48
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 49
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 50
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,4.5
+      rot: 0.0
+      anchored: true
+  - uid: 51
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 52
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 53
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 54
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 55
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 56
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,5.5
+      rot: 0.0
+      anchored: true
+- proto: CableHV
+  entities:
+  - uid: 57
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,2.5
+      rot: 0.0
+      anchored: true
+  - uid: 58
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 59
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,3.5
+      rot: 0.0
+      anchored: true
+- proto: CableMV
+  entities:
+  - uid: 60
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 61
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 62
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,3.5
+      rot: 0.0
+      anchored: true
+  - uid: 63
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,4.5
+      rot: 0.0
+      anchored: true
+- proto: SmallThruster
+  entities:
+  - uid: 64
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,5.5
+      rot: 0.0
+      anchored: true
+  - uid: 65
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,0.5
+      rot: 180.0
+      anchored: true
+  - uid: 66
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,2.5
+      rot: 90.0
+      anchored: true
+  - uid: 67
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,2.5
+      rot: 270.0
+      anchored: true
+- proto: AirlockShuttle
+  entities:
+  - uid: 68
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,0.5
+      rot: 0.0
+      anchored: true
+    - type: AccessReader
+      access: []
+- proto: AtmosDeviceFanDirectional
+  entities:
+  - uid: 69
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,0.5
+      rot: 0.0
+      anchored: true
+- proto: ComputerShuttle
+  entities:
+  - uid: 70
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,3.5
+      rot: 270.0
+      anchored: true
+    - type: ShuttleConsoleLock
+      locked: false
+    - type: AccessReader
+      access: []
+- proto: ChairPilotSeat
+  entities:
+  - uid: 71
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,3.5
+      rot: 90.0
+      anchored: true
+  - uid: 72
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,2.5
+      rot: 180.0
+      anchored: true
+- proto: SmallGyroscope
+  entities:
+  - uid: 73
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,3.5
+      rot: 0.0
+      anchored: true
+- proto: PortableScrubber
+  entities:
+  - uid: 74
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,2.5
+      rot: 0.0
+      anchored: true
+    - type: Physics
+      bodyType: Static
+- proto: AirCanister
+  entities:
+  - uid: 75
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,4.5
+      rot: 0.0
+      anchored: true
+    - type: Physics
+      bodyType: Static
+    - type: GasCanister
+      releaseValve: true
+      releasePressure: 101.325
+- proto: GeneratorWallmountAPU
+  entities:
+  - uid: 76
+    components:
+    - type: Transform
+      parent: 1
+      pos: 1.5,2.5
+      rot: 0.0
+      anchored: true
+- proto: SubstationWallBasic
+  entities:
+  - uid: 77
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,3.5
+      rot: 90.0
+      anchored: true
+    - type: AccessReader
+      access: []
+- proto: APCBasic
+  entities:
+  - uid: 78
+    components:
+    - type: Transform
+      parent: 1
+      pos: 2.5,4.5
+      rot: 0.0
+      anchored: true
+- proto: PoweredLEDSmallLight
+  entities:
+  - uid: 79
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,4.5
+      rot: 270.0
+      anchored: true
+  - uid: 80
+    components:
+    - type: Transform
+      parent: 1
+      pos: 5.5,3.5
+      rot: 90.0
+      anchored: true
