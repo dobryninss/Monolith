@@ -40,6 +40,8 @@ public sealed partial class TailedEntitySystem : EntitySystem
         SubscribeLocalEvent<TailedEntityComponent, ComponentShutdown>(OnComponentShutdown);
         SubscribeLocalEvent<TailedEntitySegmentComponent, DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<TailedEntitySegmentComponent, ComponentShutdown>(OnSegmentShutdown);
+
+        InitializeTailJointRecovery();
     }
 
     public override void Update(float frameTime)
@@ -70,8 +72,9 @@ public sealed partial class TailedEntitySystem : EntitySystem
         if (_netManager.IsClient)
             return;
 
+        ent.Comp.TailJointsDirty = true;
         if (ent.Comp.TailSegments.Count == 0)
-            InitializeTailSegments((ent.Owner, ent.Comp, Transform(ent.Owner)));
+            InitializeTailSegments((ent.Owner, ent.Comp, Transform(ent)));
     }
 
     private void OnComponentShutdown(Entity<TailedEntityComponent> ent, ref ComponentShutdown args)
@@ -148,70 +151,23 @@ public sealed partial class TailedEntitySystem : EntitySystem
             }
         }
 
-        var segmentIndex = 0;
-
-        DisableTailJointNetworking(uid);
-
-        for (var tailIndex = 0; tailIndex < comp.StartOffsets.Count; tailIndex++)
-        {
-            var prev = uid;
-
-            for (var i = 0; i < comp.Amount; i++)
-            {
-                var segment = comp.TailSegments[segmentIndex++];
-
-                if (segment == EntityUid.Invalid)
-                    continue;
-
-                DisableTailJointNetworking(segment);
-
-                // Ensure both bodies have physics before creating joint
-                if (!HasComp<PhysicsComponent>(prev) || !HasComp<PhysicsComponent>(segment))
-                    continue;
-
-                var anchorA = i == 0
-                    ? comp.StartOffsets[tailIndex] + comp.AnchorAOffset
-                    : comp.AnchorAOffset;
-                var jointLength = i == 0
-                    ? comp.Spacing * comp.StartSpacingMultiplier
-                    : comp.Spacing;
-                var joint = _joint.CreateDistanceJoint(
-                    bodyA: prev,
-                    bodyB: segment,
-                    anchorA: anchorA,
-                    anchorB: comp.AnchorBOffset,
-                    id: $"TailJoint_{prev}_{segment}",
-                    minimumDistance: jointLength * 0.8f
-                );
-
-                joint.Length = jointLength;
-                joint.MinLength = jointLength * comp.MinLengthMultiplier;
-                joint.MaxLength = jointLength * comp.MaxLengthMultiplier;
-
-                joint.Stiffness = comp.Stiffness;
-                joint.Damping = comp.Damping;
-
-                prev = segment;
-            }
-        }
+        comp.TailJointsDirty = !TryRestoreTailJoints((uid, comp));
     }
 
     private void DisableTailJointNetworking(EntityUid uid)
     {
-        if (TryComp<JointComponent>(uid, out var joint))
-        {
-            joint.NetSyncEnabled = false;
-            return;
-        }
-
-        joint = new JointComponent { NetSyncEnabled = false };
-        AddComp(uid, joint);
+        // Register the component in NetComponents before disabling replication so removal can unregister it.
+        var joint = EnsureComp<JointComponent>(uid);
+        joint.NetSyncEnabled = false;
     }
 
     private void UpdateTailedMob(Entity<TailedEntityComponent> head, float frameTime)
     {
         var expectedSegments = head.Comp.Amount * head.Comp.StartOffsets.Count;
         if (expectedSegments == 0 || head.Comp.TailSegments.Count != expectedSegments)
+            return;
+
+        if (!_netManager.IsClient && head.Comp.TailJointsDirty && !TryRestoreTail(head))
             return;
 
         foreach (var segment in head.Comp.TailSegments)

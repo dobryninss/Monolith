@@ -3,9 +3,9 @@
   id: UplinkPirateMedicalBundle
   name: uplink-pirate-medical-bundle-name
   description: uplink-pirate-medical-bundle-desc
-  productEntity: ClothingBackpackDuffelSyndicateMedicalBundleFilled
+  productEntity: ClothingBackpackDuffelPDVMedicalBundleFilled
   cost:
-    Doubloon: 150
+    Doubloon: 165 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateMedical
   conditions:
@@ -20,7 +20,7 @@
   description: uplink-pirate-interdyne-defibrillator-desc
   productEntity: DefibrillatorSyndicate
   cost:
-    Doubloon: 50
+    Doubloon: 55 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateMedical
   conditions:
@@ -36,7 +36,7 @@
   icon: { sprite: /Textures/Objects/Storage/boxicons.rsi, state: vials }
   productEntity: ChemicalSynthesisKit
   cost:
-    Doubloon: 15
+    Doubloon: 17 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateMedical
   conditions:
@@ -52,7 +52,7 @@
   productEntity: MedkitCombatFilled
   icon: { sprite: Objects/Specific/Medical/firstaidkits.rsi, state: blackkit }
   cost:
-    Doubloon: 30
+    Doubloon: 33 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateMedical
   conditions:
@@ -67,7 +67,7 @@
   description: uplink-pirate-syringe-case-desc
   productEntity: SyringeCaseAltFilled
   cost:
-    Doubloon: 50
+    Doubloon: 55 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateMedical
   conditions:
@@ -84,7 +84,7 @@
   description: uplink-pirate-medical-assembler-desc
   productEntity: MedicalAssemblerFlatpack
   cost:
-    Doubloon: 6
+    Doubloon: 7 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateMedical
   conditions:
@@ -101,7 +101,7 @@
   productEntity: CombatMedipen
   icon: { sprite: Objects/Specific/Medical/medipen.rsi, state: morphen }
   cost:
-    Doubloon: 12
+    Doubloon: 14 # Exodus: +10%, rounded up.
   categories:
     - UplinkPirateMedical
   conditions:
@@ -198,7 +198,7 @@
   productEntity: ClothingBackpackDuffelSyndicateFilledMedical
   icon: { sprite: Objects/Specific/Medical/Surgery/saw.rsi, state: advanced }
   cost:
-    Doubloon: 24
+    Doubloon: 27 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateMedical
   conditions:
@@ -210,12 +210,27 @@
 #MARK: Utility
 
 - type: listing
+  id: UplinkWearableCameraPDV
+  name: uplink-pirate-wearable-camerapdv-name
+  description: uplink-pirate-wearable-camerapdv-desc
+  productEntity: ClothingNeckWearableCameraPDV
+  cost:
+    Doubloon: 2 # Exodus: +10%, rounded up.
+  categories:
+  - UplinkPirateUtility
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
+
+- type: listing
   id: UplinkPirateImplanterEmpty
   name: uplink-pirate-empty-implanter-name
   description: uplink-pirate-empty-implanter-desc
   productEntity: Implanter
   cost:
-    Doubloon: 1
+    Doubloon: 2 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -231,7 +246,7 @@
   icon: { sprite: _Mono/Objects/Misc/module.rsi, state: cpu_rogue }
   productEntity: RogueCommsComputerCircuitboard
   cost:
-    Doubloon: 20
+    Doubloon: 22 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -249,7 +264,7 @@
   description: uplink-pirate-syndicate-magboots-desc
   productEntity: ClothingShoesBootsMagAshen
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -264,7 +279,7 @@
   description: uplink-pirate-syndicate-jetpack-desc
   productEntity: JetpackBlackFilled
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -280,7 +295,7 @@
   productEntity: HoverbikePirateFlatpack
   icon: { sprite: _NF/Objects/Vehicles/hoverbike.rsi, state: vehicle }
   cost:
-    Doubloon: 25
+    Doubloon: 28 # Exodus: +10%, rounded up.
   categories:
     - UplinkPirateUtility
   conditions:
@@ -296,7 +311,7 @@
   icon: { sprite: Objects/Storage/boxes.rsi, state: box}
   productEntity: BoxT3SuperCapacitor
   cost:
-    Doubloon: 15
+    Doubloon: 17 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -311,7 +326,7 @@
   description: uplink-pirate-radio-jammer-desc
   productEntity: RadioJammer
   cost:
-    Doubloon: 10
+    Doubloon: 11 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -327,7 +342,7 @@
   productEntity: HypopenBox
   icon: { sprite: Objects/Misc/pens.rsi, state: pen }
   cost:
-    Doubloon: 20
+    Doubloon: 22 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -343,7 +358,7 @@
   productEntity: Emag
   icon: { sprite: Objects/Tools/emag.rsi, state: icon }
   cost:
-    Doubloon: 30
+    Doubloon: 33 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -359,7 +374,7 @@
   productEntity: AccessBreaker
   icon: { sprite: Objects/Tools/access_breaker.rsi, state: icon }
   cost:
-    Doubloon: 20
+    Doubloon: 22 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -375,7 +390,7 @@
   productEntity: SyndicateJawsOfLife
   icon: { sprite: Objects/Tools/jaws_of_life.rsi, state: syn_jaws_pry }
   cost:
-    Doubloon: 15
+    Doubloon: 17 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -391,7 +406,7 @@
   icon: { sprite: Objects/Devices/encryption_keys.rsi, state: pirate_label }
   productEntity: RadioImplanterFreelance
   cost:
-    Doubloon: 10
+    Doubloon: 11 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -407,7 +422,7 @@
   icon: { sprite: Interface/Actions/actions_borg.rsi, state: syndicate-weapon-module }
   productEntity: BorgModuleSecurity
   cost:
-    Doubloon: 50
+    Doubloon: 55 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -423,7 +438,7 @@
   productEntity: SpaceCash10000
   icon: { sprite: Objects/Economy/cash.rsi, state: cash_1000000 }
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -439,7 +454,7 @@
   productEntity: SpaceCash100000
   icon: { sprite: _NF/Objects/Economy/cash.rsi, state: cash_100000 }
   cost:
-    Doubloon: 50
+    Doubloon: 55 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -454,7 +469,7 @@
   description: uplink-syndicate-applicator-desc
   productEntity: NaniteApplicatorSyndicate
   cost:
-    Doubloon: 35
+    Doubloon: 39 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -471,7 +486,7 @@
   description: uplink-pirate-box-bulldog-ammo-desc
   productEntity: BoxMagazine12_gauge
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -486,7 +501,7 @@
   description: uplink-pirate-box-bulldog-slug-ammo-desc
   productEntity: BoxMagazine12_gaugeSlug
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -501,7 +516,7 @@
   description: uplink-pirate-box-smg-magazine-desc
   productEntity: BoxMagazine9x19mmSubMachineGunFMJ
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -517,7 +532,7 @@
   productEntity: AmmoBox12_gaugeBuckshot
   icon: { sprite: _Mono/Objects/Weapons/Guns/Ammunition/Boxes/12_gauge.rsi, state: lethal }
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -532,7 +547,7 @@
   description: uplink-pirate-light-rifle-magazine-box-big-desc
   productEntity: AmmoBox762x39mmBigFMJ
   cost:
-    Doubloon: 10
+    Doubloon: 11 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -542,12 +557,12 @@
       - PirateUplink
 
 - type: listing
-  id: UplinkPirateAmmoBox45_magnum
-  name: uplink-pirate-magazine-box-45_magnum-name
-  description: uplink-pirate-magazine-box-45_magnum-desc
-  productEntity: BoxMagazine45_magnumFMJ
+  id: UplinkPirateAmmoBox357_magnum
+  name: uplink-pirate-magazine-box-357_magnum-name
+  description: uplink-pirate-magazine-box-357_magnum-desc
+  productEntity: BoxMagazine357_magnumFMJ
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -562,7 +577,7 @@
   description: uplink-pirate-box-magazine-light-rifle-desc
   productEntity: BoxMagazine762x39mmFMJ
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -577,7 +592,7 @@
   description: uplink-subsonic-mag-desc
   productEntity: Magazine762x39mmSubsonic
   cost:
-    Doubloon: 4
+    Doubloon: 5 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -592,7 +607,7 @@
   description: uplink-subsonic-box-desc
   productEntity: AmmoBox762x39mmSubsonic
   cost:
-    Doubloon: 7
+    Doubloon: 8 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -607,7 +622,7 @@
   description: uplink-pirate-box-magazine-pistol-desc
   productEntity: BoxMagazine9x19mmFMJ
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -622,7 +637,7 @@
   description: uplink-pirate-box-highcal-desc
   productEntity: AmmoBox127x99mm
   cost:
-    Doubloon: 15
+    Doubloon: 17 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -637,7 +652,7 @@
   description: uplink-pirate-box-highcal-he-desc
   productEntity: AmmoBox127x99mmExplosive
   cost:
-    Doubloon: 30
+    Doubloon: 33 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -667,7 +682,7 @@
   description: uplink-pirate-sniper-ammo-desc
   productEntity: AmmoBox145x114mm
   cost:
-    Doubloon: 12 # Mono
+    Doubloon: 14 # Mono; Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -682,7 +697,7 @@
   description: uplink-pirate-frag-grenade-desc
   productEntity: 40mmGrenadeFragmentation
   cost:
-    Doubloon: 16
+    Doubloon: 18 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -697,7 +712,7 @@
   description: uplink-pirate-blast-grenade-desc
   productEntity: 40mmGrenadeThermobaric
   cost:
-    Doubloon: 32
+    Doubloon: 36 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateAmmo
   conditions:
@@ -714,7 +729,7 @@
   description: uplink-pirate-energy-cutlass-desc
   productEntity: EnergyCutlass
   cost:
-    Doubloon: 15
+    Doubloon: 17 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -729,7 +744,7 @@
   description: uplink-pirate-energy-sword-desc
   productEntity: EnergySword
   cost:
-    Doubloon: 30
+    Doubloon: 33 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -745,7 +760,7 @@
   productEntity: WeaponVT7
   icon: { sprite: _Mono/Objects/Weapons/Melee/murasama.rsi, state: icon }
   cost:
-     Doubloon: 60
+     Doubloon: 66 # Exodus: +10%, rounded up.
   categories:
    - UplinkPirateWeapons
   conditions:
@@ -758,10 +773,10 @@
   id: UplinkPirateC20
   name: uplink-pirate-c20-name
   description: uplink-pirate-c20-desc
-  productEntity: ClothingBackpackDuffelSyndicateFilledSMG
+  productEntity: ClothingBackpackDuffelPDVFilledSMG
   icon: { sprite: Objects/Weapons/Guns/SMGs/c20r.rsi, state: icon }
   cost:
-    Doubloon: 20
+    Doubloon: 22 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -774,10 +789,10 @@
   id: UplinkPirateAtreides
   name: uplink-pirate-atreides-name
   description: uplink-pirate-atreides-desc
-  productEntity: ClothingBackpackDuffelSyndicateFilledAtreides
+  productEntity: ClothingBackpackDuffelPDVFilledAtreides
   icon: { sprite: Objects/Weapons/Guns/SMGs/atreides.rsi, state: icon }
   cost:
-    Doubloon: 100
+    Doubloon: 110 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -790,10 +805,10 @@
   id: UplinkPirateBulldog
   name: uplink-pirate-bulldog-name
   description: uplink-pirate-bulldog-desc
-  productEntity: ClothingBackpackDuffelSyndicateFilledShotgun
+  productEntity: ClothingBackpackDuffelPDVFilledShotgun
   icon: { sprite: Objects/Weapons/Guns/Shotguns/bulldog.rsi, state: icon }
   cost:
-    Doubloon: 75
+    Doubloon: 83 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -809,7 +824,7 @@
   productEntity: WeaponRevolverPython
   icon: { sprite: Objects/Weapons/Guns/Revolvers/python.rsi, state: icon }
   cost:
-    Doubloon: 20
+    Doubloon: 22 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -825,7 +840,7 @@
   productEntity: WeaponPistolViper
   icon: { sprite: Objects/Weapons/Guns/Pistols/viper.rsi, state: icon }
   cost:
-    Doubloon: 10
+    Doubloon: 11 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -840,7 +855,7 @@
   description: uplink-pirate-kanabou-desc
   productEntity: Kanabou
   cost:
-    Doubloon: 20
+    Doubloon: 22 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -856,7 +871,7 @@
   productEntity: WeaponRifleAk
   icon: { sprite: Objects/Weapons/Guns/Rifles/ak.rsi, state: icon }
   cost:
-    Doubloon: 25
+    Doubloon: 28 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -869,10 +884,10 @@
   id: UplinkPirateBurner
   name: uplink-pirate-burner-name
   description: uplink-pirate-burner-desc
-  productEntity: ClothingBackpackDuffelSyndicateBurner
+  productEntity: ClothingBackpackDuffelPDVBurner
   icon: { sprite: _Goobstation/Objects/Weapons/Guns/Rifles/burner.rsi, state: icon }
   cost:
-    Doubloon: 125
+    Doubloon: 138 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -888,7 +903,7 @@
   productEntity: WeaponPistolAnaconda
   icon: { sprite: _Goobstation/Objects/Weapons/Guns/Pistols/anaconda.rsi, state: icon }
   cost:
-    Doubloon: 50
+    Doubloon: 55 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -901,10 +916,10 @@
   id: UplinkPirateWspr
   name: uplink-pirate-wspr-name
   description: uplink-pirate-wspr-desc
-  productEntity: ClothingBackpackDuffelSyndicateFilledWSPR
-  icon: { sprite: _Goobstation/Objects/Weapons/Guns/Rifles/wspr.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelPDVFilledWSPR
+  icon: { sprite: _Mono/Objects/Weapons/Guns/Rifles/wspr.rsi, state: icon }
   cost:
-    Doubloon: 75
+    Doubloon: 83 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -920,7 +935,7 @@
   productEntity: WeaponLaserGun
   icon: { sprite: Objects/Weapons/Guns/Battery/laser_retro.rsi, state: icon }
   cost:
-    Doubloon: 10
+    Doubloon: 11 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -948,10 +963,10 @@
   id: UplinkPirateGrenadeLauncherBundle
   name: uplink-pirate-grenade-launcher-bundle-name
   description: uplink-pirate-grenade-launcher-bundle-desc
-  productEntity: ClothingBackpackDuffelSyndicateFilledGrenadeLauncher
+  productEntity: ClothingBackpackDuffelPDVFilledGrenadeLauncher
   icon: { sprite: /Textures/Objects/Weapons/Guns/Launchers/china_lake.rsi, state: icon }
   cost:
-    Doubloon: 150 # Mono #25 Mono Edit
+    Doubloon: 165 # Mono #25 Mono Edit; Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -965,9 +980,9 @@
   name: uplink-l6-saw-bundle-name
   description: uplink-l6-saw-bundle-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/LMGs/l6.rsi, state: icon }
-  productEntity: ClothingBackpackDuffelSyndicateFilledLMG
+  productEntity: ClothingBackpackDuffelPDVFilledLMG
   cost:
-    Doubloon: 100
+    Doubloon: 110 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -983,7 +998,7 @@
   productEntity: EnergySwordDouble
   icon: { sprite: Objects/Weapons/Melee/e_sword_double.rsi, state: icon }
   cost:
-    Doubloon: 75
+    Doubloon: 83 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateWeapons
   conditions:
@@ -1006,7 +1021,7 @@
   productEntity: ClothingOuterHardsuitPirateScaf
   icon: { sprite: _Mono/Clothing/OuterClothing/Hardsuits/scaf_pirate.rsi, state: icon }
   cost:
-    Doubloon: 15
+    Doubloon: 17 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateEquipment
   conditions:
@@ -1022,7 +1037,22 @@
   productEntity: ClothingOuterVestWeb
   icon: { sprite: Clothing/OuterClothing/Vests/webvest.rsi, state: icon }
   cost:
-    Doubloon: 15
+    Doubloon: 17 # Exodus: +10%, rounded up.
+  categories:
+  - UplinkPirateEquipment
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
+
+- type: listing
+  id: UplinkPirateWebVestElite
+  name: uplink-pirate-elite-webvest-name
+  description: uplink-pirate-elite-webvest-desc
+  productEntity: ClothingOuterVestWebElite
+  cost:
+    Doubloon: 17 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateEquipment
   conditions:
@@ -1038,7 +1068,7 @@
   productEntity: ClothingMaskGasSyndicate
   icon: { sprite: Clothing/Mask/gassyndicate.rsi, state: icon }
   cost:
-    Doubloon: 15
+    Doubloon: 17 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateEquipment
   conditions:
@@ -1065,13 +1095,13 @@
 #MARK: Explosives
 
 - type: listing
-  id: UplinkPirateFlashbangGrenadeBox
-  name:  uplink-pirate-flashbanggrenade-box-name
-  description: uplink-pirate-flashbanggrenade-box-desc
-  productEntity: BoxFlashBangGrenades
+  id: UplinkPirateFlashbangGrenade
+  name:  uplink-pirate-flashbanggrenade-name
+  description: uplink-pirate-flashbanggrenade-desc
+  productEntity: GrenadeFlashBang
   icon: { sprite: Objects/Weapons/Grenades/flashbang.rsi, state: icon}
   cost:
-    Doubloon: 10
+    Doubloon: 3 # Exodus: +10%, rounded up.
   categories:
     - UplinkPirateExplosives
   conditions:
@@ -1081,13 +1111,13 @@
       - PirateUplink
 
 - type: listing
-  id: UplinkPirateSmokeGrenadeBox
-  name:  uplink-pirate-smokegrenade-box-name
-  description: uplink-pirate-smokegrenade-box-desc
-  productEntity: BoxSmokeGrenades
+  id: UplinkPirateSmokeGrenade
+  name:  uplink-pirate-smokegrenade-name
+  description: uplink-pirate-smokegrenade-desc
+  productEntity: SmokeGrenade
   icon: { sprite: Objects/Weapons/Grenades/smoke.rsi, state: icon}
   cost:
-    Doubloon: 15
+    Doubloon: 3 # Exodus: +10%, rounded up.
   categories:
     - UplinkPirateExplosives # Moved to Explosives - Mono
   conditions:
@@ -1102,7 +1132,7 @@
   description: uplink-pirate-c4-desc
   productEntity: C4
   cost:
-    Doubloon: 5
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateExplosives
   conditions:
@@ -1115,9 +1145,9 @@
   id: UplinkPirateC4Bundle
   name: uplink-pirate-c4-bundle-name
   description: uplink-pirate-c4-bundle-desc
-  productEntity: ClothingBackpackDuffelSyndicateC4tBundle
+  productEntity: ClothingBackpackDuffelPDVC4tBundle
   cost:
-    Doubloon: 60
+    Doubloon: 66 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateExplosives
   conditions:
@@ -1127,13 +1157,24 @@
       - PirateUplink
 
 - type: listing
-  id: UplinkPirateEmpGrenadeBox
-  name: uplink-pirate-empgrenade-box-name
-  description: uplink-pirate-empgrenade-box-desc
-  productEntity: BoxEMPGrenadesNfsd
+  id: UplinkMobImperiroach
+  name: uplink-pirate-MobImperiroach-name
+  description: uplink-pirate-MobImperiroach-desc
+  icon: { sprite: Objects/Devices/communication.rsi, state: old-radio-imperiroach}
+  productEntity: ReinforcementRadioPDVImperiroach
+  cost:
+    Doubloon: 33 # Exodus: +10%, rounded up.
+  categories:
+    - UplinkPirateExplosives
+
+- type: listing
+  id: UplinkPirateEmpGrenade
+  name: uplink-pirate-empgrenade-name
+  description: uplink-pirate-empgrenade-desc
+  productEntity: EmpGrenadeNfsd
   icon: { sprite: Objects/Weapons/Grenades/empgrenade.rsi, state: icon}
   cost:
-    Doubloon: 15
+    Doubloon: 4 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateExplosives
   conditions:
@@ -1143,13 +1184,13 @@
       - PirateUplink
 
 - type: listing
-  id: UplinkPirateIncendiaryGrenadeBox
-  name: uplink-pirate-incendiarygrenade-box-name
-  description: uplink-pirate-incendiarygrenade-box-desc
-  productEntity: BoxIncendiaryGrenadesNfsd
+  id: UplinkPirateIncendiaryGrenade
+  name: uplink-pirate-incendiarygrenade-name
+  description: uplink-pirate-incendiarygrenade-desc
+  productEntity: GrenadeIncendiaryNfsd
   icon: { sprite: Objects/Weapons/Grenades/pyrogrenade.rsi, state: icon}
   cost:
-    Doubloon: 15
+    Doubloon: 5 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateExplosives
   conditions:
@@ -1162,10 +1203,10 @@
   id: UplinkPirateShrapnelGrenadeBox
   name: uplink-pirate-shrapnelgrenade-box-name
   description: uplink-pirate-shrapnelgrenade-box-desc
-  productEntity: BoxShrapnelGrenadesNfsd
+  productEntity: GrenadeShrapnelNfsd
   icon: { sprite: Objects/Weapons/Grenades/shrapnelgrenade.rsi, state: icon}
   cost:
-    Doubloon: 15
+    Doubloon: 5 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateExplosives
   conditions:
@@ -1175,13 +1216,13 @@
       - PirateUplink
 
 - type: listing
-  id: UplinkPirateExplosiveGrenadeBox
-  name:  uplink-pirate-explosivegrenade-box-name
-  description: uplink-pirate-explosivegrenade-box-desc
-  productEntity: BoxExplosiveGrenadesNfsd
+  id: UplinkPirateExplosiveGrenade
+  name:  uplink-pirate-explosivegrenade-name
+  description: uplink-pirate-explosivegrenade-desc
+  productEntity: ExGrenadeNfsd
   icon: { sprite: Objects/Weapons/Grenades/grenade.rsi, state: icon}
   cost:
-    Doubloon: 20
+    Doubloon: 6 # Exodus: +10%, rounded up.
   categories:
     - UplinkPirateExplosives
   conditions:
@@ -1198,7 +1239,7 @@
   description: uplink-faction-server-desc
   productEntity: RDServerRogueFlatpack
   cost:
-    Doubloon: 100
+    Doubloon: 110 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -1213,7 +1254,7 @@
   description: uplink-faction-lathe-desc
   productEntity: FactionLatheFlatpack
   cost:
-    Doubloon: 50
+    Doubloon: 55 # Exodus: +10%, rounded up.
   categories:
   - UplinkPirateUtility
   conditions:
@@ -1277,7 +1318,7 @@
   description: uplink-pdv-t0-voucher-desc
   productEntity: ShipVoucherPdvT0
   cost:
-    Doubloon: 25
+    Doubloon: 28 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1294,7 +1335,7 @@
   description: uplink-pdv-t1-garm-voucher-desc
   productEntity: ShipVoucherGarm
   cost:
-    Doubloon: 75
+    Doubloon: 83 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1309,7 +1350,7 @@
   description: uplink-pdv-t1-kalisto-voucher-desc
   productEntity: ShipVoucherKalisto
   cost:
-    Doubloon: 95
+    Doubloon: 105 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1324,7 +1365,7 @@
   description: uplink-pdv-t1-fenrir-voucher-desc
   productEntity: ShipVoucherFenrir
   cost:
-    Doubloon: 80
+    Doubloon: 88 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1339,7 +1380,7 @@
   description: uplink-pdv-t1-scorpion-voucher-desc
   productEntity: ShipVoucherScorpion
   cost:
-    Doubloon: 85
+    Doubloon: 94 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1354,7 +1395,7 @@
   description: uplink-pdv-t1-bastion-voucher-desc
   productEntity: ShipVoucherBastion
   cost:
-    Doubloon: 80
+    Doubloon: 88 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1369,7 +1410,7 @@
   description: uplink-pdv-t1-neptune-voucher-desc
   productEntity: ShipVoucherNeptune
   cost:
-    Doubloon: 100
+    Doubloon: 110 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1384,7 +1425,7 @@
   description: uplink-pdv-t1-layak-voucher-desc
   productEntity: ShipVoucherLayak
   cost:
-    Doubloon: 100
+    Doubloon: 110 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1403,7 +1444,7 @@
   description: uplink-pdv-t2-europa-voucher-desc
   productEntity: ShipVoucherEuropa
   cost:
-    Doubloon: 180
+    Doubloon: 198 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1418,7 +1459,7 @@
   description: uplink-pdv-t2-ganymede-voucher-desc
   productEntity: ShipVoucherGanymede
   cost:
-    Doubloon: 190
+    Doubloon: 209 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1433,7 +1474,7 @@
   description: uplink-pdv-t2-vulture-voucher-desc
   productEntity: ShipVoucherVulture
   cost:
-    Doubloon: 145
+    Doubloon: 160 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1448,7 +1489,7 @@
   description: uplink-pdv-t2-motleyanne-voucher-desc
   productEntity: ShipVoucherMotleyAnne
   cost:
-    Doubloon: 220
+    Doubloon: 242 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1463,7 +1504,7 @@
   description: uplink-pdv-t2-kortik-voucher-desc
   productEntity: ShipVoucherKortikT2
   cost:
-    Doubloon: 180
+    Doubloon: 198 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1482,7 +1523,7 @@
   description: uplink-pdv-t3-saintie-voucher-desc
   productEntity: ShipVoucherSaintie
   cost:
-    Doubloon: 400
+    Doubloon: 440 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1497,7 +1538,7 @@
   description: uplink-pdv-t3-kortik-voucher-desc
   productEntity: ShipVoucherKortik
   cost:
-    Doubloon: 400
+    Doubloon: 440 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
@@ -1516,7 +1557,7 @@
   description: uplink-pdv-t4-saturn-voucher-desc
   productEntity: ShipVoucherSaturn
   cost:
-    Doubloon: 750
+    Doubloon: 825 # Exodus: +10%, rounded up.
   categories:
   - UplinkPdvVouchers
   conditions:
