@@ -61,6 +61,7 @@
     energy: 3
   - type: TailedEntity
     aggregateSegmentExplosionDamage: false
+    followMode: PreviousRotation
     amount: 65
     spacing: 1
     prototype: SpaceWhaleSegment

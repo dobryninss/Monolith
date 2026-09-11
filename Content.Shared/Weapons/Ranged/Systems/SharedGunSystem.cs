@@ -312,11 +312,13 @@ public abstract partial class SharedGunSystem : EntitySystem
 
     /// <summary>
     /// Attempts to shoot at the target coordinates. Resets the shot counter after every shot.
+    /// Exodus: Set predictedAudio to false when the user's client has not predicted the firing sound.
     /// </summary>
-    public void AttemptShoot(EntityUid user, EntityUid gunUid, GunComponent gun, EntityCoordinates toCoordinates)
+    public void AttemptShoot(EntityUid user, EntityUid gunUid, GunComponent gun, EntityCoordinates toCoordinates,
+        bool predictedAudio = true) // Exodus server-initiated firing audio
     {
         gun.ShootCoordinates = toCoordinates;
-        AttemptShoot(user, gunUid, gun);
+        AttemptShoot(user, gunUid, gun, predictedAudio); // Exodus server-initiated firing audio
         gun.ShotCounter = 0;
         EntityManager.DirtyField(gunUid, gun, nameof(GunComponent.ShotCounter));
     }
@@ -353,7 +355,7 @@ public abstract partial class SharedGunSystem : EntitySystem
             autoShoot.RemainingTime = duration;
     }
 
-    protected void AttemptShoot(EntityUid user, EntityUid gunUid, GunComponent gun)
+    protected void AttemptShoot(EntityUid user, EntityUid gunUid, GunComponent gun, bool predictedAudio = true) // Exodus server-initiated firing audio
     {
         if (_autoShootGunQuery.TryComp(gunUid, out var auto) && !auto.CanFire && auto.RemainingTime <= TimeSpan.Zero) // Frontier // Mono
             return; // Frontier
@@ -500,7 +502,7 @@ public abstract partial class SharedGunSystem : EntitySystem
                 // Don't spam safety sounds at gun fire rate, play it at a reduced rate.
                 // May cause prediction issues? Needs more tweaking
                 gun.NextFire = TimeSpan.FromSeconds(Math.Max(lastFire.TotalSeconds + SafetyNextFire, gun.NextFire.TotalSeconds));
-                Audio.PlayPredicted(gun.SoundEmpty, gunUid, user);
+                Audio.PlayPredicted(gun.SoundEmpty, gunUid, predictedAudio ? user : null); // Exodus server-initiated firing audio
                 return;
             }
 
@@ -527,7 +529,8 @@ public abstract partial class SharedGunSystem : EntitySystem
         }
 
         // Shoot confirmed - sounds also played here in case it's invalid (e.g. cartridge already spent).
-        Shoot(gunUid, gun, ev.Ammo, fromCoordinates, toCoordinates.Value, out var userImpulse, user, throwItems: attemptEv.ThrowItems);
+        Shoot(gunUid, gun, ev.Ammo, fromCoordinates, toCoordinates.Value, out var userImpulse, user,
+            throwItems: attemptEv.ThrowItems, predictedAudio: predictedAudio); // Exodus server-initiated firing audio
         var shotEv = new GunShotEvent(user, ev.Ammo, toCoordinates.Value); // Mono - pass coordinates
         RaiseLocalEvent(gunUid, ref shotEv);
 
@@ -571,7 +574,8 @@ public abstract partial class SharedGunSystem : EntitySystem
         EntityCoordinates toCoordinates,
         out bool userImpulse,
         EntityUid? user = null,
-        bool throwItems = false);
+        bool throwItems = false,
+        bool predictedAudio = true); // Exodus server-initiated firing audio
 
     public virtual void ShootProjectile(EntityUid uid, Vector2 direction, Vector2 gunVelocity, EntityUid gunUid, EntityUid? user = null, float speed = 20f,
                                         float offset = 0f) // Mono - add offset

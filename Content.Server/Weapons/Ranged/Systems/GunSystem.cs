@@ -83,14 +83,15 @@ public sealed partial class GunSystem : SharedGunSystem
     }
 
     public override void Shoot(EntityUid gunUid, GunComponent gun, List<(EntityUid? Entity, IShootable Shootable)> ammo,
-        EntityCoordinates fromCoordinates, EntityCoordinates toCoordinates, out bool userImpulse, EntityUid? user = null, bool throwItems = false)
+        EntityCoordinates fromCoordinates, EntityCoordinates toCoordinates, out bool userImpulse, EntityUid? user = null, bool throwItems = false,
+        bool predictedAudio = true) // Exodus server-initiated firing audio
     {
         userImpulse = true;
 
         // Exodus-begin fire control weapon audio
         // Fire-control shots are only initiated on the server, so their operator has not predicted the sound locally.
         // Do not exclude them from the PVS audio broadcast.
-        var audioUser = HasComp<FireControllableComponent>(gunUid) ? null : user;
+        var audioUser = !predictedAudio || HasComp<FireControllableComponent>(gunUid) ? null : user;
         // Exodus-end
 
         if (user != null && gun.UseUserPosition) // Exodus

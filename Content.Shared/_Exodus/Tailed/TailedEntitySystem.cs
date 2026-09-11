@@ -218,10 +218,11 @@ public sealed partial class TailedEntitySystem : EntitySystem
             {
                 var segment = tail.TailSegments[segmentIndex++];
 
-                if (!_physicsQuery.TryGetComponent(segment, out var physics))
+                if (!_physicsQuery.TryGetComponent(segment, out var physics) ||
+                    !_transformQuery.TryGetComponent(segment, out var segmentTransform))
                     continue;
 
-                var currentPos = _transform.GetWorldPosition(segment);
+                var currentPos = _transform.GetWorldPosition(segmentTransform);
                 var targetDistance = i == 0
                     ? tail.Spacing * tail.StartSpacingMultiplier
                     : tail.Spacing;
@@ -260,7 +261,9 @@ public sealed partial class TailedEntitySystem : EntitySystem
                 _physics.SetLinearVelocity(segment, newVelocity, body: physics);
 
                 prevPos = currentPos;
-                if (currentDistance > 0f)
+                if (tail.FollowMode == TailFollowMode.PreviousRotation)
+                    prevDirection = _transform.GetWorldRotation(segmentTransform).ToWorldVec();
+                else if (currentDistance > 0f)
                     prevDirection = directionToPrev;
             }
         }

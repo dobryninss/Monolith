@@ -8,6 +8,7 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Dynamics.Joints;
 
 namespace Content.IntegrationTests.Tests._Exodus;
@@ -99,6 +100,20 @@ public sealed class TailedEntityTest
         hard: true
         layer: [BulletImpassable]
         mask: []
+
+- type: entity
+  id: TestMovingTailedHead
+  parent: TestTailedHead
+  components:
+  - type: TailedEntity
+    prototype: TestTailedRockSegment
+
+- type: entity
+  id: TestMovingMultiTailedHead
+  parent: TestMultiTailedHead
+  components:
+  - type: TailedEntity
+    prototype: TestTailedRockSegment
 """;
 
     [Test]
@@ -307,6 +322,48 @@ public sealed class TailedEntityTest
             {
                 Assert.That(shooterDamage, Is.GreaterThan(0f));
                 Assert.That(targetDamage, Is.Zero);
+            }
+
+            entities.DeleteEntity(map);
+        });
+
+        await server.WaitRunTicks(2);
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task StationaryTailMovementRespectsFollowMode(
+        [Values] TailFollowMode followMode,
+        [Values("TestMovingTailedHead", "TestMovingMultiTailedHead")] string headPrototype)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.EntMan;
+
+        await server.WaitAssertion(() =>
+        {
+            var map = entities.System<SharedMapSystem>().CreateMap();
+            var head = entities.SpawnEntity(headPrototype, new EntityCoordinates(map, Vector2.Zero));
+            var tailed = entities.GetComponent<TailedEntityComponent>(head);
+            tailed.FollowMode = followMode;
+            tailed.MaxSegmentSpeed = 10f;
+            entities.Dirty(head, tailed);
+
+            // A straight, stationary chain should settle in ChainDirection mode. The upstream
+            // rotation-based mode should keep moving its later segments even without head movement.
+            entities.System<TailedEntitySystem>().Update(1f / 60f);
+
+            for (var tailIndex = 0; tailIndex < tailed.StartOffsets.Count; tailIndex++)
+            {
+                var first = tailed.TailSegments[tailIndex * tailed.Amount];
+                var second = tailed.TailSegments[tailIndex * tailed.Amount + 1];
+                Assert.That(entities.GetComponent<PhysicsComponent>(first).LinearVelocity.LengthSquared(),
+                    Is.LessThan(0.000001f));
+                var speedSquared = entities.GetComponent<PhysicsComponent>(second).LinearVelocity.LengthSquared();
+                if (followMode == TailFollowMode.PreviousRotation)
+                    Assert.That(speedSquared, Is.GreaterThan(0.01f));
+                else
+                    Assert.That(speedSquared, Is.LessThan(0.000001f));
             }
 
             entities.DeleteEntity(map);

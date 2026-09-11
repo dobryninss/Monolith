@@ -37,6 +37,12 @@ public sealed partial class TailedEntityComponent : Component
     public float Spacing = 1f;
 
     /// <summary>
+    /// How each segment chooses its target direction after the first segment in a tail.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TailFollowMode FollowMode = TailFollowMode.ChainDirection;
+
+    /// <summary>
     /// Multiplier applied only to the distance between the head and the first segment.
     /// </summary>
     [DataField, AutoNetworkedField]

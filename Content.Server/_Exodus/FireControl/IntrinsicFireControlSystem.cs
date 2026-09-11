@@ -141,7 +141,7 @@ public sealed class IntrinsicFireControlSystem : EntitySystem
                 continue;
             }
 
-            _gun.AttemptShoot(ent.Owner, weapon, gun, targetCoordinates);
+            _gun.AttemptShoot(ent.Owner, weapon, gun, targetCoordinates, predictedAudio: false);
         }
 
         UpdateUi(ent);
@@ -189,9 +189,10 @@ public sealed class IntrinsicFireControlSystem : EntitySystem
         var name = weaponName is { } locId
             ? Loc.GetString(locId)
             : Name(weapon);
+        // Keep the entry attached to the weapon as it moves, without resending the UI state.
         var controllable = new FireControllableEntry(
             GetNetEntity(weapon),
-            GetNetCoordinates(Transform(weapon).Coordinates),
+            GetNetCoordinates(new EntityCoordinates(weapon, Vector2.Zero)),
             name)
         {
             NextFire = gun.NextFire,
