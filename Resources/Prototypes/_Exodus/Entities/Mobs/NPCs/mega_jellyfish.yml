@@ -57,9 +57,11 @@
     preparationTime: 0.5
     blockedPopup: space-mega-jellyfish-teleport-blocked
   - type: RadarBlip
+    radarColor: "#55DDFF"
     scale: 8
     shape: hexagon
     visibleFromOtherGrids: true
+    label: radar-blip-space-mega-jellyfish
   - type: ShipNpcTarget
     needGrid: NoGrid
     priority: 1

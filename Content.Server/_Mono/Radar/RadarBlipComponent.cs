@@ -14,6 +14,15 @@ public sealed partial class RadarBlipComponent : Component
     [DataField]
     public BlipConfig Config = new();
 
+    // Exodus-begin radar blip labels
+    /// <summary>
+    /// Optional localization key shown with the distance when IFF labels are enabled.
+    /// Sent with the radar report so the label also works outside entity PVS.
+    /// </summary>
+    [DataField]
+    public LocId? Label;
+    // Exodus-end
+
     /// <summary>
     /// Whether this blip should be shown even when parented to a grid.
     /// </summary>

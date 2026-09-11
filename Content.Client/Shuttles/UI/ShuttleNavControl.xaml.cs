@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Client._Exodus.NPC; // Exodus - faction AI radar label
+using Content.Client._Exodus.Radar; // Exodus radar blip labels
 using Content.Client._Exodus.Territory; // Exodus - territory POI colors
 using Content.Client._Mono.Radar;
 using Content.Client.Station; // Frontier
@@ -1059,7 +1060,10 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 continue;
             // Exodus-end
 
-            var position = Vector2.Transform(_transform.ToMapCoordinates(blip.Position).Position, worldToView);
+            // Exodus-begin radar blip labels: reuse the map position for the IFF distance.
+            var blipMapPosition = _transform.ToMapCoordinates(blip.Position).Position;
+            var position = Vector2.Transform(blipMapPosition, worldToView);
+            // Exodus-end
             var color = blip.Config.Color.WithAlpha(0.8f);
             var box = new Box2Rotated(blip.Config.Bounds, 0);
             if (blip.Config.RespectZoom)
@@ -1080,6 +1084,18 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             // Exodus-end
 
             DrawBlipShape(handle, position, box, color, blip.Config, worldRot); // Exodus nebula-radar-visualization
+
+            // Exodus-begin radar blip labels: preserve the blip's range and detection checks.
+            if (ShowIFF && blip.Label is { } label)
+            {
+                var distanceSquared = Vector2.DistanceSquared(blipMapPosition, mapPos.Position);
+                if (MaximumIFFDistance < 0f || distanceSquared <= MaximumIFFDistance * MaximumIFFDistance)
+                {
+                    RadarBlipLabelRenderer.Draw(handle, Font, position, PixelSize, box.Box.MaxDimension * 0.5f,
+                        UIScale, label, MathF.Sqrt(distanceSquared), blip.Config.Color);
+                }
+            }
+            // Exodus-end
         }
 
         // Draw missile lines from the radar blips system

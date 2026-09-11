@@ -218,7 +218,8 @@ public sealed partial class RadarBlipSystem : EntitySystem
                             blipVelocity,
                             rotation,
                             configIdx,
-                            gridConfigIdx));
+                            gridConfigIdx,
+                            blip.Label)); // Exodus radar blip labels
             _tempVisibleBlipsCache.Add(blipUid);
         }
 

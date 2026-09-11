@@ -81,9 +81,11 @@
     weightlessSpeedMultiplier: 3
     weightlessAccelerationMultiplier: 3
   - type: RadarBlip
+    radarColor: "#FF8227"
     scale: 3
     shape: hexagon
     visibleFromOtherGrids: true
+    label: radar-blip-space-leviathan
   - type: ShipNpcTarget
     needGrid: NoGrid
     priority: 1
