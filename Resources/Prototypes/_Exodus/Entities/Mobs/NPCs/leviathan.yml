@@ -98,17 +98,26 @@
         type: RadarConsoleBoundUserInterface
       enum.ReadOnlyBluespaceMapUiKey.Key:
         type: ReadOnlyBluespaceMapBoundUserInterface
+      enum.FireControlConsoleUiKey.Key:
+        type: FireControlConsoleBoundUserInterface
+        requireInputValidation: false
   - type: IntrinsicUI
     uis:
       enum.RadarConsoleUiKey.Key:
         toggleAction: ActionLeviathanShowRadar
       enum.ReadOnlyBluespaceMapUiKey.Key:
         toggleAction: ActionShowBluespaceMap
+      enum.FireControlConsoleUiKey.Key:
+        toggleAction: ActionLeviathanFireControl
   - type: RadarConsole
     followEntity: true
     noRotate: true
     hideCoords: false # Frontier
+    maxRange: 3240 # Nominal rock range: 450 projectile speed * 7.2 seconds.
     maxIffRange: null # Frontier
+  - type: IntrinsicFireControl
+    maxRange: 3240
+    weaponName: space-leviathan-rock-spit-name
   - type: MovementIgnoreGravity
     weightless: true
   - type: WarpPoint
@@ -153,6 +162,28 @@
         Blunt: 500
         Slash: 250
         Structural: 3000
+  - type: MeleePrimaryOnly
+  - type: Gun
+    projectileSpeed: 450
+    fireRate: 0.15 # Three times WeaponTurretLeviathan's fire rate.
+    useKey: false
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    recoil: 100
+    cameraRecoilScalar: 0
+    minAngle: 0
+    maxAngle: 1
+    shootThermalSignature: 48000000
+    soundGunshot:
+      collection: ShipGunGenericBig
+    soundEmpty: null
+  - type: BasicEntityAmmoProvider
+    proto: SpaceLeviathanRockProjectile
+  - type: ShipGunType
+    shipType: Ballistic
+  - type: ShipGunClass
+    shipClass: SuperHeavy
   - type: Speech
     speechVerb: LargeMob
   - type: TTS
@@ -209,6 +240,18 @@
     ignoreWhitelist:
       tags:
       - SpaceLeviathan
+
+- type: entity
+  id: ActionLeviathanFireControl
+  name: leviathan fire control
+  description: Open the leviathan's long-range rock-spitting interface.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    icon: { sprite: Objects/Weapons/Guns/Projectiles/meteor.rsi, state: large }
+    iconOn: { sprite: Objects/Weapons/Guns/Projectiles/meteor.rsi, state: large }
+    priority: -4
+    event: !type:ToggleIntrinsicUIEvent { key: enum.FireControlConsoleUiKey.Key }
 
 - type: entity
   id: SpaceWhaleSegment

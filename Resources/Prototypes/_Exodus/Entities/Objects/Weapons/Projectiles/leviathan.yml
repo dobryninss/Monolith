@@ -1,0 +1,11 @@
+- type: entity
+  id: SpaceLeviathanRockProjectile
+  parent: ShipLeviathanProjectile
+  name: leviathan rock
+  description: A massive rock spat out by a space leviathan.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/meteor.rsi
+    layers:
+    - state: large

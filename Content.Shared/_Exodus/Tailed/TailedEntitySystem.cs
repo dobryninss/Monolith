@@ -2,10 +2,12 @@
 // Authors: Lokilife
 using System.Numerics;
 using Content.Shared.Damage;
+using Content.Shared.Projectiles;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
 
@@ -29,17 +31,20 @@ public sealed partial class TailedEntitySystem : EntitySystem
     [Dependency] private INetManager _netManager = default!;
 
     private EntityQuery<PhysicsComponent> _physicsQuery;
+    private EntityQuery<ProjectileComponent> _projectileQuery;
 
     public override void Initialize()
     {
         base.Initialize();
 
         _physicsQuery = GetEntityQuery<PhysicsComponent>();
+        _projectileQuery = GetEntityQuery<ProjectileComponent>();
 
         SubscribeLocalEvent<TailedEntityComponent, ComponentStartup>(OnComponentStartup);
         SubscribeLocalEvent<TailedEntityComponent, ComponentShutdown>(OnComponentShutdown);
         SubscribeLocalEvent<TailedEntitySegmentComponent, DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<TailedEntitySegmentComponent, ComponentShutdown>(OnSegmentShutdown);
+        SubscribeLocalEvent<TailedEntitySegmentComponent, PreventCollideEvent>(OnSegmentPreventCollide);
 
         InitializeTailJointRecovery();
     }
@@ -65,6 +70,20 @@ public sealed partial class TailedEntitySystem : EntitySystem
             _damageable.SetDamage(ent.Comp.HeadEntity, headDamageable, args.Damageable.Damage);
         else
             _damageable.TryChangeDamage(ent.Comp.HeadEntity, damage, true, true, headDamageable, args.Origin);
+    }
+
+    private void OnSegmentPreventCollide(Entity<TailedEntitySegmentComponent> ent, ref PreventCollideEvent args)
+    {
+        if (args.Cancelled || ent.Comp.HeadEntity == EntityUid.Invalid ||
+            !_projectileQuery.TryGetComponent(args.OtherEntity, out var projectile) ||
+            !projectile.IgnoreShooter)
+        {
+            return;
+        }
+
+        // A head's segments are part of the shooter, including when its intrinsic gun is used by another entity.
+        if (ent.Comp.HeadEntity == projectile.Shooter || ent.Comp.HeadEntity == projectile.Weapon)
+            args.Cancelled = true;
     }
 
     private void OnComponentStartup(Entity<TailedEntityComponent> ent, ref ComponentStartup args)

@@ -1,5 +1,9 @@
 using System.Numerics;
 using Content.Shared._Exodus.Tailed;
+using Content.Shared.Damage;
+using Content.Shared.Projectiles;
+using Content.Shared.Weapons.Ranged.Components;
+using Content.Shared.Weapons.Ranged.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -58,6 +62,43 @@ public sealed class TailedEntityTest
   - type: Physics
     bodyType: Kinematic
     canCollide: false
+
+- type: entity
+  id: TestTailedRockSpitter
+  parent: TestTailedHead
+  components:
+  - type: TailedEntity
+    prototype: TestTailedRockSegment
+  - type: Damageable
+    damageContainer: Biological
+  - type: Gun
+    projectileSpeed: 450
+    fireRate: 0.15
+    recoil: 0
+    cameraRecoilScalar: 0
+    minAngle: 0
+    maxAngle: 0
+    soundGunshot: null
+    soundEmpty: null
+  - type: BasicEntityAmmoProvider
+    proto: SpaceLeviathanRockProjectile
+
+- type: entity
+  id: TestTailedRockSegment
+  parent: TestTailedSegment
+  components:
+  - type: Physics
+    canCollide: true
+  - type: Damageable
+    damageContainer: Biological
+  - type: Fixtures
+    fixtures:
+      body:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        hard: true
+        layer: [BulletImpassable]
+        mask: []
 """;
 
     [Test]
@@ -209,6 +250,69 @@ public sealed class TailedEntityTest
             entities.DeleteEntity(destinationMap);
         });
 
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task RockSpitIgnoresOnlyItsOwnTail(bool ignoreShooter)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.EntMan;
+        var transform = entities.System<SharedTransformSystem>();
+        EntityUid map = default;
+        EntityUid shooter = default;
+        EntityUid target = default;
+
+        await server.WaitAssertion(() =>
+        {
+            map = entities.System<SharedMapSystem>().CreateMap();
+            shooter = entities.SpawnEntity("TestTailedRockSpitter", new EntityCoordinates(map, Vector2.Zero));
+            var firstSegment = entities.GetComponent<TailedEntityComponent>(shooter).TailSegments[0];
+            var direction = Vector2.Normalize(transform.GetWorldPosition(firstSegment) - transform.GetWorldPosition(shooter));
+            // Keep the target's explosion well outside the shooter's tail.
+            target = entities.SpawnEntity("TestTailedRockSpitter", new EntityCoordinates(map, direction * 100f));
+
+            entities.System<SharedGunSystem>().AttemptShoot(shooter, shooter,
+                entities.GetComponent<GunComponent>(shooter), new EntityCoordinates(map, direction * 110f));
+
+            var projectiles = entities.EntityQueryEnumerator<ProjectileComponent>();
+            var shots = 0;
+            while (projectiles.MoveNext(out var uid, out var projectile))
+            {
+                if (projectile.Shooter != shooter || projectile.Weapon != shooter)
+                    continue;
+
+                projectile.IgnoreShooter = ignoreShooter;
+                entities.Dirty(uid, projectile);
+                shots++;
+            }
+
+            Assert.That(shots, Is.EqualTo(1));
+        });
+
+        await server.WaitRunTicks(20);
+
+        await server.WaitAssertion(() =>
+        {
+            var shooterDamage = entities.GetComponent<DamageableComponent>(shooter).TotalDamage.Float();
+            var targetDamage = entities.GetComponent<DamageableComponent>(target).TotalDamage.Float();
+            if (ignoreShooter)
+            {
+                Assert.That(shooterDamage, Is.Zero);
+                Assert.That(targetDamage, Is.GreaterThan(0f));
+            }
+            else
+            {
+                Assert.That(shooterDamage, Is.GreaterThan(0f));
+                Assert.That(targetDamage, Is.Zero);
+            }
+
+            entities.DeleteEntity(map);
+        });
+
+        await server.WaitRunTicks(2);
         await pair.CleanReturnAsync();
     }
 
