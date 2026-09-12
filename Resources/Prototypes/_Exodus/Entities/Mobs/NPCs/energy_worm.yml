@@ -1,0 +1,109 @@
+# TODO Exodus: Stationary artwork tests only. Replace the zero movement speeds
+# and the assembled sprite layers with a linked five-part body when energy worm
+# behaviour is implemented. Add combat, shared health and nebula spawning then.
+# Keep these prototypes out of world spawning until that work is complete.
+- type: entity
+  id: BaseSpaceEnergyWormTest
+  parent: [ BaseMob, FlyingMobBase ]
+  abstract: true
+  name: energy worm
+  description: A translucent creature with red energy flowing through its folded tissue.
+  suffix: Sprite test
+  components:
+  # BaseMob has no HTN, bloodstream or combat behaviour.
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 0
+    baseSprintSpeed: 0
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.75
+        density: 50
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Sprite
+    sprite: _Exodus/Mobs/Space/energy_worm_motion.rsi
+    noRot: true
+    layers:
+    - state: head
+    - state: head_glow
+      shader: unshaded
+
+- type: entity
+  id: SpaceEnergyWormTest
+  parent: BaseSpaceEnergyWormTest
+  name: energy worm
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.85,-4.15,0.85,4.15"
+        density: 50
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Sprite
+    # Five visual parts: head, three repeated segments, tail. Native spacing is
+    # 52 pixels (1.625 tiles). Draw back to front so collars join under the hood.
+    # Baked phase offsets carry the pulse down the body; all states loop together.
+    layers:
+    - state: tail
+      offset: 0,-3.25
+    - state: tail_glow
+      offset: 0,-3.25
+      shader: unshaded
+    - state: segment_rear
+      offset: 0,-1.625
+    - state: segment_rear_glow
+      offset: 0,-1.625
+      shader: unshaded
+    - state: segment_mid
+    - state: segment_mid_glow
+      shader: unshaded
+    - state: segment
+      offset: 0,1.625
+    - state: segment_glow
+      offset: 0,1.625
+      shader: unshaded
+    - state: head
+      offset: 0,3.25
+    - state: head_glow
+      offset: 0,3.25
+      shader: unshaded
+
+- type: entity
+  id: SpaceEnergyWormHeadTest
+  parent: BaseSpaceEnergyWormTest
+  name: energy worm head
+
+- type: entity
+  id: SpaceEnergyWormSegmentTest
+  parent: BaseSpaceEnergyWormTest
+  name: energy worm segment
+  components:
+  - type: Sprite
+    layers:
+    - state: segment
+    - state: segment_glow
+      shader: unshaded
+
+- type: entity
+  id: SpaceEnergyWormTailTest
+  parent: BaseSpaceEnergyWormTest
+  name: energy worm tail
+  components:
+  - type: Sprite
+    layers:
+    - state: tail
+    - state: tail_glow
+      shader: unshaded

@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "For Exodus by Renascitur (discord: renascitur).",
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "head"
+    },
+    {
+      "name": "head_glow"
+    },
+    {
+      "name": "segment"
+    },
+    {
+      "name": "segment_glow"
+    },
+    {
+      "name": "tail"
+    },
+    {
+      "name": "tail_glow"
+    }
+  ]
+}
