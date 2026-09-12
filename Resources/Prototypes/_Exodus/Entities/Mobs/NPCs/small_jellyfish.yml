@@ -1,0 +1,103 @@
+# TODO Exodus: These stationary prototypes are for reviewing the small jellyfish sprites.
+# Replace their zero movement speeds with nebula wandering, grid avoidance and fleeing
+# when fauna behaviour is implemented. Keep them out of world spawning until then.
+- type: entity
+  id: BaseSpaceSmallJellyfishTest
+  parent: [ BaseMob, MobDamageable, FlyingMobBase ]
+  abstract: true
+  name: small nebula jellyfish
+  description: A tiny translucent creature with branching lights beneath its mantle.
+  suffix: Sprite test
+  components:
+  # BaseMob deliberately provides no HTN: these test mobs must not wander off.
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 0
+    baseSprintSpeed: 0
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      50: Dead
+  - type: Sprite
+    sprite: _Exodus/Mobs/Space/small_jellyfish_motion.rsi
+    noRot: true
+    layers:
+    - state: red
+      map: [ "enum.DamageStateVisualLayers.Base" ]
+    - state: red_glow
+      map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: red
+        BaseUnshaded: red_glow
+      Dead:
+        Base: red_dead
+
+- type: entity
+  id: SpaceSmallJellyfishRedTest
+  parent: BaseSpaceSmallJellyfishTest
+  name: small red jellyfish
+
+- type: entity
+  id: SpaceSmallJellyfishGreenTest
+  parent: BaseSpaceSmallJellyfishTest
+  name: small green jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+      map: [ "enum.DamageStateVisualLayers.Base" ]
+    - state: green_glow
+      map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: green
+        BaseUnshaded: green_glow
+      Dead:
+        Base: green_dead
+
+- type: entity
+  id: SpaceSmallJellyfishPurpleTest
+  parent: BaseSpaceSmallJellyfishTest
+  name: small purple jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: purple
+      map: [ "enum.DamageStateVisualLayers.Base" ]
+    - state: purple_glow
+      map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: purple
+        BaseUnshaded: purple_glow
+      Dead:
+        Base: purple_dead
+
+- type: entity
+  id: SpaceSmallJellyfishBlueTest
+  parent: BaseSpaceSmallJellyfishTest
+  name: small blue jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: blue
+      map: [ "enum.DamageStateVisualLayers.Base" ]
+    - state: blue_glow
+      map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: blue
+        BaseUnshaded: blue_glow
+      Dead:
+        Base: blue_dead
