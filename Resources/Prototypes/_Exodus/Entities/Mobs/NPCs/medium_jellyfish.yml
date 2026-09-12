@@ -1,0 +1,75 @@
+# TODO Exodus: These stationary prototypes are for reviewing the medium jellyfish sprites.
+# Replace their zero movement speeds and add damage, ranged combat and nebula behaviour
+# when fauna mechanics are implemented. Only the idle artwork is ready at this stage.
+# Keep these test mobs out of world spawning until then.
+- type: entity
+  id: BaseSpaceMediumJellyfishTest
+  parent: [ BaseMob, FlyingMobBase ]
+  abstract: true
+  name: medium nebula jellyfish
+  description: A translucent creature with folded luminous tissue and a bright core beneath its broad mantle.
+  suffix: Sprite test
+  components:
+  # BaseMob deliberately provides no HTN: these test mobs must not wander off.
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 0
+    baseSprintSpeed: 0
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.7
+        density: 50
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Sprite
+    sprite: _Exodus/Mobs/Space/medium_jellyfish_motion.rsi
+    noRot: true
+    layers:
+    - state: red
+    - state: red_glow
+      shader: unshaded
+
+- type: entity
+  id: SpaceMediumJellyfishRedTest
+  parent: BaseSpaceMediumJellyfishTest
+  name: medium red jellyfish
+
+- type: entity
+  id: SpaceMediumJellyfishGreenTest
+  parent: BaseSpaceMediumJellyfishTest
+  name: medium green jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - state: green_glow
+      shader: unshaded
+
+- type: entity
+  id: SpaceMediumJellyfishPurpleTest
+  parent: BaseSpaceMediumJellyfishTest
+  name: medium purple jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: purple
+    - state: purple_glow
+      shader: unshaded
+
+- type: entity
+  id: SpaceMediumJellyfishBlueTest
+  parent: BaseSpaceMediumJellyfishTest
+  name: medium blue jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: blue
+    - state: blue_glow
+      shader: unshaded

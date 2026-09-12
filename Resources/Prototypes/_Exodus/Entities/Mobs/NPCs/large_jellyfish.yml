@@ -1,0 +1,75 @@
+# TODO Exodus: These stationary prototypes are for reviewing the large jellyfish sprites.
+# Replace their zero movement speeds and add damage, ranged combat and nebula behaviour
+# when fauna mechanics are implemented. Only the idle artwork is ready at this stage.
+# Keep these test mobs out of world spawning until then.
+- type: entity
+  id: BaseSpaceLargeJellyfishTest
+  parent: [ BaseMob, FlyingMobBase ]
+  abstract: true
+  name: large nebula jellyfish
+  description: A large translucent creature with branching luminous tissue beneath a broad, layered mantle.
+  suffix: Sprite test
+  components:
+  # BaseMob deliberately provides no HTN: these test mobs must not wander off.
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 0
+    baseSprintSpeed: 0
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 1.4
+        density: 50
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Sprite
+    sprite: _Exodus/Mobs/Space/large_jellyfish_motion.rsi
+    noRot: true
+    layers:
+    - state: red
+    - state: red_glow
+      shader: unshaded
+
+- type: entity
+  id: SpaceLargeJellyfishRedTest
+  parent: BaseSpaceLargeJellyfishTest
+  name: large red jellyfish
+
+- type: entity
+  id: SpaceLargeJellyfishGreenTest
+  parent: BaseSpaceLargeJellyfishTest
+  name: large green jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - state: green_glow
+      shader: unshaded
+
+- type: entity
+  id: SpaceLargeJellyfishPurpleTest
+  parent: BaseSpaceLargeJellyfishTest
+  name: large purple jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: purple
+    - state: purple_glow
+      shader: unshaded
+
+- type: entity
+  id: SpaceLargeJellyfishBlueTest
+  parent: BaseSpaceLargeJellyfishTest
+  name: large blue jellyfish
+  components:
+  - type: Sprite
+    layers:
+    - state: blue
+    - state: blue_glow
+      shader: unshaded
