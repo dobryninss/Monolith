@@ -1,0 +1,84 @@
+# TODO Exodus: Sprite test items. Connect jelly to fauna loot and reagent grinding,
+# and the core to insulated handling, jar power and nearby battery charging later.
+# Keep these prototypes out of loot tables, recipes and purchases until then.
+- type: entity
+  id: BaseNebulaJellyTest
+  parent: BaseItem
+  abstract: true
+  suffix: Sprite test
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/NebulaFauna/nebula_jelly.rsi
+  - type: Item
+    size: Small
+    sprite: _Exodus/Objects/Specific/NebulaFauna/nebula_jelly.rsi
+
+- type: entity
+  id: NebulaJellyRedTest
+  parent: BaseNebulaJellyTest
+  name: red nebula jelly
+  description: A translucent fold of crimson jelly, threaded with dark fibres.
+  components:
+  - type: Sprite
+    state: red
+  - type: Item
+    heldPrefix: red
+
+- type: entity
+  id: NebulaJellyGreenTest
+  parent: BaseNebulaJellyTest
+  name: green nebula jelly
+  description: A soft piece of emerald jelly with pale branching veins.
+  components:
+  - type: Sprite
+    state: green
+  - type: Item
+    heldPrefix: green
+
+- type: entity
+  id: NebulaJellyPurpleTest
+  parent: BaseNebulaJellyTest
+  name: purple nebula jelly
+  description: A folded piece of violet jelly with dense fibres beneath its glossy surface.
+  components:
+  - type: Sprite
+    state: purple
+  - type: Item
+    heldPrefix: purple
+
+- type: entity
+  id: NebulaJellyBlueTest
+  parent: BaseNebulaJellyTest
+  name: blue nebula jelly
+  description: A cool blue lump of translucent jelly with lilac veins inside.
+  components:
+  - type: Sprite
+    state: blue
+  - type: Item
+    heldPrefix: blue
+
+- type: entity
+  id: StabilizedEnergyCoreTest
+  parent: BaseItem
+  name: stabilized energy core
+  description: A compact sphere with a pale nucleus and coral-coloured discharges flowing across its surface.
+  suffix: Sprite test
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/NebulaFauna/stabilized_energy_core.rsi
+    layers:
+    - state: icon
+    - state: glow
+      shader: unshaded
+  - type: Item
+    size: Small
+    sprite: _Exodus/Objects/Specific/NebulaFauna/stabilized_energy_core.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      - state: inhand-left-glow
+        shader: unshaded
+      right:
+      - state: inhand-right
+      - state: inhand-right-glow
+        shader: unshaded
