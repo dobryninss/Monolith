@@ -1,3 +1,6 @@
+ent-SpaceMegaJellyfishCorpse = тушка Люминарии
+    .desc = Опавшие останки колоссальной медузы. Её биолюминесценция угасла.
+
 ent-ActionSpaceMegaJellyfishDirectionalTeleport = Блюспейс-прыжок
     .desc = Телепортироваться на большое расстояние в направлении взгляда Люминарии.
 
