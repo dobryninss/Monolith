@@ -1,0 +1,54 @@
+# TODO Exodus: Sprite test items. Connect the tendon to Luminaria's butchering
+# loot and organic crafting, and pheromones to crafting and boss summoning later.
+# Keep these prototypes out of loot tables, recipes and purchases until then.
+- type: entity
+  id: LuminariaTendonTest
+  parent: BaseItem
+  name: Luminaria tendon
+  description: A curved bundle of violet fibres, partly exposed beneath a blue translucent sheath.
+  suffix: Sprite test
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/NebulaFauna/luminaria_tendon.rsi
+    layers:
+    - state: icon
+    - state: glow
+      shader: unshaded
+  - type: Item
+    size: Small
+    sprite: _Exodus/Objects/Specific/NebulaFauna/luminaria_tendon.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      - state: inhand-left-glow
+        shader: unshaded
+      right:
+      - state: inhand-right
+      - state: inhand-right-glow
+        shader: unshaded
+
+- type: entity
+  id: LuminariaPheromonesTest
+  parent: BaseItem
+  name: Luminaria pheromones
+  description: A sealed organic capsule containing a violet concentrate with coloured inclusions beneath a translucent membrane.
+  suffix: Sprite test
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/NebulaFauna/luminaria_pheromones.rsi
+    layers:
+    - state: icon
+    - state: glow
+      shader: unshaded
+  - type: Item
+    size: Small
+    sprite: _Exodus/Objects/Specific/NebulaFauna/luminaria_pheromones.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      - state: inhand-left-glow
+        shader: unshaded
+      right:
+      - state: inhand-right
+      - state: inhand-right-glow
+        shader: unshaded
