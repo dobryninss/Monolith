@@ -574,6 +574,18 @@
           0.1
         ]
       ]
+    },
+    {
+      "name": "red_dead"
+    },
+    {
+      "name": "green_dead"
+    },
+    {
+      "name": "purple_dead"
+    },
+    {
+      "name": "blue_dead"
     }
   ]
 }

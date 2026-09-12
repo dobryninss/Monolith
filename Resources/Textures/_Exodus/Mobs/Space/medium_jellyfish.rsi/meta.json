@@ -30,6 +30,18 @@
     },
     {
       "name": "blue_glow"
+    },
+    {
+      "name": "red_dead"
+    },
+    {
+      "name": "green_dead"
+    },
+    {
+      "name": "purple_dead"
+    },
+    {
+      "name": "blue_dead"
     }
   ]
 }

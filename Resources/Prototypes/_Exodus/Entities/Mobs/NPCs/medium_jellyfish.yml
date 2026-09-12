@@ -1,6 +1,6 @@
 # TODO Exodus: These stationary prototypes are for reviewing the medium jellyfish sprites.
-# Replace their zero movement speeds and add damage, ranged combat and nebula behaviour
-# when fauna mechanics are implemented. Only the idle artwork is ready at this stage.
+# Replace their zero movement speeds and temporary health, and add ranged combat and
+# nebula behaviour when fauna mechanics are implemented. Idle and death artwork is ready.
 # Keep these test mobs out of world spawning until then.
 - type: entity
   id: BaseSpaceMediumJellyfishTest
@@ -17,6 +17,15 @@
   - type: NpcFactionMember
     factions:
     - SimpleNeutral
+  # Temporary health is only for testing death visuals and restoring the living state.
+  - type: Damageable
+    damageContainer: Biological
+  - type: MobState
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      50: Dead
+    allowRevives: true
   - type: Fixtures
     fixtures:
       fix1:
@@ -33,8 +42,17 @@
     noRot: true
     layers:
     - state: red
+      map: [ "enum.DamageStateVisualLayers.Base" ]
     - state: red_glow
+      map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
       shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: red
+        BaseUnshaded: red_glow
+      Dead:
+        Base: red_dead
 
 - type: entity
   id: SpaceMediumJellyfishRedTest
@@ -49,8 +67,17 @@
   - type: Sprite
     layers:
     - state: green
+      map: [ "enum.DamageStateVisualLayers.Base" ]
     - state: green_glow
+      map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
       shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: green
+        BaseUnshaded: green_glow
+      Dead:
+        Base: green_dead
 
 - type: entity
   id: SpaceMediumJellyfishPurpleTest
@@ -60,8 +87,17 @@
   - type: Sprite
     layers:
     - state: purple
+      map: [ "enum.DamageStateVisualLayers.Base" ]
     - state: purple_glow
+      map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
       shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: purple
+        BaseUnshaded: purple_glow
+      Dead:
+        Base: purple_dead
 
 - type: entity
   id: SpaceMediumJellyfishBlueTest
@@ -71,5 +107,14 @@
   - type: Sprite
     layers:
     - state: blue
+      map: [ "enum.DamageStateVisualLayers.Base" ]
     - state: blue_glow
+      map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
       shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: blue
+        BaseUnshaded: blue_glow
+      Dead:
+        Base: blue_dead
