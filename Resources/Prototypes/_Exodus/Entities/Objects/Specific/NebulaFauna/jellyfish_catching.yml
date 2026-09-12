@@ -1,0 +1,62 @@
+# TODO Exodus: Artwork test items. Add fauna capture, containment and release
+# when the corresponding mechanics are implemented. Jar power and auras,
+# research, lathe recipes and trade-station kits will be connected then.
+# Keep these prototypes out of world spawning and purchases until that work is complete.
+- type: entity
+  id: BaseNebulaFaunaGearTest
+  parent: BaseItem
+  abstract: true
+  suffix: Sprite test
+  components:
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: NebulaJellyfishJarTest
+  parent: BaseNebulaFaunaGearTest
+  name: jellyfish jar
+  description: A glass jar with a threaded metal lid and contacts in its mounting base.
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/NebulaFauna/jellyfish_jar.rsi
+    state: empty
+  - type: Item
+    sprite: _Exodus/Objects/Specific/NebulaFauna/jellyfish_jar.rsi
+    heldPrefix: empty
+
+- type: entity
+  id: NebulaJellyfishJarAdvancedTest
+  parent: BaseNebulaFaunaGearTest
+  name: advanced jellyfish jar
+  description: A reinforced glass vessel with insulated supports and a heavy locking lid.
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/NebulaFauna/jellyfish_jar_advanced.rsi
+    state: empty
+  - type: Item
+    sprite: _Exodus/Objects/Specific/NebulaFauna/jellyfish_jar_advanced.rsi
+    heldPrefix: empty
+
+- type: entity
+  id: NebulaJellyfishNetTest
+  parent: BaseNebulaFaunaGearTest
+  name: jellyfish net
+  description: A light net with a soft mesh pouch and a wrapped handle.
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/NebulaFauna/jellyfish_net.rsi
+    state: icon
+  - type: Item
+    sprite: _Exodus/Objects/Specific/NebulaFauna/jellyfish_net.rsi
+
+- type: entity
+  id: NebulaJellyfishNetAdvancedTest
+  parent: BaseNebulaFaunaGearTest
+  name: advanced jellyfish net
+  description: A reinforced net with a deep mesh pouch and a telescopic handle.
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/NebulaFauna/jellyfish_net_advanced.rsi
+    state: icon
+  - type: Item
+    sprite: _Exodus/Objects/Specific/NebulaFauna/jellyfish_net_advanced.rsi

@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "For Exodus by Renascitur (discord: renascitur).",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "empty"
+    },
+    {
+      "name": "empty-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "empty-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "red"
+    },
+    {
+      "name": "red_glow"
+    },
+    {
+      "name": "red-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "red-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "green"
+    },
+    {
+      "name": "green_glow"
+    },
+    {
+      "name": "green-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "green-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "purple"
+    },
+    {
+      "name": "purple_glow"
+    },
+    {
+      "name": "purple-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "purple-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "blue"
+    },
+    {
+      "name": "blue_glow"
+    },
+    {
+      "name": "blue-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "blue-inhand-right",
+      "directions": 4
+    }
+  ]
+}

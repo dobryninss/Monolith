@@ -1,0 +1,15 @@
+ent-BaseNebulaFaunaGearTest = jellyfish catching equipment
+    .desc = { "" }
+    .suffix = Sprite test
+ent-NebulaJellyfishJarTest = jellyfish jar
+    .desc = A glass jar with a threaded metal lid and contacts in its mounting base.
+    .suffix = Sprite test
+ent-NebulaJellyfishJarAdvancedTest = advanced jellyfish jar
+    .desc = A reinforced glass vessel with insulated supports and a heavy locking lid.
+    .suffix = Sprite test
+ent-NebulaJellyfishNetTest = jellyfish net
+    .desc = A light net with a soft mesh pouch and a wrapped handle.
+    .suffix = Sprite test
+ent-NebulaJellyfishNetAdvancedTest = advanced jellyfish net
+    .desc = A reinforced net with a deep mesh pouch and a telescopic handle.
+    .suffix = Sprite test
