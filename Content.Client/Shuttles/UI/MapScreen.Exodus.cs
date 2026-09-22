@@ -1,6 +1,8 @@
 using System.Numerics;
+using Content.Shared._Exodus.MedicalTracking; // Exodus medical tablet
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Systems;
+using Robust.Shared.Map; // Exodus medical tablet
 
 namespace Content.Client.Shuttles.UI;
 
@@ -24,4 +26,17 @@ public sealed partial class MapScreen
         if (RightDisplayMap.Parent?.Parent is { } rightPanel)
             rightPanel.Visible = false;
     }
+
+    // Exodus-begin medical tablet
+    public void SetMedicalContacts(List<MedicalTrackingContact> contacts)
+    {
+        MapRadar.SetMedicalContacts(contacts);
+    }
+
+    public void FocusMedicalContact(MapCoordinates coordinates)
+    {
+        if (_mapManager.MapExists(coordinates.MapId))
+            MapRadar.SetMap(coordinates.MapId, coordinates.Position, recentering: true);
+    }
+    // Exodus-end
 }

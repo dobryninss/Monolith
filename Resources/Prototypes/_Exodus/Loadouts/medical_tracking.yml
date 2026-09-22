@@ -1,0 +1,23 @@
+- type: loadout
+  id: ContractorMedicalTrackingImplanterSilver
+  price: 25000
+  revenueAccount: Medical
+  storage:
+    back:
+    - MedicalTrackingImplanterSilver
+
+- type: loadout
+  id: ContractorMedicalTrackingImplanterGold
+  price: 125000
+  revenueAccount: Medical
+  storage:
+    back:
+    - MedicalTrackingImplanterGold
+
+- type: loadout
+  id: ContractorMedicalTrackingImplanterPlatinum
+  price: 250000
+  revenueAccount: Medical
+  storage:
+    back:
+    - MedicalTrackingImplanterPlatinum

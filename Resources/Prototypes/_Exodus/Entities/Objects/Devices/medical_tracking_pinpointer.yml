@@ -1,0 +1,22 @@
+- type: entity
+  parent: PinpointerBase
+  id: MedicalTrackingPinpointer
+  name: platinum client pinpointer
+  description: Selects and tracks a registered platinum client's brain. Requires medical access.
+  components:
+  - type: MedicalTrackingPinpointer
+    updateInterval: 1
+  - type: Pinpointer
+    toggleOnInteract: false
+  - type: ActivatableUI
+    key: enum.MedicalTrackingUiKey.Pinpointer
+    blockSpectators: true
+  - type: ActivatableUIRequiresAccess
+  - type: AccessReader
+    access: [["Medical"]]
+  - type: UserInterface
+    interfaces:
+      enum.MedicalTrackingUiKey.Pinpointer:
+        type: MedicalTrackingPinpointerBoundUserInterface
+  - type: StaticPrice
+    price: 500

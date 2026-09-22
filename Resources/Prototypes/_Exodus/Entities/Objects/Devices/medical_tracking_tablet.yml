@@ -1,0 +1,33 @@
+- type: entity
+  parent: BaseItem
+  id: MedicalTrackingTablet
+  name: medical rescue tablet
+  description: Shows medical clients' last known body positions and condition on the bluespace map.
+  components:
+  - type: MedicalTrackingTablet
+    updateInterval: 1
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: Objects/Specific/Medical/handheldcrewmonitor.rsi
+    state: scanner
+  - type: Icon
+    sprite: Objects/Specific/Medical/handheldcrewmonitor.rsi
+    state: scanner
+  - type: RadarConsole
+    followEntity: true
+    noRotate: true
+    hideCoords: false
+    maxIffRange: null
+  - type: ActivatableUI
+    key: enum.MedicalTrackingUiKey.Key
+    blockSpectators: true
+  - type: ActivatableUIRequiresAccess
+  - type: AccessReader
+    access: [["Medical"]]
+  - type: UserInterface
+    interfaces:
+      enum.MedicalTrackingUiKey.Key:
+        type: MedicalTrackingBoundUserInterface
+  - type: StaticPrice
+    price: 500

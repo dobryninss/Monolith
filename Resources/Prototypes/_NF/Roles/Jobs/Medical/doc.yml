@@ -65,6 +65,8 @@
     back:
     - RubberStampDoc
     - BoxFolderMedicalDoctor
+    - MedicalTrackingTablet # Exodus medical rescue tracking
+    - MedicalTrackingPinpointer # Exodus platinum client tracking
     - StationAdministrationConsoleFlatpack
     - PhoneInstrumentHigh
     - MDHandheldOverwatchConsole

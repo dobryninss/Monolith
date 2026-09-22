@@ -1,0 +1,106 @@
+- type: entity
+  abstract: true
+  parent: BaseSubdermalImplant
+  id: BaseMedicalServiceImplant
+  components:
+  - type: SubdermalImplant
+  - type: MedicalTrackingImplant
+  - type: TriggerOnMobstateChange
+    mobState:
+    - Dead
+  - type: Rattle
+    radioChannel: Medical
+
+- type: entity
+  parent: BaseMedicalServiceImplant
+  id: MedicalTrackingImplantBasic
+  name: basic medical tracking implant
+  description: Reports the client's death within Colossus territory to the medical channel.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: MedicalTrackingImplant
+    tier: 1
+    notificationTerritory: ColossusCentral
+
+- type: entity
+  parent: BaseMedicalServiceImplant
+  id: MedicalTrackingImplantSilver
+  name: silver medical tracking implant
+  description: Reports critical condition and death throughout the sector to the medical channel.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: MedicalTrackingImplant
+    tier: 2
+  - type: TriggerOnMobstateChange
+    mobState:
+    - Critical
+    - Dead
+
+- type: entity
+  parent: MedicalTrackingImplantSilver
+  id: MedicalTrackingImplantGold
+  name: gold medical tracking implant
+  description: Also reports the body's position and condition to medical tablets once a minute.
+  components:
+  - type: MedicalTrackingImplant
+    tier: 3
+    trackBody: true
+    updateInterval: 60
+
+- type: entity
+  parent: MedicalTrackingImplantGold
+  id: MedicalTrackingImplantPlatinum
+  name: platinum medical tracking implant
+  description: Also registers the client's brain for tracking, even after the body is destroyed.
+  components:
+  - type: MedicalTrackingImplant
+    tier: 4
+    trackBrain: true
+
+- type: entity
+  parent: BaseImplantOnlyImplanter
+  id: MedicalTrackingImplanterBasic
+  name: basic medical tracking implanter
+  description: Reports death within Colossus territory. A higher tier replaces the previous medical implant.
+  components:
+  - type: Implanter
+    implant: MedicalTrackingImplantBasic
+  - type: StaticPrice
+    price: 1000
+    vendPrice: 1000
+
+- type: entity
+  parent: MedicalTrackingImplanterBasic
+  id: MedicalTrackingImplanterSilver
+  name: silver medical tracking implanter
+  description: Reports critical condition and death throughout the sector.
+  components:
+  - type: Implanter
+    implant: MedicalTrackingImplantSilver
+  - type: StaticPrice
+    price: 25000
+    vendPrice: 25000
+
+- type: entity
+  parent: MedicalTrackingImplanterSilver
+  id: MedicalTrackingImplanterGold
+  name: gold medical tracking implanter
+  description: Also reports the body's position and condition to medical tablets once a minute.
+  components:
+  - type: Implanter
+    implant: MedicalTrackingImplantGold
+  - type: StaticPrice
+    price: 125000
+    vendPrice: 125000
+
+- type: entity
+  parent: MedicalTrackingImplanterGold
+  id: MedicalTrackingImplanterPlatinum
+  name: platinum medical tracking implanter
+  description: Also registers the client's brain for tracking after extraction or destruction of the body.
+  components:
+  - type: Implanter
+    implant: MedicalTrackingImplantPlatinum
+  - type: StaticPrice
+    price: 250000
+    vendPrice: 250000
