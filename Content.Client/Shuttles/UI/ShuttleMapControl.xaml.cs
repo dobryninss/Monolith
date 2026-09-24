@@ -132,6 +132,7 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
         // Exodus-end
 
         _font = new VectorFont(cache.GetResource<FontResource>("/EngineFonts/NotoSans/NotoSans-Regular.ttf"), 10);
+        OnMouseExited += _ => _medicalMousePosition = null; // Exodus medical marker hover
     }
 
     public void SetMap(MapId mapId, Vector2 offset, bool recentering = false)
@@ -155,10 +156,18 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
     protected override void MouseMove(GUIMouseMoveEventArgs args)
     {
         base.MouseMove(args);
+        _medicalMousePosition = args.RelativePixelPosition; // Exodus medical marker hover
     }
 
     protected override void KeyBindUp(GUIBoundKeyEventArgs args)
     {
+        // Exodus-begin medical marker selection is confined to read-only medical maps.
+        if (!FtlMode && args.Function == EngineKeyFunctions.UIClick && TrySelectMedicalContact(args.RelativePixelPosition))
+        {
+            args.Handle();
+            return;
+        }
+        // Exodus-end
         if (FtlMode && ViewingMap != MapId.Nullspace)
         {
             if (args.Function == EngineKeyFunctions.UIClick)

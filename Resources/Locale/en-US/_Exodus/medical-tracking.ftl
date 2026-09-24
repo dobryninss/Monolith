@@ -1,6 +1,23 @@
 medical-tracking-title = Medical rescue tablet
 medical-tracking-pinpointer-title = Platinum client pinpointer
-medical-tracking-bodies = Clients: last body positions
+medical-tracking-bodies = Clients: { $shown } / { $total }
+medical-tracking-search = Search by name
+medical-tracking-filter-all = All conditions
+medical-tracking-filter-critical = Critical only
+medical-tracking-filter-dead = Dead only
+medical-tracking-my-position = My position
+medical-tracking-show-clients = Show clients
+medical-tracking-show-clients-tip = Fit all filtered contacts on the current map.
+medical-tracking-no-matches = No clients match the filter
+medical-tracking-coordinates = Coordinates: { $x }, { $y }
+medical-tracking-signal-age = Signal received { $seconds } s ago
+medical-tracking-map-contact = { $name } · { $status }
+medical-tracking-cluster = Clients: { $count }. Click to zoom in.
+medical-tracking-map-hint = Last known positions. Left click: select / zoom into a group; right drag: pan; wheel: zoom.
+medical-tracking-tier-basic = BASIC
+medical-tracking-tier-silver = SILVER
+medical-tracking-tier-gold = GOLD
+medical-tracking-tier-platinum = PLATINUM
 medical-tracking-platinum = Platinum clients: brain tracking
 medical-tracking-clear = Clear target
 medical-tracking-no-target = No brain selected
@@ -16,6 +33,26 @@ medical-tracking-implant-no-upgrade = A medical implant of the same or a higher 
 medical-tracking-implant-no-brain = No brain found to register as a platinum client.
 ledger-entry-type-ProductSales = Product and loadout sales
 
+medical-tracking-alert-location = { $grid ->
+    [null] Coordinates: { $position }.
+    *[other] { $grid }, coordinates: { $position }.
+    }
+medical-tracking-alert-critical = CRITICAL CONDITION: { $user }. { medical-tracking-alert-location }
+medical-tracking-alert-dead = DEATH: { $user }. { medical-tracking-alert-location }
+medical-tracking-alert-revive = VITAL SIGNS RESTORED: { $user }. Condition remains critical. { medical-tracking-alert-location }
+medical-tracking-basic-critical = Medical · { medical-tracking-tier-basic } - { medical-tracking-alert-critical }
+medical-tracking-basic-dead = Medical · { medical-tracking-tier-basic } - { medical-tracking-alert-dead }
+medical-tracking-basic-revive = Medical · { medical-tracking-tier-basic } - { medical-tracking-alert-revive }
+medical-tracking-silver-critical = Medical · { medical-tracking-tier-silver } - { medical-tracking-alert-critical }
+medical-tracking-silver-dead = Medical · { medical-tracking-tier-silver } - { medical-tracking-alert-dead }
+medical-tracking-silver-revive = Medical · { medical-tracking-tier-silver } - { medical-tracking-alert-revive }
+medical-tracking-gold-critical = Medical · { medical-tracking-tier-gold } - { medical-tracking-alert-critical }
+medical-tracking-gold-dead = Medical · { medical-tracking-tier-gold } - { medical-tracking-alert-dead }
+medical-tracking-gold-revive = Medical · { medical-tracking-tier-gold } - { medical-tracking-alert-revive }
+medical-tracking-platinum-critical = Medical · { medical-tracking-tier-platinum } - { medical-tracking-alert-critical }
+medical-tracking-platinum-dead = Medical · { medical-tracking-tier-platinum } - { medical-tracking-alert-dead }
+medical-tracking-platinum-revive = Medical · { medical-tracking-tier-platinum } - { medical-tracking-alert-revive }
+
 ent-MedicalTrackingTablet = medical rescue tablet
     .desc = Shows clients' last known body positions and condition on the bluespace map. Requires medical access.
 ent-MedicalTrackingPinpointer = platinum client pinpointer
@@ -25,7 +62,7 @@ ent-MedicalTrackingImplantBasic = basic medical tracking implant
 ent-MedicalTrackingImplantSilver = silver medical tracking implant
     .desc = Reports critical condition and death throughout the sector to the medical channel.
 ent-MedicalTrackingImplantGold = gold medical tracking implant
-    .desc = Includes silver coverage and reports the body's position and condition to medical tablets once a minute. The marker disappears when the body is destroyed.
+    .desc = Includes silver coverage and reports the body's position and condition to medical tablets every 5 seconds. The marker disappears when the body is destroyed.
 ent-MedicalTrackingImplantPlatinum = platinum medical tracking implant
     .desc = Includes gold coverage and registers the client's brain for tracking, even after extraction or destruction of the body.
 ent-MedicalTrackingImplanterBasic = basic medical tracking implanter

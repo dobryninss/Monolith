@@ -12,6 +12,10 @@ public sealed partial class MedicalTrackingImplantComponent : Component
     [DataField]
     public int Tier;
 
+    /// <summary>Localized service tier shown on medical client cards.</summary>
+    [DataField]
+    public LocId TierName = "medical-tracking-tier-basic";
+
     /// <summary>Restricts radio notifications to this territory profile; null allows the whole sector.</summary>
     [DataField]
     public ProtoId<TerritoryProfilePrototype>? NotificationTerritory;
@@ -26,7 +30,7 @@ public sealed partial class MedicalTrackingImplantComponent : Component
 
     /// <summary>Interval between body position and status samples.</summary>
     [DataField]
-    public TimeSpan UpdateInterval = TimeSpan.FromMinutes(1);
+    public TimeSpan UpdateInterval = TimeSpan.FromSeconds(5);
 
     /// <summary>Next body sample time, shifted together with the implanted entity when paused.</summary>
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]

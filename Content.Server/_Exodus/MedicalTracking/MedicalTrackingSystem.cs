@@ -181,10 +181,10 @@ public sealed partial class MedicalTrackingSystem : EntitySystem
                 continue;
 
             // Advance by whole intervals after a stall; never resample repeatedly to catch up.
-            var interval = implant.UpdateInterval > TimeSpan.Zero ? implant.UpdateInterval : TimeSpan.FromMinutes(1);
+            var interval = implant.UpdateInterval > TimeSpan.Zero ? implant.UpdateInterval : TimeSpan.FromSeconds(5);
             implant.NextUpdate += interval * (1 + (now - implant.NextUpdate).Ticks / interval.Ticks);
             implant.Contact = transform.MapID == MapId.Nullspace ? null : new MedicalTrackingContact(
-                Identity.Name(uid, EntityManager),
+                GetNetEntity(uid), Identity.Name(uid, EntityManager), implant.TierName,
                 new MapCoordinates(_transform.GetWorldPosition(transform), transform.MapID),
                 state.CurrentState, now);
         }

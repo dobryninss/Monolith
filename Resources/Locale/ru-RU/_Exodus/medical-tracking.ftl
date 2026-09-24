@@ -1,6 +1,23 @@
 medical-tracking-title = Медицинский спасательный планшет
 medical-tracking-pinpointer-title = Пинпоинтер платиновых клиентов
-medical-tracking-bodies = Клиенты: последнее местоположение тела
+medical-tracking-bodies = Клиенты: { $shown } / { $total }
+medical-tracking-search = Поиск по имени
+medical-tracking-filter-all = Все состояния
+medical-tracking-filter-critical = Только критическое состояние
+medical-tracking-filter-dead = Только мёртвые
+medical-tracking-my-position = Моё положение
+medical-tracking-show-clients = Показать клиентов
+medical-tracking-show-clients-tip = Показать все отфильтрованные метки на текущей карте.
+medical-tracking-no-matches = Нет клиентов по выбранному фильтру
+medical-tracking-coordinates = Координаты: { $x }, { $y }
+medical-tracking-signal-age = Сигнал получен { $seconds } с назад
+medical-tracking-map-contact = { $name } · { $status }
+medical-tracking-cluster = Клиентов: { $count }. Нажмите, чтобы приблизить.
+medical-tracking-map-hint = Последние известные позиции. ЛКМ - выбрать / приблизить группу; ПКМ - переместить карту; колесо - масштаб.
+medical-tracking-tier-basic = ОБЫЧНЫЙ
+medical-tracking-tier-silver = СЕРЕБРО
+medical-tracking-tier-gold = ЗОЛОТО
+medical-tracking-tier-platinum = ПЛАТИНА
 medical-tracking-platinum = Платиновые клиенты: поиск мозга
 medical-tracking-clear = Сбросить цель
 medical-tracking-no-target = Мозг для поиска не выбран
@@ -16,6 +33,26 @@ medical-tracking-implant-no-upgrade = Уже установлен медицин
 medical-tracking-implant-no-brain = Не удалось обнаружить мозг для регистрации платинового клиента.
 ledger-entry-type-ProductSales = Продажи товаров и снаряжения
 
+medical-tracking-alert-location = { $grid ->
+    [null] Координаты: { $position }.
+    *[other] { $grid }, координаты: { $position }.
+    }
+medical-tracking-alert-critical = КРИТИЧЕСКОЕ СОСТОЯНИЕ: { $user }. { medical-tracking-alert-location }
+medical-tracking-alert-dead = СМЕРТЬ: { $user }. { medical-tracking-alert-location }
+medical-tracking-alert-revive = ЖИЗНЕННЫЕ ПРИЗНАКИ ВОССТАНОВЛЕНЫ: { $user }. Состояние критическое. { medical-tracking-alert-location }
+medical-tracking-basic-critical = МЦ · { medical-tracking-tier-basic } - { medical-tracking-alert-critical }
+medical-tracking-basic-dead = МЦ · { medical-tracking-tier-basic } - { medical-tracking-alert-dead }
+medical-tracking-basic-revive = МЦ · { medical-tracking-tier-basic } - { medical-tracking-alert-revive }
+medical-tracking-silver-critical = МЦ · { medical-tracking-tier-silver } - { medical-tracking-alert-critical }
+medical-tracking-silver-dead = МЦ · { medical-tracking-tier-silver } - { medical-tracking-alert-dead }
+medical-tracking-silver-revive = МЦ · { medical-tracking-tier-silver } - { medical-tracking-alert-revive }
+medical-tracking-gold-critical = МЦ · { medical-tracking-tier-gold } - { medical-tracking-alert-critical }
+medical-tracking-gold-dead = МЦ · { medical-tracking-tier-gold } - { medical-tracking-alert-dead }
+medical-tracking-gold-revive = МЦ · { medical-tracking-tier-gold } - { medical-tracking-alert-revive }
+medical-tracking-platinum-critical = МЦ · { medical-tracking-tier-platinum } - { medical-tracking-alert-critical }
+medical-tracking-platinum-dead = МЦ · { medical-tracking-tier-platinum } - { medical-tracking-alert-dead }
+medical-tracking-platinum-revive = МЦ · { medical-tracking-tier-platinum } - { medical-tracking-alert-revive }
+
 ent-MedicalTrackingTablet = медицинский спасательный планшет
     .desc = Показывает последние координаты и состояние тел клиентов на БС-карте. Для работы нужен медицинский доступ.
 ent-MedicalTrackingPinpointer = пинпоинтер платиновых клиентов
@@ -25,7 +62,7 @@ ent-MedicalTrackingImplantBasic = обычный медицинский импл
 ent-MedicalTrackingImplantSilver = серебряный медицинский имплант
     .desc = Оповещает медицинский канал о критическом состоянии и смерти клиента по всему сектору.
 ent-MedicalTrackingImplantGold = золотой медицинский имплант
-    .desc = Обладает возможностями серебряного импланта и раз в минуту передаёт координаты и состояние тела на планшеты медиков. После уничтожения тела метка исчезает.
+    .desc = Обладает возможностями серебряного импланта и каждые 5 секунд передаёт координаты и состояние тела на планшеты медиков. После уничтожения тела метка исчезает.
 ent-MedicalTrackingImplantPlatinum = платиновый медицинский имплант
     .desc = Обладает возможностями золотого импланта и регистрирует мозг клиента для поиска пинпоинтером. Поиск уцелевшего мозга продолжается после его извлечения или уничтожения тела.
 ent-MedicalTrackingImplanterBasic = имплантер обычного медицинского импланта

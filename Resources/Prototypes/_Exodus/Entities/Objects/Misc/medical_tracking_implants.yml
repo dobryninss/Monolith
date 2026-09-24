@@ -5,11 +5,15 @@
   components:
   - type: SubdermalImplant
   - type: MedicalTrackingImplant
+    tierName: medical-tracking-tier-basic
   - type: TriggerOnMobstateChange
     mobState:
     - Dead
   - type: Rattle
     radioChannel: Medical
+    critMessage: medical-tracking-basic-critical
+    deathMessage: medical-tracking-basic-dead
+    reviveMessage: medical-tracking-basic-revive
 
 - type: entity
   parent: BaseMedicalServiceImplant
@@ -31,6 +35,11 @@
   components:
   - type: MedicalTrackingImplant
     tier: 2
+    tierName: medical-tracking-tier-silver
+  - type: Rattle
+    critMessage: medical-tracking-silver-critical
+    deathMessage: medical-tracking-silver-dead
+    reviveMessage: medical-tracking-silver-revive
   - type: TriggerOnMobstateChange
     mobState:
     - Critical
@@ -40,12 +49,17 @@
   parent: MedicalTrackingImplantSilver
   id: MedicalTrackingImplantGold
   name: gold medical tracking implant
-  description: Also reports the body's position and condition to medical tablets once a minute.
+  description: Also reports the body's position and condition to medical tablets every 5 seconds.
   components:
   - type: MedicalTrackingImplant
     tier: 3
+    tierName: medical-tracking-tier-gold
     trackBody: true
-    updateInterval: 60
+    updateInterval: 5
+  - type: Rattle
+    critMessage: medical-tracking-gold-critical
+    deathMessage: medical-tracking-gold-dead
+    reviveMessage: medical-tracking-gold-revive
 
 - type: entity
   parent: MedicalTrackingImplantGold
@@ -55,7 +69,12 @@
   components:
   - type: MedicalTrackingImplant
     tier: 4
+    tierName: medical-tracking-tier-platinum
     trackBrain: true
+  - type: Rattle
+    critMessage: medical-tracking-platinum-critical
+    deathMessage: medical-tracking-platinum-dead
+    reviveMessage: medical-tracking-platinum-revive
 
 - type: entity
   parent: BaseImplantOnlyImplanter
@@ -85,7 +104,7 @@
   parent: MedicalTrackingImplanterSilver
   id: MedicalTrackingImplanterGold
   name: gold medical tracking implanter
-  description: Also reports the body's position and condition to medical tablets once a minute.
+  description: Also reports the body's position and condition to medical tablets every 5 seconds.
   components:
   - type: Implanter
     implant: MedicalTrackingImplantGold

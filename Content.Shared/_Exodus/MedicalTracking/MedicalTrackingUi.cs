@@ -12,7 +12,8 @@ public enum MedicalTrackingUiKey : byte
 }
 
 [Serializable, NetSerializable]
-public readonly record struct MedicalTrackingContact(string Name, MapCoordinates Coordinates, MobState State, TimeSpan UpdatedAt);
+public readonly record struct MedicalTrackingContact(NetEntity Body, string Name, string TierName,
+    MapCoordinates Coordinates, MobState State, TimeSpan UpdatedAt);
 
 [Serializable, NetSerializable]
 public readonly record struct MedicalTrackingBrain(NetEntity Entity, string Name);

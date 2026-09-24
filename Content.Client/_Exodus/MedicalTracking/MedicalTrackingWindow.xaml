@@ -3,13 +3,22 @@
                       xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
                       Title="{Loc 'medical-tracking-title'}"
                       SetSize="1100 820" MinSize="800 550">
-    <BoxContainer Orientation="Horizontal">
-        <ui:MapScreen Name="Map" HorizontalExpand="True" VerticalExpand="True" />
-        <BoxContainer Orientation="Vertical" MinWidth="280" MaxWidth="350" Margin="8 0 0 0">
-            <Label Text="{Loc 'medical-tracking-bodies'}" />
-            <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
-                <BoxContainer Name="Contacts" Orientation="Vertical" />
-            </ScrollContainer>
+    <BoxContainer Orientation="Vertical">
+        <BoxContainer Orientation="Horizontal" Margin="0 0 0 6">
+            <Button Name="MyPosition" Text="{Loc 'medical-tracking-my-position'}" />
+            <Button Name="ShowClients" Text="{Loc 'medical-tracking-show-clients'}" ToolTip="{Loc 'medical-tracking-show-clients-tip'}" />
         </BoxContainer>
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True">
+            <ui:MapScreen Name="Map" HorizontalExpand="True" VerticalExpand="True" />
+            <BoxContainer Orientation="Vertical" SetWidth="340" Margin="8 0 0 0">
+                <Label Name="ClientCount" />
+                <LineEdit Name="Search" PlaceHolder="{Loc 'medical-tracking-search'}" />
+                <OptionButton Name="StatusFilter" />
+                <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                    <BoxContainer Name="Contacts" Orientation="Vertical" />
+                </ScrollContainer>
+            </BoxContainer>
+        </BoxContainer>
+        <Label Text="{Loc 'medical-tracking-map-hint'}" ClipText="True" ToolTip="{Loc 'medical-tracking-map-hint'}" Margin="0 6 0 0" />
     </BoxContainer>
 </controls:FancyWindow>

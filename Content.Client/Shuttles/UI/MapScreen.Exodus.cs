@@ -28,6 +28,12 @@ public sealed partial class MapScreen
     }
 
     // Exodus-begin medical tablet
+    public event Action<NetEntity> MedicalContactSelected
+    {
+        add => MapRadar.MedicalContactSelected += value;
+        remove => MapRadar.MedicalContactSelected -= value;
+    }
+
     public void SetMedicalContacts(List<MedicalTrackingContact> contacts)
     {
         MapRadar.SetMedicalContacts(contacts);
@@ -36,7 +42,23 @@ public sealed partial class MapScreen
     public void FocusMedicalContact(MapCoordinates coordinates)
     {
         if (_mapManager.MapExists(coordinates.MapId))
-            MapRadar.SetMap(coordinates.MapId, coordinates.Position, recentering: true);
+            MapRadar.FocusMedicalPosition(coordinates, 64f);
+    }
+
+    public void SelectMedicalContact(NetEntity? body)
+    {
+        MapRadar.SelectMedicalContact(body);
+    }
+
+    public void FocusMedicalOperator()
+    {
+        if (_console is { } console && _entManager.EntityExists(console))
+            FocusMedicalContact(_xformSystem.GetMapCoordinates(console));
+    }
+
+    public void ShowMedicalContacts()
+    {
+        MapRadar.ShowMedicalContacts();
     }
     // Exodus-end
 }
