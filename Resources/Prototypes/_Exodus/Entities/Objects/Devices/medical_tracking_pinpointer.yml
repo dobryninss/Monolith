@@ -4,6 +4,12 @@
   name: platinum client pinpointer
   description: Selects and tracks a registered platinum client's brain. Requires medical access.
   components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Devices/medical_tracking_pinpointer.rsi
+  - type: Icon
+    sprite: _Exodus/Objects/Devices/medical_tracking_pinpointer.rsi
+  - type: Item
+    sprite: _Exodus/Objects/Devices/medical_tracking_pinpointer.rsi
   - type: MedicalTrackingPinpointer
     updateInterval: 1
   - type: Pinpointer

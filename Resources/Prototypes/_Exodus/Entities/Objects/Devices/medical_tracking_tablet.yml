@@ -8,12 +8,13 @@
     updateInterval: 1
   - type: Item
     size: Small
+    sprite: _Exodus/Objects/Devices/medical_tracking_tablet.rsi
   - type: Sprite
-    sprite: Objects/Specific/Medical/handheldcrewmonitor.rsi
-    state: scanner
+    sprite: _Exodus/Objects/Devices/medical_tracking_tablet.rsi
+    state: tablet
   - type: Icon
-    sprite: Objects/Specific/Medical/handheldcrewmonitor.rsi
-    state: scanner
+    sprite: _Exodus/Objects/Devices/medical_tracking_tablet.rsi
+    state: icon
   - type: RadarConsole
     followEntity: true
     noRotate: true

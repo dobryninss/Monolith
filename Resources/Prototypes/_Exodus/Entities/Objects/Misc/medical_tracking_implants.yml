@@ -94,6 +94,16 @@
   name: silver medical tracking implanter
   description: Reports critical condition and death throughout the sector.
   components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/Medical/medical_implanter_silver.rsi
+    layers:
+    - state: implanter0
+      map: ["implantOnly"]
+    - state: implanter1
+      map: ["implantFull"]
+      visible: true
+  - type: Item
+    sprite: _Exodus/Objects/Specific/Medical/medical_implanter_silver.rsi
   - type: Implanter
     implant: MedicalTrackingImplantSilver
   - type: StaticPrice
@@ -106,6 +116,10 @@
   name: gold medical tracking implanter
   description: Also reports the body's position and condition to medical tablets every 5 seconds.
   components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/Medical/medical_implanter_gold.rsi
+  - type: Item
+    sprite: _Exodus/Objects/Specific/Medical/medical_implanter_gold.rsi
   - type: Implanter
     implant: MedicalTrackingImplantGold
   - type: StaticPrice
@@ -118,6 +132,10 @@
   name: platinum medical tracking implanter
   description: Also registers the client's brain for tracking after extraction or destruction of the body.
   components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Specific/Medical/medical_implanter_platinum.rsi
+  - type: Item
+    sprite: _Exodus/Objects/Specific/Medical/medical_implanter_platinum.rsi
   - type: Implanter
     implant: MedicalTrackingImplantPlatinum
   - type: StaticPrice
