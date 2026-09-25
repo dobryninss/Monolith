@@ -10,6 +10,8 @@
   parent: MedicalScanner
   id: GeneticsLaboratory
   components:
+  - type: Sprite
+    sprite: _Exodus/Structures/Machines/genetics_laboratory.rsi
   - type: GeneticsLaboratory
   - type: Machine
     board: GeneticsLaboratoryCircuitboard
@@ -55,7 +57,8 @@
   id: GeneticsLaboratoryCircuitboard
   components:
   - type: Sprite
-    state: medical
+    sprite: _Exodus/Objects/Specific/Genetics/boards.rsi
+    state: laboratory
   - type: MachineBoard
     prototype: GeneticsLaboratory
     requirements:
@@ -70,7 +73,7 @@
   id: GeneticDisk
   components:
   - type: Sprite
-    sprite: Objects/Specific/Research/researchdisk.rsi
+    sprite: _Exodus/Objects/Specific/Genetics/disk.rsi
     state: icon
   - type: Item
     size: Tiny
@@ -91,8 +94,8 @@
   id: GeneticInjector
   components:
   - type: Sprite
-    sprite: Objects/Specific/Medical/hypospray.rsi
-    state: hypo
+    sprite: _Exodus/Objects/Specific/Genetics/injector.rsi
+    state: icon
   - type: Item
     size: Tiny
   - type: GeneticInjector
@@ -137,8 +140,8 @@
 - type: cargoProduct
   id: GeneticsLaboratorySupplies
   icon:
-    sprite: Objects/Misc/module.rsi
-    state: medical
+    sprite: _Exodus/Objects/Specific/Genetics/boards.rsi
+    state: laboratory
   product: CrateGeneticsLaboratory
   cost: 8000
   category: cargoproduct-category-name-medical
@@ -147,7 +150,7 @@
 - type: cargoProduct
   id: GeneticsBlankDisks
   icon:
-    sprite: Objects/Specific/Research/researchdisk.rsi
+    sprite: _Exodus/Objects/Specific/Genetics/disk.rsi
     state: icon
   product: GeneticDisk
   cost: 200

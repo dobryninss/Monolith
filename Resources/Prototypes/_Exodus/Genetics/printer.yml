@@ -7,10 +7,20 @@
   - type: Physics
     bodyType: Static
   - type: Sprite
-    sprite: Structures/Machines/techfab.rsi
+    sprite: _Exodus/Structures/Machines/genetic_printer.rsi
     layers:
     - state: icon
-    - state: med
+    - state: powered
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
   - type: Machine
     board: GeneticInjectorPrinterCircuitboard
   - type: GeneticPrinter
@@ -54,7 +64,8 @@
   id: GeneticInjectorPrinterCircuitboard
   components:
   - type: Sprite
-    state: medical
+    sprite: _Exodus/Objects/Specific/Genetics/boards.rsi
+    state: printer
   - type: MachineBoard
     prototype: GeneticInjectorPrinter
     requirements:
@@ -83,8 +94,8 @@
 - type: cargoProduct
   id: GeneticInjectorPrinterSupplies
   icon:
-    sprite: Objects/Misc/module.rsi
-    state: medical
+    sprite: _Exodus/Objects/Specific/Genetics/boards.rsi
+    state: printer
   product: CrateGeneticInjectorPrinter
   cost: 4000
   category: cargoproduct-category-name-medical
