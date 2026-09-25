@@ -1,0 +1,129 @@
+- type: geneticMutation
+  id: GeneticTelekinesis
+  activationMessage: genetics-feeling-telekinesis
+  name: genetics-gene-telekinesis
+  description: genetics-gene-telekinesis-desc
+  instability: 25
+  modifiers:
+    abilities: Telekinesis
+  actions: [ActionGeneticTelekinesis]
+
+- type: geneticMutation
+  id: GeneticHulk
+  activationMessage: genetics-feeling-hulk
+  name: genetics-gene-hulk
+  description: genetics-gene-hulk-desc
+  instability: 30
+  modifiers:
+    abilities: ForcePry
+    meleeMultiplier: 2.5
+    staminaMultiplier: 0.25
+    blockedStatuses: [Stun, KnockedDown]
+  actions: [ActionGeneticPry]
+
+- type: geneticMutation
+  id: GeneticRemoteViewing
+  activationMessage: genetics-feeling-view
+  name: genetics-gene-view
+  description: genetics-gene-view-desc
+  instability: 20
+  modifiers:
+    abilities: RemoteViewing
+  actions: [ActionGeneticRemoteViewing]
+
+- type: geneticMutation
+  id: GeneticCloak
+  activationMessage: genetics-feeling-cloak
+  name: genetics-gene-cloak
+  description: genetics-gene-cloak-desc
+  instability: 25
+  modifiers:
+    abilities: Cloak
+  actions: [ActionGeneticCloak]
+
+- type: geneticMutation
+  id: GeneticMatterEater
+  activationMessage: genetics-feeling-devour
+  name: genetics-gene-devour
+  description: genetics-gene-devour-desc
+  instability: 25
+  modifiers:
+    abilities: Devour
+  actions: [ActionGeneticDevour, ActionGeneticEatTile]
+
+- type: geneticMutation
+  id: GeneticMimic
+  activationMessage: genetics-feeling-mimic
+  name: genetics-gene-mimic
+  description: genetics-gene-mimic-desc
+  instability: 15
+  modifiers:
+    abilities: Mimic
+  actions: [ActionGeneticMimic, ActionGeneticRestoreAppearance]
+
+- type: geneticMutation
+  id: GeneticNoBreathing
+  activationMessage: genetics-feeling-breathing
+  name: genetics-gene-breathing
+  description: genetics-gene-breathing-desc
+  instability: 15
+  modifiers:
+    noBreathing: true
+
+- type: geneticMutation
+  id: GeneticColdResistance
+  activationMessage: genetics-feeling-cold
+  name: genetics-gene-cold
+  description: genetics-gene-cold-desc
+  instability: 15
+  modifiers:
+    coldImmunity: true
+    lowPressureImmunity: true
+
+- type: geneticMutation
+  id: GeneticHeatResistance
+  activationMessage: genetics-feeling-heat
+  name: genetics-gene-heat
+  description: genetics-gene-heat-desc
+  instability: 15
+  modifiers:
+    heatImmunity: true
+    highPressureImmunity: true
+
+- type: geneticMutation
+  id: GeneticRegeneration
+  activationMessage: genetics-feeling-regeneration
+  name: genetics-gene-regeneration
+  description: genetics-gene-regeneration-desc
+  instability: 30
+  periodicDamage:
+    groups:
+      Brute: -0.6
+      Burn: -0.6
+
+- type: geneticMutation
+  id: GeneticPsyResist
+  activationMessage: genetics-feeling-psyresist
+  name: genetics-gene-psyresist
+  description: genetics-gene-psyresist-desc
+  instability: 10
+  modifiers:
+    abilities: PsyResist
+
+- type: geneticMutation
+  id: GeneticLethargy
+  activationMessage: genetics-feeling-lethargy
+  name: genetics-gene-lethargy
+  description: genetics-gene-lethargy-desc
+  instability: -10
+  modifiers:
+    movementMultiplier: 0.75
+
+- type: geneticMutation
+  id: GeneticBrittle
+  activationMessage: genetics-feeling-brittle
+  name: genetics-gene-brittle
+  description: genetics-gene-brittle-desc
+  instability: -15
+  modifiers:
+    damageMultiplier: 1.3
