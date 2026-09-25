@@ -9,7 +9,6 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
-using Content.Shared.Item;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
@@ -41,7 +40,6 @@ public sealed partial class GeneticAbilitiesSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<GeneticEffectsComponent, GenomeChangedEvent>(OnGenesChanged);
         SubscribeLocalEvent<GeneticAbilityStateComponent, GeneticEffectsShutdownEvent>(OnEffectsShutdown);
-        SubscribeLocalEvent<GeneticEffectsComponent, GeneticTelekinesisEvent>(OnTelekinesis);
         SubscribeLocalEvent<GeneticEffectsComponent, GeneticMimicEvent>(OnMimic);
         SubscribeLocalEvent<GeneticEffectsComponent, GeneticRestoreAppearanceEvent>(OnRestore);
         SubscribeLocalEvent<GeneticEffectsComponent, GeneticCloakEvent>(OnCloak);
@@ -56,6 +54,7 @@ public sealed partial class GeneticAbilitiesSystem : EntitySystem
         SubscribeLocalEvent<GeneticAbilityStateComponent, MobStateChangedEvent>(OnMobState);
         InitializeViewing();
         InitializeDevouring();
+        InitializeTelekinesis();
     }
 
     private bool HasAbility(EntityUid uid, GeneticAbility ability)
@@ -126,33 +125,6 @@ public sealed partial class GeneticAbilitiesSystem : EntitySystem
     {
         var ev = new StealthRevealEvent(uid);
         RaiseLocalEvent(uid, ev);
-    }
-
-    private void OnTelekinesis(Entity<GeneticEffectsComponent> ent, ref GeneticTelekinesisEvent args)
-    {
-        if (args.Handled || !CanUse(ent, GeneticAbility.Telekinesis) || args.Target == ent.Owner ||
-            HasComp<MobStateComponent>(args.Target))
-            return;
-        var state = EnsureComp<GeneticAbilityStateComponent>(ent);
-        if (!_interaction.IsAccessible(ent.Owner, args.Target) ||
-            !_interaction.InRangeUnobstructed(ent.Owner, args.Target, range: state.TelekinesisRange))
-            return;
-
-        Reveal(ent);
-        if (_hands.TryGetActiveItem(ent.Owner, out var held))
-        {
-            args.Handled = _interaction.InteractUsing(ent, held.Value, args.Target, Transform(args.Target).Coordinates);
-        }
-        else if (HasComp<ItemComponent>(args.Target) && !Transform(args.Target).Anchored)
-        {
-            args.Handled = _hands.TryPickup(ent, args.Target);
-        }
-        else
-        {
-            // The remote action already checked map, obstacles, containers and its own range.
-            // Target activation still checks access cards and complex-interaction permissions.
-            args.Handled = _interaction.InteractionActivate(ent, args.Target, checkAccess: false);
-        }
     }
 
     private void OnMimic(Entity<GeneticEffectsComponent> ent, ref GeneticMimicEvent args)

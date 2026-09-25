@@ -9,6 +9,9 @@ namespace Content.Server._Exodus.Genetics;
 public sealed partial class GeneticAbilityStateComponent : Component
 {
     [DataField] public float TelekinesisRange = 10;
+    /// <summary>Runtime scope of the current telekinetic call; never grants range to ordinary clicks.</summary>
+    public EntityUid? TelekinesisTarget;
+    public EntityUid? TelekinesisTool;
     [DataField] public TimeSpan CloakCooldown = TimeSpan.FromSeconds(20);
     [DataField] public TimeSpan DevourTime = TimeSpan.FromSeconds(5);
     [DataField] public TimeSpan StructureDevourTime = TimeSpan.FromSeconds(10);

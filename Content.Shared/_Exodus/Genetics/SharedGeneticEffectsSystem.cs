@@ -1,5 +1,9 @@
+using Content.Shared._Exodus.DoAfter;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Interaction;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.StatusEffect;
 using Content.Shared.Temperature;
@@ -10,10 +14,16 @@ namespace Content.Shared._Exodus.Genetics;
 public sealed class SharedGeneticEffectsSystem : EntitySystem
 {
     [Dependency] private readonly MovementSpeedModifierSystem _movement = default!;
+    [Dependency] private readonly SharedInteractionSystem _interaction = default!;
+
+    public const string TelekinesisRangeProvider = "GeneticTelekinesis";
+
+    private EntityQuery<MobStateComponent> _mobStates;
 
     public override void Initialize()
     {
         base.Initialize();
+        _mobStates = GetEntityQuery<MobStateComponent>();
         SubscribeLocalEvent<GeneticEffectsComponent, RefreshMovementSpeedModifiersEvent>(OnMovement);
         SubscribeLocalEvent<GeneticEffectsComponent, ComponentStartup>(OnChanged);
         SubscribeLocalEvent<GeneticEffectsComponent, AfterAutoHandleStateEvent>(OnChanged);
@@ -26,6 +36,19 @@ public sealed class SharedGeneticEffectsSystem : EntitySystem
         SubscribeLocalEvent<GeneticEffectsComponent, PressureImmunityEvent>(OnPressure);
         SubscribeLocalEvent<GeneticEffectsComponent, TemperatureDamageAttemptEvent>(OnTemperatureDamage);
         SubscribeLocalEvent<GeneticEffectsComponent, ModifyChangedTemperatureEvent>(OnTemperatureChange);
+        SubscribeLocalEvent<GeneticEffectsComponent, ValidateDoAfterRangeEvent>(OnValidateDoAfterRange);
+    }
+
+    private void OnValidateDoAfterRange(Entity<GeneticEffectsComponent> ent, ref ValidateDoAfterRangeEvent args)
+    {
+        if (args.Args.RangeProvider != TelekinesisRangeProvider)
+            return;
+
+        args.Handled = true;
+        args.Cancelled |= ent.Comp.Reverting || (ent.Comp.Modifiers.Abilities & GeneticAbility.Telekinesis) == 0 ||
+                          !_mobStates.TryComp(ent, out var mob) || mob.CurrentState != MobState.Alive ||
+                          args.Args.Target is not { } target || _mobStates.HasComp(target) ||
+                          !_interaction.IsAccessible(ent.Owner, target);
     }
 
     private void OnChanged<T>(Entity<GeneticEffectsComponent> ent, ref T args)

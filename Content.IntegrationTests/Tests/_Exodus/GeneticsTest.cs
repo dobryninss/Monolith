@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Numerics;
 using Content.Server._Exodus.Genetics;
 using Content.Server.Cloning;
@@ -5,9 +6,13 @@ using Content.Server.Medical.Components;
 using Content.Server.Power.Components;
 using Content.Shared._Exodus.Genetics;
 using Content.Shared._Shitmed.Body.Components;
+using Content.Shared.Actions;
+using Content.Shared.Buckle.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
+using Content.Shared.DoAfter;
+using Content.Shared.Doors.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.Interaction;
@@ -24,6 +29,152 @@ namespace Content.IntegrationTests.Tests._Exodus;
 [TestOf(typeof(GeneticsSystem))]
 public sealed class GeneticsTest
 {
+    [Test]
+    public async Task TelekinesisPicksUpAtRangeButRespectsWallsContainersAndLivingTargets()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.EntMan;
+
+        await server.WaitAssertion(() =>
+        {
+            var map = entities.System<SharedMapSystem>().CreateMap();
+            var body = entities.SpawnEntity("MobHuman", new EntityCoordinates(map, Vector2.Zero));
+            var item = entities.SpawnEntity("Crowbar", new EntityCoordinates(map, new Vector2(5, 0)));
+            var distant = entities.SpawnEntity("Crowbar", new EntityCoordinates(map, new Vector2(12, 0)));
+            var mob = entities.SpawnEntity("MobHuman", new EntityCoordinates(map, new Vector2(5, 2)));
+            var genetics = entities.System<GeneticsSystem>();
+            Assert.That(genetics.TryGetLivingGenome(body, out var genome), Is.True);
+            var round = genetics.GetRound();
+            var block = round.Mutations.IndexOf("GeneticTelekinesis");
+            Assert.That(genetics.TrySetBlock((body, genome!), block, GeneticsSystem.MaxBlockValue, body), Is.True);
+            var actionId = genome!.Actions["ActionGeneticTelekinesis"]!.Value;
+            var action = entities.GetComponent<EntityTargetActionComponent>(actionId);
+            var actions = entities.System<SharedActionsSystem>();
+            var interaction = entities.System<SharedInteractionSystem>();
+            Assert.That(interaction.InRangeUnobstructed(body, item), Is.False);
+            Assert.That(actions.ValidateEntityTarget(body, distant, (actionId, action)), Is.False);
+            Assert.That(actions.ValidateEntityTarget(body, mob, (actionId, action)), Is.False);
+            Assert.That(actions.ValidateEntityTarget(body, body, (actionId, action)), Is.False);
+
+            var containers = entities.System<SharedContainerSystem>();
+            var storage = entities.SpawnEntity(null, new EntityCoordinates(map, new Vector2(5, 0)));
+            var container = containers.EnsureContainer<Container>(storage, "genetics-test");
+            Assert.That(containers.Insert(item, container), Is.True);
+            Assert.That(actions.ValidateEntityTarget(body, item, (actionId, action)), Is.False);
+            var blocked = new GeneticTelekinesisEvent { Performer = body, Target = item };
+            entities.EventBus.RaiseLocalEvent(body, blocked);
+            Assert.That(blocked.Handled, Is.False, "Server-side validation must also reject items in closed containers.");
+            Assert.That(containers.Remove(item, container), Is.True);
+            entities.System<SharedTransformSystem>().SetCoordinates(item, new EntityCoordinates(map, new Vector2(5, 0)));
+
+            var wall = entities.SpawnEntity("WallSolid", new EntityCoordinates(map, new Vector2(2.5f, 0)));
+            Assert.That(actions.ValidateEntityTarget(body, item, (actionId, action)), Is.False);
+            blocked = new GeneticTelekinesisEvent { Performer = body, Target = item };
+            entities.EventBus.RaiseLocalEvent(body, blocked);
+            Assert.That(blocked.Handled, Is.False);
+            entities.DeleteEntity(wall);
+
+            var chair = entities.SpawnEntity("Chair", new EntityCoordinates(map, new Vector2(5, -2)));
+            var sit = new GeneticTelekinesisEvent { Performer = body, Target = chair };
+            entities.EventBus.RaiseLocalEvent(body, sit);
+            Assert.That(entities.GetComponent<BuckleComponent>(body).BuckledTo, Is.Null,
+                "Remote interaction with a chair must not teleport the user's body into it.");
+            Assert.That(entities.GetComponent<TransformComponent>(body).LocalPosition, Is.EqualTo(Vector2.Zero));
+
+            Assert.That(actions.ValidateEntityTarget(body, item, (actionId, action)), Is.True);
+            var pickup = new GeneticTelekinesisEvent { Target = item };
+            actions.PerformAction(body, entities.GetComponent<ActionsComponent>(body), actionId, action, pickup,
+                server.ResolveDependency<Robust.Shared.Timing.IGameTiming>().CurTime);
+            Assert.That(pickup.Handled, Is.True);
+            Assert.That(entities.System<SharedHandsSystem>().TryGetActiveItem(body, out var held), Is.True);
+            Assert.That(held, Is.EqualTo(item));
+            Assert.That(entities.GetComponent<GeneticAbilityStateComponent>(body).TelekinesisTarget, Is.Null);
+            entities.DeleteEntity(map);
+            DeleteCipher(entities, round.Context);
+        });
+        await server.WaitRunTicks(2);
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase("complete")]
+    [TestCase("gene")]
+    [TestCase("component")]
+    [TestCase("wall")]
+    public async Task TelekineticPryingKeepsItsRangeAndCancelsWhenSupportIsLost(string outcome)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.EntMan;
+        var genetics = entities.System<GeneticsSystem>();
+        EntityUid map = default;
+        EntityUid body = default;
+        EntityUid door = default;
+        Content.Shared.DoAfter.DoAfter operation = default!;
+        GenomeComponent genome = default!;
+        string context = default!;
+        var block = -1;
+
+        await server.WaitAssertion(() =>
+        {
+            map = entities.System<SharedMapSystem>().CreateMap();
+            body = entities.SpawnEntity("MobHuman", new EntityCoordinates(map, Vector2.Zero));
+            entities.EnsureComponent<GodmodeComponent>(body); // Isolate the interaction from vacuum damage on the test map.
+            door = entities.SpawnEntity("Airlock", new EntityCoordinates(map, new Vector2(5, 0)));
+            entities.GetComponent<DoorComponent>(door).PryTime = 0.5f;
+            var tool = entities.SpawnEntity("Crowbar", new EntityCoordinates(map, Vector2.Zero));
+            Assert.That(entities.System<SharedHandsSystem>().TryPickup(body, tool), Is.True);
+            Assert.That(genetics.TryGetLivingGenome(body, out var foundGenome), Is.True);
+            genome = foundGenome!;
+            var round = genetics.GetRound();
+            context = round.Context;
+            block = round.Mutations.IndexOf("GeneticTelekinesis");
+            Assert.That(genetics.TrySetBlock((body, genome), block, GeneticsSystem.MaxBlockValue, body), Is.True);
+            var pry = new GeneticTelekinesisEvent { Performer = body, Target = door };
+            entities.EventBus.RaiseLocalEvent(body, pry);
+            Assert.That(pry.Handled, Is.True);
+            var doAfters = entities.GetComponent<DoAfterComponent>(body);
+            Assert.That(doAfters.DoAfters.Count, Is.EqualTo(1), "Remote tool use must actually start, not fail its initial range check.");
+            operation = doAfters.DoAfters.Values.Single();
+            var copy = new DoAfterArgs(operation.Args);
+            Assert.That(copy.RangeProvider, Is.EqualTo(SharedGeneticEffectsSystem.TelekinesisRangeProvider));
+            Assert.That(copy.DistanceThreshold, Is.EqualTo(10));
+        });
+
+        await server.WaitRunTicks(1);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(operation.Cancelled, Is.False, "The next tick must retain the remote interaction's range.");
+            Assert.That(entities.System<SharedInteractionSystem>().InRangeUnobstructed(body, door), Is.False,
+                "Ordinary interactions must not gain range while a telekinetic DoAfter is running.");
+            switch (outcome)
+            {
+                case "gene":
+                    Assert.That(genetics.TrySetBlock((body, genome), block, 0, body), Is.True);
+                    break;
+                case "component":
+                    entities.RemoveComponent<GeneticEffectsComponent>(body);
+                    break;
+                case "wall":
+                    entities.SpawnEntity("WallSolid", new EntityCoordinates(map, new Vector2(2.5f, 0)));
+                    break;
+            }
+        });
+
+        await server.WaitRunTicks(30);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(operation.Cancelled, Is.EqualTo(outcome != "complete"));
+            Assert.That(operation.Completed, Is.EqualTo(outcome == "complete"));
+            var doorState = entities.GetComponent<DoorComponent>(door).State;
+            Assert.That(doorState == DoorState.Closed, Is.EqualTo(outcome != "complete"));
+            entities.DeleteEntity(map);
+            DeleteCipher(entities, context);
+        });
+        await server.WaitRunTicks(2);
+        await pair.CleanReturnAsync();
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public async Task FullAndAdminInjectorsApplyOnceWithExpectedDamage(bool admin)

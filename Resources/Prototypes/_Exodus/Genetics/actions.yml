@@ -2,17 +2,23 @@
   id: ActionGeneticTelekinesis
   categories: [HideSpawnMenu]
   components:
+  - type: ActionTargetingCursor
   - type: EntityTargetAction
     icon: { sprite: Objects/Magic/magicactions.rsi, state: blink }
     useDelay: 1
     range: 10
-    checkCanAccess: false
+    checkCanAccess: true
+    canTargetSelf: false
+    blacklist:
+      components:
+      - MobState
     event: !type:GeneticTelekinesisEvent
 
 - type: entity
   id: ActionGeneticPry
   categories: [HideSpawnMenu]
   components:
+  - type: ActionTargetingCursor
   - type: EntityTargetAction
     icon: { sprite: Objects/Tools/crowbar.rsi, state: icon }
     useDelay: 1
@@ -41,6 +47,7 @@
   id: ActionGeneticDevour
   categories: [HideSpawnMenu]
   components:
+  - type: ActionTargetingCursor
   - type: EntityTargetAction
     icon: { sprite: Interface/Actions/devour.rsi, state: icon }
     useDelay: 1
@@ -51,6 +58,7 @@
   id: ActionGeneticEatTile
   categories: [HideSpawnMenu]
   components:
+  - type: ActionTargetingCursor
   - type: WorldTargetAction
     icon: { sprite: Interface/Actions/devour.rsi, state: icon }
     useDelay: 1
@@ -61,6 +69,7 @@
   id: ActionGeneticMimic
   categories: [HideSpawnMenu]
   components:
+  - type: ActionTargetingCursor
   - type: EntityTargetAction
     icon: { sprite: Objects/Magic/magicactions.rsi, state: blink }
     useDelay: 5
