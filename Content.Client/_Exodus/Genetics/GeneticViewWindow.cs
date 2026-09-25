@@ -16,7 +16,7 @@ public sealed class GeneticViewWindow : FancyWindow
     public event Action<NetEntity?>? TargetSelected;
     public event Action? RefreshRequested;
     private readonly BoxContainer _targets = new() { Orientation = BoxContainer.LayoutOrientation.Vertical };
-    private readonly ScalingViewport _viewport = new() { MinSize = new Vector2(450, 450), HorizontalExpand = true, VerticalExpand = true };
+    private readonly ScalingViewport _viewport = new() { MinSize = new Vector2(280, 280), HorizontalExpand = true, VerticalExpand = true };
     private readonly FixedEye _emptyEye = new();
     private readonly EyeLerpingSystem _lerping;
     private NetEntity? _eye;
@@ -27,18 +27,19 @@ public sealed class GeneticViewWindow : FancyWindow
         IoCManager.InjectDependencies(this);
         _lerping = _entities.System<EyeLerpingSystem>();
         Title = Loc.GetString("genetics-view-title");
-        MinSize = new Vector2(700, 500);
+        MinSize = new Vector2(520, 520);
+        SetSize = new Vector2(600, 600);
         _viewport.Eye = _emptyEye;
         _viewport.MouseFilter = MouseFilterMode.Ignore;
         var root = new BoxContainer();
-        var sidebar = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, MinWidth = 220 };
+        var sidebar = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, SetWidth = 220 };
         var refresh = new Button { Text = Loc.GetString("genetics-view-refresh") };
         refresh.OnPressed += _ => RefreshRequested?.Invoke();
         var stop = new Button { Text = Loc.GetString("genetics-view-stop") };
         stop.OnPressed += _ => TargetSelected?.Invoke(null);
         sidebar.AddChild(refresh);
         sidebar.AddChild(stop);
-        var scroll = new ScrollContainer { VerticalExpand = true };
+        var scroll = new ScrollContainer { VerticalExpand = true, HScrollEnabled = false };
         scroll.AddChild(_targets);
         sidebar.AddChild(scroll);
         root.AddChild(sidebar);
@@ -52,12 +53,16 @@ public sealed class GeneticViewWindow : FancyWindow
         _targets.DisposeAllChildren();
         foreach (var (target, name) in state.Targets)
         {
-            var button = new Button { Text = name };
+            var button = new Button { Text = name, ClipText = true, ToolTip = name };
             button.OnPressed += _ => TargetSelected?.Invoke(target);
             _targets.AddChild(button);
         }
         if (state.Targets.Count == 0)
-            _targets.AddChild(new Label { Text = Loc.GetString("genetics-view-empty") });
+        {
+            var empty = new RichTextLabel();
+            empty.SetMessage(Loc.GetString("genetics-view-empty"));
+            _targets.AddChild(empty);
+        }
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

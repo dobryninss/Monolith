@@ -3,13 +3,14 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._Exodus.Genetics;
 
 [Serializable, NetSerializable]
-public enum GeneticsUiKey : byte { Laboratory, RemoteViewing }
+public enum GeneticsUiKey : byte { Laboratory, RemoteViewing, Disk, Printer }
 
 [Serializable, NetSerializable]
 public enum GeneticsOperation : byte
 {
     Scan, Edit, SetBlock, Reset, StoreBuffer, RestoreBuffer, WriteDisk, ReadDisk, PrintInjector,
     PrintGenome, PrintBufferInjector, PrintBufferGenome,
+    EjectPatient, EjectDisk,
 }
 
 [Serializable, NetSerializable]
@@ -36,7 +37,7 @@ public sealed class GeneticBlockInfo(ushort value, string? name = null, string? 
 
 [Serializable, NetSerializable]
 public sealed class GeneticsUiState(NetEntity? patientEntity, string patient, int revision, int? stability, bool powered, bool busy,
-    float mutagen, List<GeneticBlockInfo> blocks, bool[] buffers, bool disk, List<string> journal, bool debug, bool living) : BoundUserInterfaceState
+    float mutagen, List<GeneticBlockInfo> blocks, bool[] buffers, bool disk, bool debug, bool living) : BoundUserInterfaceState
 {
     public readonly string Patient = patient;
     public readonly NetEntity? PatientEntity = patientEntity;
@@ -50,7 +51,6 @@ public sealed class GeneticsUiState(NetEntity? patientEntity, string patient, in
     public readonly List<GeneticBlockInfo> Blocks = blocks;
     public readonly bool[] Buffers = buffers;
     public readonly bool Disk = disk;
-    public readonly List<string> Journal = journal;
 }
 
 [Serializable, NetSerializable]

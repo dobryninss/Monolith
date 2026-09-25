@@ -1,3 +1,4 @@
+using Content.Server.Medical;
 using Content.Server.Medical.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._Exodus.Genetics;
@@ -22,6 +23,8 @@ namespace Content.Server._Exodus.Genetics;
 public sealed class GeneticsLaboratorySystem : EntitySystem
 {
     [Dependency] private readonly GeneticsSystem _genetics = default!;
+    [Dependency] private readonly GeneticDiskSystem _disks = default!;
+    [Dependency] private readonly MedicalScannerSystem _scanner = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private readonly ItemSlotsSystem _slots = default!;
@@ -116,21 +119,47 @@ public sealed class GeneticsLaboratorySystem : EntitySystem
         }
     }
 
+    private bool CanAccess(Entity<GeneticsLaboratoryComponent> ent, EntityUid user)
+    {
+        return !TerminatingOrDeleted(ent) && !TerminatingOrDeleted(user) &&
+               _blocker.CanInteract(user, ent) && _interaction.InRangeAndAccessible(user, ent.Owner);
+    }
+
     private bool CanOperate(Entity<GeneticsLaboratoryComponent> ent, EntityUid user)
     {
-        return !TerminatingOrDeleted(user) && this.IsPowered(ent, EntityManager) &&
-               _blocker.CanInteract(user, ent) && _interaction.InRangeUnobstructed(user, ent.Owner);
+        return CanAccess(ent, user) && this.IsPowered(ent, EntityManager);
     }
 
     private void OnMessage(Entity<GeneticsLaboratoryComponent> ent, ref GeneticsMessage args)
     {
-        if (!Enum.IsDefined(args.Operation) || ent.Comp.Pending != null || !CanOperate(ent, args.Actor) ||
+        if (!Enum.IsDefined(args.Operation) || !CanAccess(ent, args.Actor))
+            return;
+
+        // Mechanical ejection remains available without power, a scan or a living patient, including during procedures.
+        if (args.Operation == GeneticsOperation.EjectPatient)
+        {
+            if (Patient(ent) is { } occupant && args.Patient == GetNetEntity(occupant) &&
+                TryComp<MedicalScannerComponent>(ent, out var scanner))
+                _scanner.EjectBody(ent.Owner, scanner);
+            UpdateUi(ent);
+            return;
+        }
+        if (args.Operation == GeneticsOperation.EjectDisk)
+        {
+            if (_slots.TryGetSlot(ent.Owner, ent.Comp.DiskSlot, out var slot))
+                _slots.TryEjectToHands(ent.Owner, slot, args.Actor);
+            UpdateUi(ent);
+            return;
+        }
+
+        if (ent.Comp.Pending != null || !this.IsPowered(ent, EntityManager) ||
             Patient(ent) is not { } patient || args.Patient != GetNetEntity(patient) ||
             !_genetics.TryGetLivingGenome(patient, out var genome))
             return;
 
-        // The server enforces the ADMIN boundary even if a client sends a hidden operation.
-        if (!ent.Comp.Debug && (args.Operation is GeneticsOperation.SetBlock or GeneticsOperation.Reset or GeneticsOperation.RestoreBuffer))
+        // Ordinary labs print from the scanned patient; reading saved samples and using buffers remain ADMIN-only.
+        if (!ent.Comp.Debug && args.Operation is not (GeneticsOperation.Scan or GeneticsOperation.Edit or GeneticsOperation.WriteDisk or
+                GeneticsOperation.PrintInjector or GeneticsOperation.PrintGenome))
             return;
 
         if (args.Operation != GeneticsOperation.Scan &&
@@ -157,7 +186,10 @@ public sealed class GeneticsLaboratorySystem : EntitySystem
                 return;
             case GeneticsOperation.WriteDisk:
                 if (_slots.GetItemOrNull(ent, ent.Comp.DiskSlot) is { } disk && TryComp<GeneticDiskComponent>(disk, out var data))
-                    data.Sample = _genetics.Capture((patient, genome));
+                {
+                    _disks.SetSample((disk, data), _genetics.Capture((patient, genome)));
+                    _popup.PopupEntity(Loc.GetString("genetics-disk-written"), ent, args.Actor);
+                }
                 UpdateUi(ent);
                 return;
             case GeneticsOperation.ReadDisk:
@@ -308,11 +340,6 @@ public sealed class GeneticsLaboratorySystem : EntitySystem
         var living = _genetics.IsLivingSubject(pending.Patient);
         ent.Comp.ScannedPatient = living ? pending.Patient : null;
         ent.Comp.ScannedRevision = living ? genome.Revision : -1;
-        var line = Loc.GetString("genetics-journal-entry", ("patient", Identity.Name(pending.Patient, EntityManager)),
-            ("operation", Loc.GetString($"genetics-operation-{pending.Operation.ToString().ToLowerInvariant()}")));
-        ent.Comp.Journal.Add(line);
-        if (ent.Comp.Journal.Count > 12)
-            ent.Comp.Journal.RemoveAt(0);
         UpdateUi(ent);
     }
 
@@ -357,7 +384,7 @@ public sealed class GeneticsLaboratorySystem : EntitySystem
         var state = new GeneticsUiState(patient == null ? null : GetNetEntity(patient.Value),
             patient == null ? Loc.GetString("genetics-no-patient") : Identity.Name(patient.Value, EntityManager),
             revision, stability, this.IsPowered(ent, EntityManager), ent.Comp.Pending != null, reagent, blocks, buffers,
-            _slots.GetItemOrNull(ent, ent.Comp.DiskSlot) != null, new List<string>(ent.Comp.Journal), ent.Comp.Debug, living);
+            _slots.GetItemOrNull(ent, ent.Comp.DiskSlot) != null, ent.Comp.Debug, living);
         _ui.SetUiState(ent.Owner, GeneticsUiKey.Laboratory, state);
     }
 }

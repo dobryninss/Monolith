@@ -75,6 +75,12 @@
   - type: Item
     size: Tiny
   - type: GeneticDisk
+  - type: ActivatableUI
+    key: enum.GeneticsUiKey.Disk
+  - type: UserInterface
+    interfaces:
+      enum.GeneticsUiKey.Disk:
+        type: GeneticDiskBoundUserInterface
   - type: Tag
     tags: [GeneticDisk]
   - type: StaticPrice
@@ -120,6 +126,7 @@
       entity_storage: !type:AllSelector
         children:
         - id: GeneticsLaboratoryCircuitboard
+        - id: GeneticInjectorPrinterCircuitboard
         - id: GeneticDisk
           amount: !type:ConstantNumberSelector
             value: 3

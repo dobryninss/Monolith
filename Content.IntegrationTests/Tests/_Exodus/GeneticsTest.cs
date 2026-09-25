@@ -8,11 +8,13 @@ using Content.Shared._Exodus.Genetics;
 using Content.Shared._Shitmed.Body.Components;
 using Content.Shared.Actions;
 using Content.Shared.Buckle.Components;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Doors.Components;
+using Content.Shared.FixedPoint;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.Interaction;
@@ -320,9 +322,12 @@ public sealed class GeneticsTest
             lab.ScanDuration = TimeSpan.Zero;
             lab.EditDuration = TimeSpan.Zero;
             lab.EditCost = 0;
-            lab.GenomeInjectorCost = 0;
             var scanner = entities.GetComponent<MedicalScannerComponent>(machine);
-            Assert.That(entities.System<SharedContainerSystem>().Insert(patient, scanner.BodyContainer), Is.True);
+            var containers = entities.System<SharedContainerSystem>();
+            Assert.That(containers.Insert(patient, scanner.BodyContainer), Is.True);
+            var disk = entities.SpawnEntity("GeneticDisk", new EntityCoordinates(map, Vector2.One));
+            var diskData = entities.GetComponent<GeneticDiskComponent>(disk);
+            Assert.That(containers.Insert(disk, containers.EnsureContainer<ContainerSlot>(machine, lab.DiskSlot)), Is.True);
             Assert.That(genetics.TryGetLivingGenome(patient, out var genome), Is.True);
             var round = genetics.GetRound();
 
@@ -335,6 +340,12 @@ public sealed class GeneticsTest
 
             Send(GeneticsOperation.Scan);
             Assert.That(lab.Pending, Is.Not.Null);
+            Send(GeneticsOperation.EjectPatient);
+            Assert.That(scanner.BodyContainer.ContainedEntity, Is.Null);
+            Assert.That(lab.Pending, Is.Null, "Ejecting the patient cancels the procedure.");
+            Assert.That(lab.ScannedRevision, Is.EqualTo(-1));
+            Assert.That(containers.Insert(patient, scanner.BodyContainer), Is.True);
+            Send(GeneticsOperation.Scan);
             laboratories.Update(0);
             var ui = entities.System<UserInterfaceSystem>();
             Assert.That(ui.TryGetUiState<GeneticsUiState>(machine, GeneticsUiKey.Laboratory, out var state), Is.True);
@@ -347,7 +358,12 @@ public sealed class GeneticsTest
                 Assert.That(block.Active, Is.Null);
             }
             var revision = genome!.Revision;
-            foreach (var operation in new[] { GeneticsOperation.SetBlock, GeneticsOperation.Reset, GeneticsOperation.RestoreBuffer })
+            foreach (var operation in new[]
+                     {
+                         GeneticsOperation.SetBlock, GeneticsOperation.Reset, GeneticsOperation.RestoreBuffer,
+                         GeneticsOperation.StoreBuffer, GeneticsOperation.ReadDisk,
+                         GeneticsOperation.PrintBufferInjector, GeneticsOperation.PrintBufferGenome,
+                     })
             {
                 Send(operation);
                 Assert.That(lab.Pending, Is.Null, "Forged ADMIN operations must be rejected on the server.");
@@ -362,27 +378,83 @@ public sealed class GeneticsTest
             Assert.That(genome.Blocks[empty] & 0xF0F, Is.EqualTo(previous & 0xF0F));
             Assert.That(damage.Damage.DamageDict["Poison"] - poison, Is.EqualTo(Content.Shared.FixedPoint.FixedPoint2.New(10)));
 
+            Send(GeneticsOperation.WriteDisk);
+            var recorded = diskData.Sample;
+            Assert.That(recorded, Is.Not.Null);
+            Assert.That(recorded!.Blocks, Is.EqualTo(genome.Blocks));
+            Assert.That(recorded.Blocks, Is.Not.SameAs(genome.Blocks));
+            Assert.That(ui.TryGetUiState<GeneticDiskUiState>(disk, GeneticsUiKey.Disk, out var diskState), Is.True);
+            Assert.That(diskState!.Disk.Status, Is.EqualTo(GeneticDiskStatus.Ready));
+            Assert.That(diskState.Disk.Blocks, Is.EqualTo(recorded.Blocks));
+
+            var diskSlot = containers.EnsureContainer<ContainerSlot>(machine, lab.DiskSlot);
+            Send(GeneticsOperation.EjectDisk);
+            Assert.That(diskSlot.ContainedEntity, Is.Null);
+            Assert.That(entities.System<SharedHandsSystem>().GetActiveItem(user), Is.EqualTo(disk));
             Send(GeneticsOperation.PrintGenome);
-            var plannedSample = lab.Pending!.Sample;
-            Assert.That(plannedSample!.Blocks, Is.EqualTo(genome.Blocks));
-            laboratories.Update(0);
-            var injectors = entities.AllEntityQueryEnumerator<GeneticInjectorComponent>();
-            var found = false;
-            while (injectors.MoveNext(out _, out var injector))
+            Assert.That(lab.Pending, Is.Null, "Printing requires mutagen.");
+            var solutions = entities.System<SharedSolutionContainerSystem>();
+            Assert.That(solutions.TryGetSolution(machine, lab.Solution, out var reservoir, out var solution), Is.True);
+            var remaining = FixedPoint2.New(100);
+            Assert.That(solutions.TryAddReagent(reservoir!.Value, "UnstableMutagen", remaining), Is.True);
+            var poisonBeforePrinting = damage.Damage.DamageDict["Poison"];
+            foreach (var operation in new[] { GeneticsOperation.PrintInjector, GeneticsOperation.PrintGenome })
             {
-                if (injector.Sample is not { } printed || !ReferenceEquals(printed, plannedSample))
-                    continue;
-                found = true;
-                Assert.That(printed.Blocks, Is.EqualTo(genome.Blocks));
+                var fullGenome = operation == GeneticsOperation.PrintGenome;
+                Send(operation, empty);
+                Assert.That(lab.Pending, Is.Not.Null, "A scanned patient is sufficient; no disk is required.");
+                laboratories.Update(0);
+                Assert.That(lab.Pending, Is.Null);
+                remaining -= fullGenome ? lab.GenomeInjectorCost : lab.InjectorCost;
+                Assert.That(solution!.GetTotalPrototypeQuantity(lab.Reagent), Is.EqualTo(remaining));
+
+                var found = 0;
+                var injectors = entities.AllEntityQueryEnumerator<GeneticInjectorComponent>();
+                while (injectors.MoveNext(out _, out var injector))
+                {
+                    if (injector.Context != round.Context || (injector.Sample != null) != fullGenome)
+                        continue;
+                    found++;
+                    if (fullGenome)
+                    {
+                        Assert.That(injector.Sample!.Blocks, Is.EqualTo(genome.Blocks));
+                        Assert.That(injector.Sample.Blocks, Is.Not.SameAs(genome.Blocks));
+                    }
+                    else
+                    {
+                        Assert.That(injector.Block, Is.EqualTo(empty));
+                        Assert.That(injector.Value, Is.EqualTo(genome.Blocks[empty]));
+                    }
+                }
+                Assert.That(found, Is.EqualTo(1));
             }
-            Assert.That(found, Is.True);
-            Send(GeneticsOperation.PrintGenome);
+            Assert.That(damage.Damage.DamageDict["Poison"], Is.EqualTo(poisonBeforePrinting));
+            Assert.That(containers.Insert(disk, diskSlot), Is.True);
+            Send(GeneticsOperation.Edit, empty);
             Assert.That(lab.Pending, Is.Not.Null);
             entities.System<MobStateSystem>().ChangeMobState(patient, MobState.Dead);
             Assert.That(lab.Pending, Is.Null);
             Assert.That(lab.ScannedRevision, Is.EqualTo(-1));
             Send(GeneticsOperation.StoreBuffer);
             Assert.That(lab.Buffers[0], Is.Null);
+            var diskRevision = diskData.Revision;
+            Send(GeneticsOperation.WriteDisk);
+            Assert.That(diskData.Revision, Is.EqualTo(diskRevision), "Dead patients cannot overwrite disks.");
+            foreach (var operation in new[] { GeneticsOperation.PrintInjector, GeneticsOperation.PrintGenome })
+            {
+                Send(operation);
+                Assert.That(lab.Pending, Is.Null, "Dead patients cannot be used to print injectors.");
+            }
+            var power = entities.AddComponent<ApcPowerReceiverComponent>(machine);
+            Assert.That(power.Powered, Is.False);
+            Send(GeneticsOperation.EjectPatient);
+            Assert.That(scanner.BodyContainer.ContainedEntity, Is.Null, "A dead patient can be ejected without power or a scan.");
+            Send(GeneticsOperation.EjectDisk);
+            Assert.That(diskSlot.ContainedEntity, Is.Null, "The disk can be ejected without power or a patient.");
+            Assert.That(diskData.Sample, Is.SameAs(recorded), "Ejection preserves the recorded sample.");
+            Assert.That(ui.TryGetUiState<GeneticsUiState>(machine, GeneticsUiKey.Laboratory, out state), Is.True);
+            Assert.That(state!.PatientEntity, Is.Null);
+            Assert.That(state.Disk, Is.False);
             entities.DeleteEntity(map);
             DeleteCipher(entities, round.Context);
         });

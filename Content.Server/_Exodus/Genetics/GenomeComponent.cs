@@ -52,6 +52,8 @@ public sealed partial class GeneticSnapshot
 public sealed partial class GeneticDiskComponent : Component
 {
     [DataField] public GeneticSnapshot? Sample;
+    /// <summary>Changes whenever the recording is replaced or edited, invalidating pending disk operations.</summary>
+    [DataField] public int Revision;
 }
 
 [RegisterComponent]

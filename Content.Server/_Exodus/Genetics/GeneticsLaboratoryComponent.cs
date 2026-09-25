@@ -30,7 +30,6 @@ public sealed partial class GeneticsLaboratoryComponent : Component
     public GeneticsPendingOperation? Pending;
     public EntityUid? ScannedPatient;
     public int ScannedRevision = -1;
-    public List<string> Journal = new();
 }
 
 public sealed class GeneticsPendingOperation

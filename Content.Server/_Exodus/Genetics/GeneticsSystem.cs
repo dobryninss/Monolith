@@ -24,6 +24,9 @@ namespace Content.Server._Exodus.Genetics;
 
 public sealed partial class GeneticsSystem : EntitySystem
 {
+    /// <summary>Notifies administrative viewers after a genome and its effects have been reconciled.</summary>
+    public event Action<EntityUid>? GenomeUpdated;
+
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -339,6 +342,7 @@ public sealed partial class GeneticsSystem : EntitySystem
 
         var changed = new GenomeChangedEvent();
         RaiseLocalEvent(ent, ref changed);
+        GenomeUpdated?.Invoke(ent.Owner);
     }
 
     private void SendSensation(EntityUid uid, LocId message)
