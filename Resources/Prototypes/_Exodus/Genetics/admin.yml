@@ -51,14 +51,6 @@
 
 - type: entity
   parent: BaseGeneticInjectorAdmin
-  id: GeneticInjectorMatterEater
-  suffix: ADMIN
-  components:
-  - type: GeneticInjector
-    mutation: GeneticMatterEater
-
-- type: entity
-  parent: BaseGeneticInjectorAdmin
   id: GeneticInjectorMimic
   suffix: ADMIN
   components:
@@ -99,14 +91,6 @@
 
 - type: entity
   parent: BaseGeneticInjectorAdmin
-  id: GeneticInjectorPsyResist
-  suffix: ADMIN
-  components:
-  - type: GeneticInjector
-    mutation: GeneticPsyResist
-
-- type: entity
-  parent: BaseGeneticInjectorAdmin
   id: GeneticInjectorLethargy
   suffix: ADMIN
   components:
@@ -120,3 +104,99 @@
   components:
   - type: GeneticInjector
     mutation: GeneticBrittle
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorNightVision
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticNightVision
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorClotting
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticClotting
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorJump
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticJump
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorPouch
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticPouch
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorInsulation
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticInsulation
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorGlow
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticGlow
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorHearing
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticHearing
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorWeb
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticWeb
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorFireBreath
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticFireBreath
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorHemophilia
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticHemophilia
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorPhotophobia
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticPhotophobia
+
+- type: entity
+  parent: BaseGeneticInjectorAdmin
+  id: GeneticInjectorHypermetabolism
+  suffix: ADMIN
+  components:
+  - type: GeneticInjector
+    mutation: GeneticHypermetabolism

@@ -119,6 +119,12 @@ public sealed partial class GeneticsSystem : EntitySystem
                 } while (IsBlockActive(value, threshold));
                 genome.Blocks.Add(value);
             }
+            foreach (var mutation in genome.InitialMutations)
+            {
+                var block = round.Mutations.IndexOf(mutation);
+                if (block >= 0)
+                    genome.Blocks[block] = (ushort) MaxBlockValue;
+            }
             genome.Baseline = new List<ushort>(genome.Blocks);
             genome.Revision++;
             genome.EffectsInitialized = false;
@@ -289,6 +295,16 @@ public sealed partial class GeneticsSystem : EntitySystem
             modifiers.MeleeMultiplier *= source.MeleeMultiplier;
             modifiers.StaminaMultiplier *= source.StaminaMultiplier;
             modifiers.DamageMultiplier *= source.DamageMultiplier;
+            modifiers.SizeMultiplier *= source.SizeMultiplier;
+            modifiers.BlockRangedWeapons |= source.BlockRangedWeapons;
+            modifiers.NutritionMultiplier *= source.NutritionMultiplier;
+            modifiers.ThirstMultiplier *= source.ThirstMultiplier;
+            modifiers.ConductivityMultiplier *= source.ConductivityMultiplier;
+            modifiers.BleedingMultiplier *= source.BleedingMultiplier;
+            modifiers.FlashDurationMultiplier *= source.FlashDurationMultiplier;
+            modifiers.PhotophobiaStrength = Math.Max(modifiers.PhotophobiaStrength, source.PhotophobiaStrength);
+            modifiers.ClottingRate += source.ClottingRate;
+            modifiers.NutritionDrain += source.NutritionDrain;
             modifiers.BlockedStatuses.UnionWith(source.BlockedStatuses);
             modifiers.Abilities |= source.Abilities;
             wanted.UnionWith(mutation.Actions);
@@ -373,6 +389,7 @@ public sealed partial class GeneticsSystem : EntitySystem
             genome.NextUpdate += genome.Interval;
             if (mob.CurrentState == MobState.Dead)
                 continue;
+            UpdatePhysiology(uid, (float) genome.Interval.TotalSeconds);
             if (!genome.PeriodicDamage.Empty)
                 _damage.TryChangeDamage(uid, genome.PeriodicDamage, true, false);
             if (genome.Stability < 0)

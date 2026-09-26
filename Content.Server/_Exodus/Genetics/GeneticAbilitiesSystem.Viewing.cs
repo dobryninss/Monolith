@@ -25,7 +25,7 @@ public sealed partial class GeneticAbilitiesSystem
     private bool CanObserve(EntityUid observer, EntityUid target)
     {
         return observer != target && CanUse(observer, GeneticAbility.RemoteViewing) &&
-               HasAbility(target, GeneticAbility.RemoteViewing) && !HasAbility(target, GeneticAbility.PsyResist) &&
+               HasAbility(target, GeneticAbility.RemoteViewing) &&
                TryComp<MobStateComponent>(target, out var state) && state.CurrentState != MobState.Dead &&
                Transform(target).MapUid != null;
     }
@@ -124,6 +124,11 @@ public sealed partial class GeneticAbilitiesSystem
         var query = EntityQueryEnumerator<GeneticAbilityStateComponent>();
         while (query.MoveNext(out var uid, out var state))
         {
+            if (state.HearingUntil != TimeSpan.Zero && state.HearingUntil <= _timing.CurTime)
+            {
+                state.HearingUntil = TimeSpan.Zero;
+                StopHearing(uid);
+            }
             if (state.ViewTarget is not { } target || state.NextViewCheck > _timing.CurTime)
                 continue;
             state.NextViewCheck += state.ViewCheckInterval;

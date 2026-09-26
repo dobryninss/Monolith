@@ -8,13 +8,12 @@
     updateInterval: 1
   - type: Item
     size: Small
-    sprite: _Exodus/Objects/Devices/medical_tracking_tablet.rsi
   - type: Sprite
-    sprite: _Exodus/Objects/Devices/medical_tracking_tablet.rsi
+    sprite: Objects/Devices/tablets.rsi # Placeholder until a replacement sprite is ready.
     state: tablet
   - type: Icon
-    sprite: _Exodus/Objects/Devices/medical_tracking_tablet.rsi
-    state: icon
+    sprite: Objects/Devices/tablets.rsi
+    state: tablet
   - type: RadarConsole
     followEntity: true
     noRotate: true

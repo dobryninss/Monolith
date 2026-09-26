@@ -30,6 +30,7 @@ public sealed class GeneticViewWindow : FancyWindow
         MinSize = new Vector2(520, 520);
         SetSize = new Vector2(600, 600);
         _viewport.Eye = _emptyEye;
+        _viewport.ViewportSize = new Vector2i(500, 500);
         _viewport.MouseFilter = MouseFilterMode.Ignore;
         var root = new BoxContainer();
         var sidebar = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, SetWidth = 220 };

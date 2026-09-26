@@ -11,6 +11,8 @@ public sealed partial class GenomeComponent : Component
     [DataField] public string Context = string.Empty;
     [DataField] public List<ushort> Blocks = new();
     [DataField] public List<ushort> Baseline = new();
+    /// <summary>Mutations expressed when this body's genome is first generated. Chemical resets can disable them.</summary>
+    [DataField] public List<ProtoId<GeneticMutationPrototype>> InitialMutations = new();
     [DataField] public int Revision;
     [DataField] public int Stability = 60;
     [DataField] public int StabilityCapacity = 60;

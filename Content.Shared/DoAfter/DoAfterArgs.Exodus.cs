@@ -1,6 +1,6 @@
 namespace Content.Shared.DoAfter;
 
-// Exodus - capability-scoped range for delayed interactions.
+// Exodus - capability-scoped range and sound prediction for delayed interactions.
 public sealed partial class DoAfterArgs
 {
     /// <summary>
@@ -9,4 +9,8 @@ public sealed partial class DoAfterArgs
     /// </summary>
     [DataField]
     public string? RangeProvider;
+
+    /// <summary>False for server-only interactions whose actor cannot predict the completion sound.</summary>
+    [DataField]
+    public bool PredictSound = true;
 }

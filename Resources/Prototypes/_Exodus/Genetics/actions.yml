@@ -44,28 +44,6 @@
     event: !type:GeneticCloakEvent
 
 - type: entity
-  id: ActionGeneticDevour
-  categories: [HideSpawnMenu]
-  components:
-  - type: ActionTargetingCursor
-  - type: EntityTargetAction
-    icon: { sprite: Interface/Actions/devour.rsi, state: icon }
-    useDelay: 1
-    range: 1.5
-    event: !type:GeneticDevourEvent
-
-- type: entity
-  id: ActionGeneticEatTile
-  categories: [HideSpawnMenu]
-  components:
-  - type: ActionTargetingCursor
-  - type: WorldTargetAction
-    icon: { sprite: Interface/Actions/devour.rsi, state: icon }
-    useDelay: 1
-    range: 1.5
-    event: !type:GeneticEatTileEvent
-
-- type: entity
   id: ActionGeneticMimic
   categories: [HideSpawnMenu]
   components:
@@ -84,3 +62,51 @@
     icon: { sprite: Objects/Magic/magicactions.rsi, state: blink }
     useDelay: 1
     event: !type:GeneticRestoreAppearanceEvent
+
+- type: entity
+  id: ActionGeneticNightVision
+  categories: [HideSpawnMenu]
+  components:
+  - type: InstantAction
+    icon: { sprite: Interface/Actions/night_vision.rsi, state: icon }
+    useDelay: 0.5
+    event: !type:GeneticNightVisionEvent
+
+- type: entity
+  id: ActionGeneticGlow
+  categories: [HideSpawnMenu]
+  components:
+  - type: InstantAction
+    icon: { sprite: Objects/Tools/flashlight.rsi, state: flashlight }
+    useDelay: 1
+    event: !type:GeneticGlowEvent
+
+- type: entity
+  id: ActionGeneticHearing
+  categories: [HideSpawnMenu]
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/ghostHearingToggled.png
+    useDelay: 20
+    event: !type:GeneticHearingEvent
+
+- type: entity
+  id: ActionGeneticWeb
+  categories: [HideSpawnMenu]
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/web.png
+    useDelay: 12
+    event: !type:GeneticWebEvent
+
+- type: entity
+  id: ActionGeneticFireBreath
+  categories: [HideSpawnMenu]
+  components:
+  - type: ActionTargetingCursor
+  - type: WorldTargetAction
+    icon: { sprite: Objects/Magic/magicactions.rsi, state: fireball }
+    useDelay: 20
+    range: 5
+    checkCanAccess: true
+    event: !type:GeneticFireBreathEvent

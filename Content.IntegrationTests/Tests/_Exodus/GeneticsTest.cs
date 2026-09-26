@@ -141,6 +141,7 @@ public sealed class GeneticsTest
             var copy = new DoAfterArgs(operation.Args);
             Assert.That(copy.RangeProvider, Is.EqualTo(SharedGeneticEffectsSystem.TelekinesisRangeProvider));
             Assert.That(copy.DistanceThreshold, Is.EqualTo(10));
+            Assert.That(copy.PredictSound, Is.False, "Remote tool sounds must include the actor.");
         });
 
         await server.WaitRunTicks(1);

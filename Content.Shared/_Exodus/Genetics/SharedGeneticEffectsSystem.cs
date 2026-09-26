@@ -1,13 +1,18 @@
 using Content.Shared._Exodus.DoAfter;
+using Content.Shared._Exodus.Inventory;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Electrocution;
 using Content.Shared.Interaction;
+using Content.Shared.Inventory;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Systems;
+using Content.Shared.Popups;
 using Content.Shared.StatusEffect;
 using Content.Shared.Temperature;
 using Content.Shared.Weapons.Melee.Events;
+using Content.Shared.Weapons.Ranged.Events;
 
 namespace Content.Shared._Exodus.Genetics;
 
@@ -15,6 +20,8 @@ public sealed class SharedGeneticEffectsSystem : EntitySystem
 {
     [Dependency] private readonly MovementSpeedModifierSystem _movement = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
 
     public const string TelekinesisRangeProvider = "GeneticTelekinesis";
 
@@ -27,6 +34,7 @@ public sealed class SharedGeneticEffectsSystem : EntitySystem
         SubscribeLocalEvent<GeneticEffectsComponent, RefreshMovementSpeedModifiersEvent>(OnMovement);
         SubscribeLocalEvent<GeneticEffectsComponent, ComponentStartup>(OnChanged);
         SubscribeLocalEvent<GeneticEffectsComponent, AfterAutoHandleStateEvent>(OnChanged);
+        SubscribeLocalEvent<GeneticEffectsComponent, GetAdditionalInventorySlotsEvent>(OnAdditionalSlots);
         SubscribeLocalEvent<GeneticEffectsComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<GeneticEffectsComponent, BeforeStatusEffectAddedEvent>(OnStatus);
         SubscribeLocalEvent<GeneticEffectsComponent, DamageModifyEvent>(OnDamage);
@@ -37,6 +45,44 @@ public sealed class SharedGeneticEffectsSystem : EntitySystem
         SubscribeLocalEvent<GeneticEffectsComponent, TemperatureDamageAttemptEvent>(OnTemperatureDamage);
         SubscribeLocalEvent<GeneticEffectsComponent, ModifyChangedTemperatureEvent>(OnTemperatureChange);
         SubscribeLocalEvent<GeneticEffectsComponent, ValidateDoAfterRangeEvent>(OnValidateDoAfterRange);
+        SubscribeLocalEvent<GeneticEffectsComponent, ElectrocutionAttemptEvent>(OnElectrocution);
+        SubscribeLocalEvent<GeneticEffectsComponent, BleedAmountChangeEvent>(OnBleeding);
+        SubscribeLocalEvent<GeneticEffectsComponent, FlashDurationModifyEvent>(OnFlashDuration);
+        SubscribeLocalEvent<GeneticEffectsComponent, ShotAttemptedEvent>(OnShotAttempted);
+    }
+
+    private void OnShotAttempted(Entity<GeneticEffectsComponent> ent, ref ShotAttemptedEvent args)
+    {
+        if (args.Cancelled || ent.Comp.Reverting || !ent.Comp.Modifiers.BlockRangedWeapons)
+            return;
+        args.Cancel();
+        _popup.PopupClient(Loc.GetString("genetics-hulk-cannot-shoot"), ent.Owner, ent.Owner);
+    }
+
+    private void OnAdditionalSlots(Entity<GeneticEffectsComponent> ent, ref GetAdditionalInventorySlotsEvent args)
+    {
+        if (ent.Comp.Reverting || (ent.Comp.Modifiers.Abilities & GeneticAbility.Pouch) == 0)
+            return;
+        args.Templates ??= new();
+        args.Templates.Add(ent.Comp.PocketTemplate);
+    }
+
+    private void OnElectrocution(Entity<GeneticEffectsComponent> ent, ref ElectrocutionAttemptEvent args)
+    {
+        if (!ent.Comp.Reverting)
+            args.SiemensCoefficient *= ent.Comp.Modifiers.ConductivityMultiplier;
+    }
+
+    private void OnBleeding(Entity<GeneticEffectsComponent> ent, ref BleedAmountChangeEvent args)
+    {
+        if (!ent.Comp.Reverting && args.Amount > 0)
+            args.Amount *= ent.Comp.Modifiers.BleedingMultiplier;
+    }
+
+    private void OnFlashDuration(Entity<GeneticEffectsComponent> ent, ref FlashDurationModifyEvent args)
+    {
+        if (!ent.Comp.Reverting)
+            args.Duration *= ent.Comp.Modifiers.FlashDurationMultiplier;
     }
 
     private void OnValidateDoAfterRange(Entity<GeneticEffectsComponent> ent, ref ValidateDoAfterRangeEvent args)
@@ -54,12 +100,14 @@ public sealed class SharedGeneticEffectsSystem : EntitySystem
     private void OnChanged<T>(Entity<GeneticEffectsComponent> ent, ref T args)
     {
         _movement.RefreshMovementSpeedModifiers(ent);
+        _inventory.RefreshSlots(ent.Owner);
     }
 
     private void OnShutdown(Entity<GeneticEffectsComponent> ent, ref ComponentShutdown args)
     {
         ent.Comp.Reverting = true;
         _movement.RefreshMovementSpeedModifiers(ent);
+        _inventory.RefreshSlots(ent.Owner);
         var ev = new GeneticEffectsShutdownEvent();
         RaiseLocalEvent(ent, ref ev);
     }

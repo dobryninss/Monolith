@@ -1,4 +1,6 @@
+using Content.Shared.Inventory;
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Exodus.Genetics;
 
@@ -7,5 +9,11 @@ namespace Content.Shared._Exodus.Genetics;
 public sealed partial class GeneticEffectsComponent : Component
 {
     [DataField, AutoNetworkedField] public GeneticModifiers Modifiers = new();
+    [DataField, AutoNetworkedField] public bool NightVisionEnabled;
+    [DataField, AutoNetworkedField] public Color NightVisionColor = Color.FromHex("#344837");
+    [DataField, AutoNetworkedField] public bool HearingEnabled;
+    [DataField, AutoNetworkedField] public float HearingRange = 5f;
+    /// <summary>Slot definitions contributed by the biological pocket mutation.</summary>
+    [DataField, AutoNetworkedField] public ProtoId<InventoryTemplatePrototype> PocketTemplate = "GeneticPocket";
     public bool Reverting;
 }

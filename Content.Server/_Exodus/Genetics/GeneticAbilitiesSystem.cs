@@ -53,8 +53,10 @@ public sealed partial class GeneticAbilitiesSystem : EntitySystem
         SubscribeLocalEvent<GeneticAbilityStateComponent, MeleeHitEvent>(OnMelee);
         SubscribeLocalEvent<GeneticAbilityStateComponent, MobStateChangedEvent>(OnMobState);
         InitializeViewing();
-        InitializeDevouring();
+        InitializePrying();
         InitializeTelekinesis();
+        InitializeAdaptations();
+        InitializeDeflection();
     }
 
     private bool HasAbility(EntityUid uid, GeneticAbility ability)
@@ -71,6 +73,7 @@ public sealed partial class GeneticAbilitiesSystem : EntitySystem
 
     private void OnGenesChanged(Entity<GeneticEffectsComponent> ent, ref GenomeChangedEvent args)
     {
+        _inventory.RefreshSlots(ent.Owner);
         var state = EnsureComp<GeneticAbilityStateComponent>(ent);
         if (!HasAbility(ent, GeneticAbility.Cloak))
             StopCloak((ent.Owner, state), false);
@@ -78,6 +81,7 @@ public sealed partial class GeneticAbilitiesSystem : EntitySystem
             RestoreAppearance((ent.Owner, state));
         if (!HasAbility(ent, GeneticAbility.RemoteViewing))
             StopViewing((ent.Owner, state), true);
+        ReconcileAdaptations(ent, state);
     }
 
     private void OnEffectsShutdown(Entity<GeneticAbilityStateComponent> ent, ref GeneticEffectsShutdownEvent args)
@@ -114,6 +118,7 @@ public sealed partial class GeneticAbilitiesSystem : EntitySystem
     private void Cleanup(Entity<GeneticAbilityStateComponent> ent)
     {
         StopViewing(ent, true);
+        CleanupAdaptations(ent);
         if (!TerminatingOrDeleted(ent))
         {
             StopCloak(ent, false);
@@ -212,5 +217,6 @@ public sealed partial class GeneticAbilitiesSystem : EntitySystem
             return;
         StopCloak(ent, true);
         StopViewing(ent, true);
+        StopHearing(ent.Owner);
     }
 }
