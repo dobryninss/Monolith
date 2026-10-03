@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Content.Shared._Exodus.Weapons.Projectiles; // Exodus projectile lifecycle hooks
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Logs;
@@ -27,6 +28,7 @@ using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Whitelist;
 using Content.Shared._RMC14.Weapons.Ranged.Prediction;
+using Content.Shared.Weapons.Hitscan.Events;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
@@ -397,6 +399,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         var rateMulEv = new QueryFireRateMultiplierEvent(1f);
         RaiseLocalEvent(gunUid, ref rateMulEv);
         fireRate *= rateMulEv.ReloadTimeMul;
+        // Exodus: hardpoint shot penalties compose through the event above; burst penalties use GetReloadCooldown.
 
         // First shot
         // Previously we checked shotcounter but in some cases all the bullets got dumped at once
@@ -593,6 +596,27 @@ public abstract partial class SharedGunSystem : EntitySystem
         projectile.Weapon = gunUid;
 
         TransformSystem.SetWorldRotation(uid, direction.ToWorldAngle() + projectile.Angle);
+
+        // Exodus: projectile effects initialize from the actual launch, independently of the ammo provider.
+        var shot = new ProjectileShotEvent();
+        RaiseLocalEvent(uid, ref shot);
+    }
+
+    // Mono - handle hitscan
+    public virtual void ShootHitscan(EntityUid uid, EntityCoordinates? fromCoordinates, Vector2 direction, EntityUid gunUid, EntityUid? user = null, EntityUid? target = null)
+    {
+        if (fromCoordinates is null)
+            return;
+
+        var hitscanEv = new HitscanTraceEvent
+        {
+            FromCoordinates = fromCoordinates.Value,
+            ShotDirection = direction.Normalized(),
+            Gun = gunUid,
+            Shooter = user,
+            Target = target,
+        };
+        RaiseLocalEvent(uid, ref hitscanEv);
     }
 
     // Mono
@@ -730,6 +754,21 @@ public abstract partial class SharedGunSystem : EntitySystem
             return;
 
         var ev = new MuzzleFlashEvent(GetNetEntity(gun), sprite, worldAngle);
+        CreateEffect(gun, ev, user);
+    }
+
+    // mono
+    protected void MuzzleFlash(EntityUid gun, EntProtoId? muzzle, Angle worldAngle, EntityUid? user = null)
+    {
+        var attemptEv = new GunMuzzleFlashAttemptEvent();
+        RaiseLocalEvent(gun, ref attemptEv);
+        if (attemptEv.Cancelled)
+            return;
+
+        if (muzzle == null)
+            return;
+
+        var ev = new MuzzleFlashEvent(GetNetEntity(gun), muzzle, worldAngle);
         CreateEffect(gun, ev, user);
     }
 

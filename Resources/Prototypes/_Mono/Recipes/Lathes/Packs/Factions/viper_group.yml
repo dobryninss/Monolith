@@ -1,6 +1,10 @@
 - type: latheRecipePack
   id: MonoViperGroupDynamic
   recipes:
+  # Exodus: new upstream ships; all existing choices remain.
+  - ShipVoucherVGKeelback
+  - ShipVoucherVGLancehead
+  - ShipVoucherVGLeviathan
   - ClothingNeckViperGroupMantle
   - ClothingUniformJumpsuitViperGroupUniform
   - ClothingUniformJumpsuitViperGroupTurtleneck
@@ -8,6 +12,7 @@
   - ClothingOuterHardsuitViperGroupStandard
   - ClothingOuterHardsuitViperGroupMedic
   - ClothingOuterHardsuitViperGroupJuggernaut
+  - ClothingOuterHardsuitViperGroupShield
   - ShipVoucherVGWolf
 
 - type: latheRecipePack

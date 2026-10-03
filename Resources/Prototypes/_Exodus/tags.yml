@@ -2,6 +2,9 @@
   id: DionaNymph
 
 - type: Tag
+  id: StealthDisruptorCartridge
+
+- type: Tag
   id: SpaceLeviathan
 
 - type: Tag
@@ -39,3 +42,7 @@
 
 - type: Tag
   id: TsfEngineerUplink
+
+# Entities excluded by the standard dynamic ship armor modules.
+- type: Tag
+  id: ShipArmorExcluded

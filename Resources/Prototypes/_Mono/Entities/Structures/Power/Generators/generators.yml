@@ -205,6 +205,7 @@
     multiplier: 0.01
   - type: MaterialStorage
     materialWhiteList: [Plasma, FuelGradePlasma]
+    storageLimit: 10000
   - type: PowerMonitoringDevice
     sprite: _Mono/Structures/Power/Generators/pinchreactor.rsi
     state: portgen0
@@ -257,6 +258,8 @@
   - type: MaterialStorage
     storage:
       FuelGradePlasma: 2500
+  - type: ShipRepairable # Exodus: restore the ship variant with an empty fuel store.
+    repairTo: GeneratorCRPinchShuttleRepaired
 
 # Stealth gen
 
@@ -305,6 +308,7 @@
     multiplier: 0.01
   - type: MaterialStorage
     materialWhiteList: [Plasma, FuelGradePlasma]
+    storageLimit: 50000
   - type: PowerMonitoringDevice
     sprite: _Mono/Structures/Power/Generators/sterling_reactor.rsi
     state: portgen0
@@ -348,6 +352,8 @@
   - type: MaterialStorage
     storage:
       FuelGradePlasma: 25000
+  - type: ShipRepairable # Exodus: empty repair variant.
+    repairTo: GeneratorSterlingShuttleRepaired
 
 # identical but different name for larp lol
 - type: entity
@@ -366,3 +372,5 @@
   - type: MaterialStorage
     storage:
       FuelGradePlasma: 25000
+  - type: ShipRepairable # Exodus: empty repair variant, retaining the PDV version.
+    repairTo: GeneratorSterlingPDVShuttleRepaired

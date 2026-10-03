@@ -8,7 +8,8 @@ comms-console-menu-broadcast-button = Broadcast
 # Frontier: station<sector
 comms-console-menu-broadcast-button-tooltip = Broadcast your message to wall-mounted screens around the sector. Note: They fit only ten characters!
 # Frontier: station<sector
-comms-console-menu-alert-level-button-tooltip = Change the sector alert level. Applies immediately on selecting.
+# Exodus: sector code transitions.
+comms-console-menu-alert-level-button-tooltip = Change the sector code. The new code takes effect after the second announcement.
 comms-console-menu-call-shuttle = Call emergency shuttle
 comms-console-menu-recall-shuttle = Recall emergency shuttle
 comms-console-menu-emergency-shuttle-button-tooltip = Calls or recalls the emergency shuttle. You can only recall when there's enough time left.
@@ -32,3 +33,4 @@ comms-console-announcement-title-wizard = Wizard
 
 # Mono
 comms-console-announcement-title-rogue = Phaethon Dynasty Imperial Vanguard
+comms-console-announcement-title-mieyo = Mieyo Manufacturing Concern

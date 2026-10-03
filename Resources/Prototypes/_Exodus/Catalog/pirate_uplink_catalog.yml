@@ -1,10 +1,40 @@
 - type: listing
+  id: UplinkPirateStealthDisruptor
+  name: uplink-stealth-disruptor-name
+  description: uplink-stealth-disruptor-desc
+  productEntity: StealthDisruptor
+  cost:
+    Doubloon: 60
+  categories:
+  - UplinkPirateUtility
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
+
+- type: listing
+  id: UplinkPirateStealthDisruptorCartridge
+  name: uplink-stealth-disruptor-cartridge-name
+  description: uplink-stealth-disruptor-cartridge-desc
+  productEntity: StealthDisruptorCartridge
+  cost:
+    Doubloon: 5
+  categories:
+  - UplinkPirateUtility
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
+
+- type: listing
   id: UplinkPirateStimulantsImplanter
   name: uplink-stimulants-implant-name
   description: uplink-stimulants-implant-desc
   productEntity: StimulantsImplanter
   cost:
-    Doubloon: 30
+    Doubloon: 33
   categories:
   - UplinkPirateMedical
   conditions:
@@ -19,7 +49,7 @@
   description: uplink-combat-implant-desc
   productEntity: CombatImplanter
   cost:
-    Doubloon: 30
+    Doubloon: 33
   categories:
   - UplinkPirateMedical
   conditions:
@@ -35,7 +65,7 @@
   description: uplink-pirate-faction-ai-core-desc
   productEntity: NpcStationAiAttackerStaticSmartPirateNF
   cost:
-    Doubloon: 150
+    Doubloon: 165
   categories:
   - UplinkPirateUtility
   conditions:
@@ -58,7 +88,7 @@
   productEntity: PowerCellHigh
   icon: { sprite: Objects/Power/power_cells.rsi, state: high }
   cost:
-    Doubloon: 3
+    Doubloon: 4
   categories:
   - UplinkPirateUtility
   conditions:
@@ -74,7 +104,7 @@
   productEntity: ToolboxSyndicateFilled
   icon: { sprite: _Impstation/Objects/Tools/Toolboxes/toolbox_syn.rsi, state: icon }
   cost:
-    Doubloon: 6
+    Doubloon: 7
   categories:
   - UplinkPirateUtility
   conditions:
@@ -89,7 +119,7 @@
   description: uplink-pirate-gps-desc
   productEntity: HandheldGPSBasic
   cost:
-    Doubloon: 2
+    Doubloon: 3
   categories:
   - UplinkPirateUtility
   conditions:

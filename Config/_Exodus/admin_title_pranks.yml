@@ -1,0 +1,9 @@
+# Exodus: prank overrides — custom admin titles in Adminwho.
+# To disable, set enabled: false and restart the server.
+# The source file is copied during the build; the live file is stored alongside the server executable.
+# Edit this file directly on disk. This is NOT a CVar or a game resource.
+enabled: false
+titles:
+  OperatorXeno: "Симплмоб младший"
+  # Add accounts on separate lines using the same indentation:
+  # AnotherAdmin: "Another joke title"

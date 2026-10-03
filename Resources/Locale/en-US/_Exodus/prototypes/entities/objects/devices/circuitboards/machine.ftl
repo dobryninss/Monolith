@@ -9,3 +9,14 @@ ent-MachineShieldMS750Circuitboard = MS-750 shield generator board
 
 ent-NebulaThrusterMachineCircuitboard = nebula-tuned thruster machine board
     .desc = A machine board for a nebula-tuned thruster.
+# Ship repair station board
+ent-ShipRepairDroneStationMachineCircuitboard = repair drone station machine board
+    .desc = A machine board for constructing a repair drone station.
+ship-repair-drone-station-machine-board-name = repair drone station machine board
+ship-repair-drone-station-machine-board-description = A machine board for constructing a repair drone station.
+
+ent-NebulaThrusterLargeMachineCircuitboard = large phasic thruster machine board
+    .desc = A machine board for a large phasic thruster. Requires a 3x1 machine frame.
+
+ent-NebulaThrusterCornerMachineCircuitboard = corner phasic thruster machine board
+    .desc = A machine board for a corner phasic thruster.

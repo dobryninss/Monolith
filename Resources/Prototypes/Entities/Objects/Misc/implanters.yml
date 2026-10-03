@@ -52,6 +52,11 @@
       # Exodus-Implants-Start
       - StimulantsImplant
       - CombatImplant
+      - VirusImmunityImplant # SS220 / Exodus: immunity ends when the implant is extracted.
+      - MedicalTrackingImplantBasic # Exodus medical service tiers
+      - MedicalTrackingImplantSilver # Exodus medical service tiers
+      - MedicalTrackingImplantGold # Exodus medical service tiers
+      - MedicalTrackingImplantPlatinum # Exodus medical service tiers
       # Exodus-Implants-End
       deimplantFailureDamage:
         types:
@@ -131,7 +136,7 @@
 
 - type: entity
   id: BaseImplantOnlyImplanterSyndi
-  parent: BaseImplantOnlyImplanter
+  parent: [BaseImplantOnlyImplanter, BaseFactionGearOtherFactionT2]
   name: syndicate implanter
   description: A compact disposable syringe exclusively designed for the injection of subdermal implants.
   abstract: true

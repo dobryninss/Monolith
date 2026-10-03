@@ -5,12 +5,12 @@
   parent: BaseVesselAntag
   name: Нептун # Ru-Localization
   description: Оснащён тяжёлой лобовой бронёй, шестью тяжёлыми 90-мм орудиями Клык и двумя АСМ-220 Трезубец. Хорош для борьбы с крупными целями в лобовых столкновениях, но неспособен эффективно сражаться с юркими и мелкими целями. # Ru-Localization
-  price: 153555 #126k appraisal
+  price: 189100 # Exodus: appraised minimum + 5%, rounded up to 100.
   purchasable: false # voucher only
   category: Medium
   group: BlackMarket
   access: Pirate
-  shuttlePath: /SharedMaps/_Mono/Shuttles/BlackMarket/neptune.yml
+  shuttlePath: /SharedMaps/_Mono/Shuttles/PDV/neptune.yml # Exodus: upstream remap, existing vessel settings retained.
   addComponents: # Exodus faction-owned shuttle target filtering
   - type: NpcFactionMember
     factions:
@@ -26,7 +26,7 @@
 - type: gameMap
   id: Neptune
   mapName: 'Нептун' # Ru-Localization
-  mapPath: /SharedMaps/_Mono/Shuttles/BlackMarket/neptune.yml
+  mapPath: /SharedMaps/_Mono/Shuttles/PDV/neptune.yml # Exodus: upstream remap, existing vessel settings retained.
   minPlayers: 0
   stations:
     Neptune:

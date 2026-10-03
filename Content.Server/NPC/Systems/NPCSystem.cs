@@ -187,6 +187,15 @@ namespace Content.Server.NPC.Systems
                 if (_mobState.IsIncapacitated(npcUid))
                     continue;
 
+                // Exodus-begin: unattended colonies must keep hunting, feeding and transporting corpses.
+                if (!htn.SleepWithoutPlayers)
+                {
+                    if (!IsAwake(npcUid, htn))
+                        WakeNPC(npcUid, htn);
+                    continue;
+                }
+                // Exodus-end
+
                 var npcCoords = npcTransform.Coordinates;
                 var hasNearbyPlayer = false;
 

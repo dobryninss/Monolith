@@ -10,10 +10,10 @@
   parent: BaseVessel
   name: Вынос # Ru-Localization
   description: Средний ботаническо-кухонный шаттл с гостевой галереей для заказов на вынос. Также есть места для питания прямо на нём. # Ru-Localization
-  price: 64000
+  price: 71000 # Exodus: appraised minimum + 5%, rounded up to 100.
   category: Medium
   group: Shipyard
-  shuttlePath: /SharedMaps/_Mono/Shuttles/takeaway.yml
+  shuttlePath: /SharedMaps/_Mono/Shuttles/Civilian/takeaway.yml # Exodus: upstream remap, existing vessel settings retained.
   addComponents:
   - type: NpcFactionMember # Exodus NanoTrasen faction
     factions:
@@ -32,7 +32,7 @@
 - type: gameMap
   id: Takeaway
   mapName: 'Вынос' # Ru-Localization
-  mapPath: /SharedMaps/_Mono/Shuttles/takeaway.yml
+  mapPath: /SharedMaps/_Mono/Shuttles/Civilian/takeaway.yml # Exodus: upstream remap, existing vessel settings retained.
   minPlayers: 0
   stations:
     Takeaway:

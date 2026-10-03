@@ -1,5 +1,7 @@
 using Content.Shared.NPC.Prototypes;
+using Content.Shared.Radio;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Shared._Exodus.Territory;
 
@@ -24,11 +26,24 @@ public sealed partial class TerritoryFactionPrototype : IPrototype
     public LocId RadarLabel { get; private set; } = default!;
 
     /// <summary>
+    /// Optional normally-cased faction name for interfaces and announcements.
+    /// Falls back to <see cref="RadarLabel"/> when omitted.
+    /// </summary>
+    [DataField]
+    public LocId? DisplayName { get; private set; }
+
+    /// <summary>
     /// Optional: the entity prototype that acts as the claim banner for this faction.
     /// Used for validation or future admin tools.
     /// </summary>
     [DataField]
     public ProtoId<EntityPrototype>? Banner { get; private set; }
+
+    /// <summary>
+    /// Optional interface banner. Falls back to the territory banner's sprite when omitted.
+    /// </summary>
+    [DataField]
+    public SpriteSpecifier? Icon { get; private set; }
 
     /// <summary>
     /// Optional NPC faction applied to a grid while this territory faction controls it.
@@ -38,11 +53,44 @@ public sealed partial class TerritoryFactionPrototype : IPrototype
     public ProtoId<NpcFactionPrototype>? NpcFaction { get; private set; }
 
     /// <summary>
+    /// Main radio channels shared with direct allies. Command and private channels should be omitted.
+    /// Receivers keep their own keys; an alliance only grants reception of the other faction's listed channels.
+    /// </summary>
+    [DataField]
+    public HashSet<ProtoId<RadioChannelPrototype>> AllianceRadioChannels { get; private set; } = new();
+
+    /// <summary>
     /// Controls how this faction's captured territory score affects faction store discounts.
     /// Negative factions penalize every other faction individually, while positive factions only boost themselves.
     /// </summary>
     [DataField]
     public TerritoryDiscountAlignment DiscountAlignment { get; private set; } = TerritoryDiscountAlignment.Positive;
+
+    /// <summary>
+    /// Whether corporations may establish a secondary claim inside this faction's territory.
+    /// </summary>
+    [DataField]
+    public bool AllowCorporateControl { get; private set; } = true;
+
+    /// <summary>
+    /// Multiplier for natural healing of matching TerritoryRegeneration recipients on a controlled grid.
+    /// Does not affect positive passive damage, medical healing or entities without that component.
+    /// </summary>
+    [DataField]
+    public float PassiveHealingMultiplier { get; private set; } = 1f;
+
+    /// <summary>
+    /// Optional status appended to the grid name on both navigation and FTL maps.
+    /// Does not rename the actual grid or replace an existing name suffix.
+    /// </summary>
+    [DataField]
+    public LocId? IffStatus;
+
+    /// <summary>
+    /// Optional replacement for the corporate-control placeholder on the navigation radar.
+    /// </summary>
+    [DataField]
+    public LocId? ControlLabel;
 
     /// <summary>
     /// Optional cooldown before this faction can claim another territory.
@@ -51,6 +99,10 @@ public sealed partial class TerritoryFactionPrototype : IPrototype
     /// </summary>
     [DataField]
     public TimeSpan? ClaimCooldown { get; private set; }
+
+    /// <summary>Overrides the global claim duration. Zero grants immediate control, including for hive cores.</summary>
+    [DataField]
+    public TimeSpan? ClaimDuration { get; private set; }
 
     // # Exodus start - faction color for territory rings on BSS map and nav radar
     /// <summary>

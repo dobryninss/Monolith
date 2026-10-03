@@ -1,0 +1,52 @@
+# Exodus: one sealed technology case per playable concern.
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseAugok
+  components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - Augok
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskAugok
+      - EncryptionKeyConcernAugok
+
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseDrakeBlackArmsUSA
+  components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - DrakeBlackArmsUSA
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskDrakeBlackArmsUSA
+      - EncryptionKeyConcernDrakeBlackArmsUSA
+
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseHorizonHarmonyHammerMatter
+  components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - HorizonHarmonyHammerMatter
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskHorizonHarmonyHammerMatter
+      - EncryptionKeyConcernHorizonHarmonyHammerMatter
+
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseBuno
+  components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - Buno
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskBuno
+      - EncryptionKeyConcernBuno

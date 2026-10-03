@@ -215,14 +215,45 @@
 - type: roleLoadout
   id: JobTsfMarsoc
   groups:
+  # Exodus-begin: keep wearable choices; backpack contents are fixed job gear, with species survival gear issued afterward.
+  - TsfmcNeck
   - TsfmcBalaclava
-  - NfsdBoxSurvival
+  - ContractorWallet
+  - NfsdSpeciesSpecific
+  # Exodus-end
+  canCustomizeName: true
+
+- type: roleLoadout
+  id: JobTsfCivilian # Civvie
+  groups:
+  - MercenaryHead
+  - ContractorNeck
+  - MercenaryJumpsuit
+  - MercenaryGloves
+  - MercenaryBackpack
+  - MercenaryOuterClothing # Exodus civilian mercenary armor and hardsuits
+  - MercenaryShoes
+  - MercenaryFace
+  - MercenaryGlasses
+  - MercenaryBelt
+  - MercenaryEars
+  - ContractorEncryptionKey
+  - ContractorBoxSurvival
+  - ContractorPDA
   - ContractorWallet
   - ContractorCartridge
+  - ContractorImplanter
+  - ContractorUtility
+  - ContractorFun
   - ContractorTrinkets
-  - ContractorEncryptionKey
-  - NfsdSpeciesSpecific
-  - TsfmcSidearm
-  - TsfmcSidearmAmmo
-  - FactionArmorPlates
+  - ContractorBureaucracy
+  - NFSpeciesSpecific
+  - MercenaryBalaclava # Mono
+  - CivGunCaseSpecial # Exodus civilian mercenary special weapons
+  - ContractorArmorPlates # Mono
+  # Exodus-begin: ordinary mercenary weapon selection.
+  - MercenaryFirearm
+  - MercenaryPistol
+  - MercenaryMag
+  # Exodus-end
   canCustomizeName: true

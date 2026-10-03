@@ -1,9 +1,10 @@
 - type: entity
   parent: BaseFlatpack
   id: WeaponTurretDravonFlatpack
-  name: ADBP-7 DRAVON 90mm Autocannon flatpack
-  description: A flatpack used for constructing ADBP-7 DRAVON 90mm Autocannon turret.
+  name: weapon-turret-dravon-flatpack-name
+  description: weapon-turret-dravon-flatpack-description
   components:
+  - type: SafetyDepositRestricted
   - type: Flatpack
     entity: WeaponTurretDravon
 
@@ -150,3 +151,15 @@
   components:
   - type: Flatpack
     entity: AmmoLoaderSmall
+
+- type: entity
+  parent: BaseFlatpack
+  id: ShieldGeneratorSmallFlatpack
+  name: MS-100 "Sentinel" shield generator flatpack
+  description: A flatpack used for constructing an MS-100 "Sentinel" shield generator.
+  components:
+  - type: Flatpack
+    entity: ShieldGeneratorSmall
+  - type: StaticPrice
+    price: 2000
+    vendPrice: 150000

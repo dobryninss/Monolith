@@ -4,6 +4,10 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: NFAdventureRule
+  # Exodus-begin: load the CentComm outpost on its own map every round.
+  - type: LoadMapRule
+    mapPath: /Maps/_Mono/Admin/minicentcomm.yml
+  # Exodus-end
 
 - type: entity
   id: BluespaceEventScheduler
@@ -26,6 +30,7 @@
     - id: BluespaceVaultError
     - id: BluespaceVaultSmallError
     - id: BluespaceSyndicateFTLInterception
+    - id: BluespaceExodusPdvSupply # Exodus: separate PDV deliveries; Syndicate dead drops remain unchanged.
 # Mono edit start
 #    - id: BluespaceWizardFederationScout
 #    - id: BluespaceBloodMoon

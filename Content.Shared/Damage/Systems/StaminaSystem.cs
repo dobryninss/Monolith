@@ -102,7 +102,7 @@ public sealed partial class StaminaSystem : EntitySystem
 
         var curTime = _timing.CurTime;
         var pauseTime = _metadata.GetPauseTime(uid);
-        return MathF.Max(0f, component.StaminaDamage - MathF.Max(0f, (float) (curTime - (component.NextUpdate + pauseTime)).TotalSeconds * component.Decay));
+        return MathF.Max(0f, component.StaminaDamage - MathF.Max(0f, (float)(curTime - (component.NextUpdate + pauseTime)).TotalSeconds * component.Decay * component.DecayModifier)); // SS220 / Exodus: recovery modifiers
     }
 
     private void OnRejuvenate(EntityUid uid, StaminaComponent component, RejuvenateEvent args)
@@ -233,7 +233,7 @@ public sealed partial class StaminaSystem : EntitySystem
             return;
 
         var severity = ContentHelpers.RoundToLevels(MathF.Max(0f, component.CritThreshold - component.StaminaDamage), component.CritThreshold, 7);
-        _alerts.ShowAlert(uid, component.StaminaAlert, (short) severity);
+        _alerts.ShowAlert(uid, component.StaminaAlert, (short)severity); // Exodus formatting
     }
 
     /// <summary>
@@ -281,6 +281,11 @@ public sealed partial class StaminaSystem : EntitySystem
         var ev = new BeforeStaminaDamageEvent(value);
         RaiseLocalEvent(uid, ref ev);
         if (ev.Cancelled)
+            return;
+
+        // Exodus: allow source-owned modifiers to affect all stamina damage paths.
+        value = ev.Value;
+        if (value == 0)
             return;
 
         // Have we already reached the point of max stamina damage?
@@ -380,7 +385,7 @@ public sealed partial class StaminaSystem : EntitySystem
             }
 
             comp.NextUpdate += TimeSpan.FromSeconds(1f);
-            TakeStaminaDamage(uid, -comp.Decay, comp);
+            TakeStaminaDamage(uid, -comp.Decay * comp.DecayModifier, comp); // SS220 / Exodus: recovery modifiers
             Dirty(uid, comp);
         }
     }

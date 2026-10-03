@@ -6,13 +6,13 @@
   name: Буран # Ru-Localization
   description: Фрегат СССП с огромной бортовой огневой мощью и толстой бронёй. Слава великому комиссариату! # Ru-Localization
   limit: 2
-  price: 320000
+  price: 320000 # Exodus: retain main-build ship price.
   purchasable: false # voucher only
   category: Large
   group: Ussp
   access: Mercenary # Exodus temp-ussp-mercenary-access
   # access: USSP # Exodus temp-ussp-mercenary-access
-  shuttlePath: /SharedMaps/_Exodus/Shuttles/USSP/buran.yml # Exodus
+  shuttlePath: /SharedMaps/_Mono/Shuttles/USSP/buran.yml # Exodus: upstream remap, existing vessel settings retained. # Exodus
   guidebookPage: ShipyardNFROperation
   class:
   - Frigate
@@ -22,7 +22,7 @@
 - type: gameMap
   id: Buran
   mapName: 'Буран' # Ru-Localization
-  mapPath: /SharedMaps/_Exodus/Shuttles/USSP/buran.yml # Exodus
+  mapPath: /SharedMaps/_Mono/Shuttles/USSP/buran.yml # Exodus: upstream remap, existing vessel settings retained. # Exodus
   minPlayers: 0
   stations:
     Buran:
@@ -42,4 +42,3 @@
         #    USSPSergeant: [ 0, 0 ]
         #    USSPRifleman: [ 0, 0 ]
         # Exodus-end
-

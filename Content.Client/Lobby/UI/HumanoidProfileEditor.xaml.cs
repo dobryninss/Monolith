@@ -484,16 +484,7 @@ namespace Content.Client.Lobby.UI
                         ? Loc.GetString(companies[args.Id].Description)
                         : "N/A"); // Only if there's a description. If not, then set to N/A.
 
-                    // Display company image if available
-                    if (!string.IsNullOrEmpty(companies[args.Id].Image))
-                    {
-                        CompanyImage.Texture = IoCManager.Resolve<IResourceCache>().GetResource<TextureResource>(companies[args.Id].Image!).Texture;
-                        CompanyImage.Visible = true;
-                    }
-                    else
-                    {
-                        CompanyImage.Visible = false;
-                    }
+                    UpdateCompanyImage(companies[args.Id]); // Exodus side-selection banners
 
                     // Get the current profile for comparison
                     var oldCompany = Profile?.Company;
@@ -1352,7 +1343,7 @@ namespace Content.Client.Lobby.UI
                     icon.Texture = jobIcon.Icon.Frame0();
                     selector.Setup(items, job.LocalizedName, 200, job.LocalizedDescription, icon, job.Guides);
 
-                    if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason))
+                    if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason, checkEntryPrice: false)) // Exodus check funds at entry, allow editing priorities now.
                     {
                         selector.LockRequirements(reason);
                     }
@@ -1431,6 +1422,7 @@ namespace Content.Client.Lobby.UI
                     jobContainer.AddChild(selector);
                     jobContainer.AddChild(loadoutWindowBtn);
                     category.AddChild(jobContainer);
+                    AddPaidJobPriorityNotice(category, job); // Exodus show the price and automatic charge conditions beside role priorities.
                 }
             }
 
@@ -2313,16 +2305,7 @@ namespace Content.Client.Lobby.UI
                     ? Loc.GetString(companies[i].Description)
                     : "N/A"); // Only if there's a description. If not, then set to N/A.
 
-                // Display company image if available
-                if (!string.IsNullOrEmpty(companies[i].Image))
-                {
-                    CompanyImage.Texture = IoCManager.Resolve<IResourceCache>().GetResource<TextureResource>(companies[i].Image!).Texture;
-                    CompanyImage.Visible = true;
-                }
-                else
-                {
-                    CompanyImage.Visible = false;
-                }
+                UpdateCompanyImage(companies[i]); // Exodus side-selection banners
 
                 found = true;
                 break;

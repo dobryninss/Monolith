@@ -20,7 +20,7 @@
 
 #Syndicate EVA
 - type: entity
-  parent: [ClothingOuterEVASuitBase]
+  parent: [ClothingOuterEVASuitBase, BaseFactionGearOtherFactionT2]
   id: ClothingOuterHardsuitSyndicate # TODO: rename to ClothingOuterEVASuitSyndicate
   name: syndicate EVA suit
   description: "Has a tag on the back that reads: 'Totally not property of an enemy corporation, honest!'"
@@ -98,6 +98,11 @@
   name: paramedic voidsuit # Goob edit
   description: A voidsuit made for paramedics. # Goob edit
   components:
+  # SS220 / Exodus: virology.
+  - type: VirusProtection
+    vectors: Contact, Proximity, Splash
+    blockChance: 1
+  # SS220-End
   - type: Sprite
     sprite: Clothing/OuterClothing/Hardsuits/paramed.rsi
     layers:

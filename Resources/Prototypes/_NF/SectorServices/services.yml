@@ -23,7 +23,7 @@
       Frontier:
         !type:SectorBankAccountInfo
         balance: 8000
-        increasePerSecond: 14 # ~50K per hour, minimum wage employees!
+        increasePerSecond: 40 # Exodus: 144K per hour for Frontier.
       Nfsd:
         !type:SectorBankAccountInfo
         balance: 8000
@@ -31,7 +31,11 @@
       Medical:
         !type:SectorBankAccountInfo
         balance: 8000
-        increasePerSecond: 18 # ~65K per hour, a bit over for the DOC MOM's wage.
+        increasePerSecond: 40 # Exodus: 144K per hour for Medical.
+      Mieyo:
+        !type:SectorBankAccountInfo
+        balance: 150000
+        increasePerSecond: 0 # Exodus: MMC earns income from corporate territory control.
       BlackMarket:
         !type:SectorBankAccountInfo
         balance: 8000
@@ -49,6 +53,21 @@
   components:
   - type: AlertLevel
     alertLevelPrototype: stationAlerts
+
+# Mono
+- type: sectorService
+  id: WarAlerts
+  components:
+  - type: WarLevel
+    # Exodus-begin: faction wars, declaration lockouts and peace negotiations.
+    factions: [TSFMC, PDV, Khsira]
+    postWarCooldown: 600
+    peaceOfferCooldown: 30
+    allianceBreakCooldown: 1200
+    allianceOfferCooldown: 30
+  - type: FactionAlertLevel
+    prototype: factionAlerts
+    # Exodus-end
 
 - type: sectorService
   id: BountyContracts

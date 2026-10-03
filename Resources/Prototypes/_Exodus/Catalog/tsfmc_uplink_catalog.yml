@@ -1,10 +1,40 @@
 - type: listing
+  id: UplinkSecurityStealthDisruptor
+  name: uplink-stealth-disruptor-name
+  description: uplink-stealth-disruptor-desc
+  productEntity: StealthDisruptor
+  cost:
+    FederationMilitaryCredit: 60
+  categories:
+  - UplinkSecurityUtility
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - SecurityUplink
+
+- type: listing
+  id: UplinkSecurityStealthDisruptorCartridge
+  name: uplink-stealth-disruptor-cartridge-name
+  description: uplink-stealth-disruptor-cartridge-desc
+  productEntity: StealthDisruptorCartridge
+  cost:
+    FederationMilitaryCredit: 5
+  categories:
+  - UplinkSecurityUtility
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - SecurityUplink
+
+- type: listing
   id: UplinkSecurityT1VoucherSentinelF
   name: uplink-security-t1-sentinel-f-voucher-name
   description: uplink-security-t1-sentinel-f-voucher-desc
   productEntity: ShipVoucherSentinelF
   cost:
-    FederationMilitaryCredit: 72
+    FederationMilitaryCredit: 80
   categories:
   - UplinkSecurityVouchers
   conditions:
@@ -19,7 +49,7 @@
   description: uplink-security-antares-voucher-desc
   productEntity: ShipVoucherAntares
   cost:
-    FederationMilitaryCredit: 675
+    FederationMilitaryCredit: 743
   categories:
   - UplinkSecurityVouchers
   conditions:
@@ -35,7 +65,7 @@
   description: uplink-security-faction-ai-core-desc
   productEntity: NpcStationAiAttackerStaticSmartTSFMC
   cost:
-    FederationMilitaryCredit: 150
+    FederationMilitaryCredit: 165
   categories:
   - UplinkSecurityUtility
   conditions:
@@ -57,7 +87,7 @@
   description: uplink-security-bluespace-rped-desc
   productEntity: BluespaceRPED
   cost:
-    FederationMilitaryCredit: 125
+    FederationMilitaryCredit: 138
   categories:
   - UplinkSecurityUtility
   conditions:
@@ -76,7 +106,7 @@
   description: uplink-security-banner-tsf-desc
   productEntity: BannerNGC
   cost:
-    FederationMilitaryCredit: 2
+    FederationMilitaryCredit: 3
   categories:
   - UplinkSecurityUtility
   conditions:

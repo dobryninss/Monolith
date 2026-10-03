@@ -1,0 +1,236 @@
+using Content.Server.Chat.Systems;
+using Content.Server.GameTicking;
+using Content.Server.GameTicking.Rules;
+using Content.Shared._Exodus.Virology;
+using Content.Shared._Exodus.Virology.Lifecycle;
+using Content.Shared.GameTicking.Components;
+using Content.Shared.Mobs.Systems;
+using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
+
+namespace Content.Server._Exodus.Virology.Lifecycle;
+
+public sealed partial class VirusEpidemicRuleSystem : GameRuleSystem<VirusEpidemicRuleComponent>
+{
+    [Dependency] private ChatSystem _chat = default!;
+    [Dependency] private VirologySystem _virology = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+
+    protected override void Started(EntityUid uid, VirusEpidemicRuleComponent component,
+        GameRuleComponent gameRule, GameRuleStartedEvent args)
+    {
+        component.SeedAt = Timing.CurTime + component.Preparation;
+        component.NextCheck = Timing.CurTime;
+        _chat.DispatchGlobalAnnouncement(Loc.GetString(component.PreparationMessage));
+    }
+
+    protected override void ActiveTick(EntityUid uid, VirusEpidemicRuleComponent component,
+        GameRuleComponent gameRule, float frameTime)
+    {
+        var now = Timing.CurTime;
+        if (now < component.NextCheck)
+            return;
+
+        component.NextCheck = now + TimeSpan.FromSeconds(30);
+        if (!component.Seeded)
+        {
+            if (now < component.SeedAt)
+                return;
+
+            Seed((uid, component));
+        }
+
+        var counts = CountThreats(component.Symptom);
+        var stage = counts.Reservoirs > 0 ? 3 : counts.Broods + counts.Offspring > 0 ? 2 : counts.Carriers > 0 ? 1 : 0;
+        if (stage > component.WarningStage)
+        {
+            component.WarningStage = stage;
+            if (stage <= component.WarningMessages.Length)
+                _chat.DispatchGlobalAnnouncement(Loc.GetString(component.WarningMessages[stage - 1]));
+        }
+
+        if (stage > 0)
+        {
+            if (component.Controlled)
+                _chat.DispatchGlobalAnnouncement(Loc.GetString(component.ResurgenceMessage));
+            component.Controlled = false;
+            component.QuietSince = null;
+        }
+        else
+        {
+            component.QuietSince ??= now;
+            if (!component.Controlled && now - component.QuietSince >= component.QuietPeriod)
+            {
+                component.Controlled = true;
+                _chat.DispatchGlobalAnnouncement(Loc.GetString(component.ControlledMessage));
+            }
+        }
+    }
+
+    /// <summary>Seed once, preferring different grids without overriding immunity or player roles.</summary>
+    public void Seed(Entity<VirusEpidemicRuleComponent> ent)
+    {
+        if (ent.Comp.Seeded)
+            return;
+
+        ent.Comp.Seeded = true;
+        if (_virology.BuildDescriptor(ent.Comp.Virus) is not { } descriptor)
+            return;
+
+        var candidates = new List<EntityUid>();
+        var query = EntityQueryEnumerator<VirusSusceptibleComponent, ActorComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out _, out var xform))
+        {
+            if (xform.MapUid != null && _mobState.IsAlive(uid) && _virology.CanAcquireVirus(uid, descriptor))
+                candidates.Add(uid);
+        }
+
+        var wanted = GetSeedCount(ent, candidates.Count);
+        var grids = new HashSet<EntityUid?>();
+        RobustRandom.Shuffle(candidates);
+        for (var pass = 0; pass < 2 && ent.Comp.SeededCount < wanted; pass++)
+        {
+            foreach (var candidate in candidates)
+            {
+                var grid = Transform(candidate).GridUid;
+                if (pass == 0 && grids.Contains(grid))
+                    continue;
+                if (!_virology.AddVirus(candidate, descriptor))
+                    continue;
+
+                grids.Add(grid);
+                ent.Comp.SeededCount++;
+                if (ent.Comp.SeededCount >= wanted)
+                    break;
+            }
+        }
+
+        Log.Info($"Epidemic seeded {ent.Comp.SeededCount} carriers of {ent.Comp.Virus}.");
+    }
+
+    public int GetSeedCount(Entity<VirusEpidemicRuleComponent> ent, int candidateCount)
+    {
+        if (candidateCount <= 0)
+            return 0;
+
+        var count = 0;
+        foreach (var (minimumPlayers, carriers) in ent.Comp.CarrierThresholds)
+        {
+            if (candidateCount < minimumPlayers)
+                break;
+            count = carriers;
+        }
+
+        return Math.Clamp(count, 0, candidateCount);
+    }
+
+    public bool TryClaimIntelligentCore(Entity<VirusBroodComponent> victim, out EntProtoId prototype)
+    {
+        prototype = default;
+        var symptom = victim.Comp.Symptom;
+        if (symptom == default)
+            return false;
+
+        var rules = EntityQueryEnumerator<VirusEpidemicRuleComponent>();
+        while (rules.MoveNext(out _, out var rule))
+        {
+            if (rule.IntelligentCorePrototype is not { } core || rule.IntelligentCoreVictims >= rule.IntelligentCoreLimit
+                || rule.Symptom != symptom)
+                continue;
+
+            var active = false;
+            foreach (var strain in _virology.EnumerateStrains(victim.Owner))
+            {
+                if (strain.Comp.SuppressedUntil == null && strain.Comp.SymptomStates.ContainsKey(symptom))
+                {
+                    active = true;
+                    break;
+                }
+            }
+
+            if (!active)
+                continue;
+
+            rule.IntelligentCoreVictims++;
+            prototype = core;
+            return true;
+        }
+
+        return false;
+    }
+
+    public (int Carriers, int Broods, int Offspring, int Reservoirs) CountThreats(ProtoId<VirusSymptomPrototype> symptom)
+    {
+        var carriers = 0;
+        var broods = 0;
+        var offspring = 0;
+        var reservoirs = 0;
+        var hosts = EntityQueryEnumerator<VirusHolderComponent>();
+        while (hosts.MoveNext(out var uid, out var holder))
+        {
+            // Incubating bodies have their own counter; other contagious corpses still matter.
+            if (_mobState.IsDead(uid) && HasComp<VirusBroodComponent>(uid))
+                continue;
+            foreach (var strain in _virology.EnumerateStrains(holder))
+            {
+                if (strain.Comp.SuppressedUntil != null || !strain.Comp.SymptomStates.ContainsKey(symptom))
+                    continue;
+                carriers++;
+                break;
+            }
+        }
+
+        var bodies = EntityQueryEnumerator<VirusBroodComponent>();
+        while (bodies.MoveNext(out _, out var brood))
+        {
+            if (brood.Symptom == symptom && brood.Incubating && !brood.Hatched)
+                broods++;
+        }
+
+        var children = EntityQueryEnumerator<VirusOffspringComponent>();
+        while (children.MoveNext(out _, out var child))
+        {
+            if (!child.Finished && ContainsSymptom(child.Strain, symptom))
+                offspring++;
+        }
+
+        var sources = EntityQueryEnumerator<VirusReservoirComponent>();
+        var larvae = EntityQueryEnumerator<RotLarvaComponent>();
+        while (larvae.MoveNext(out var larvaUid, out var larva))
+        {
+            if (!_mobState.IsDead(larvaUid) && ContainsSymptom(larva.Strain, symptom))
+                offspring++;
+        }
+
+        while (sources.MoveNext(out _, out var source))
+        {
+            if (ContainsSymptom(source.Strain, symptom))
+                reservoirs++;
+        }
+
+        return (carriers, broods, offspring, reservoirs);
+    }
+
+    private static bool ContainsSymptom(VirusDescriptor? descriptor, ProtoId<VirusSymptomPrototype> symptom)
+    {
+        if (descriptor == null)
+            return false;
+        foreach (var snapshot in descriptor.Symptoms)
+        {
+            if (snapshot.Symptom == symptom)
+                return true;
+        }
+
+        return false;
+    }
+
+    protected override void AppendRoundEndText(EntityUid uid, VirusEpidemicRuleComponent component,
+        GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
+    {
+        var counts = CountThreats(component.Symptom);
+        args.AddLine(Loc.GetString(component.RoundEndMessage, ("seeded", component.SeededCount),
+            ("carriers", counts.Carriers), ("broods", counts.Broods),
+            ("offspring", counts.Offspring), ("reservoirs", counts.Reservoirs)));
+    }
+}

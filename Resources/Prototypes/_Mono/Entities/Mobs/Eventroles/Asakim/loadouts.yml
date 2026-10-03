@@ -1,0 +1,37 @@
+- type: startingGear
+  id: AsakimGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitNinja
+    back: ClothingBackpackERTLeader
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitAsakimUnremoveable
+    shoes: ClothingShoesBootsMagAsakim
+    pocket1: CrowbarPocket
+    pocket2: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltWebbingsBigBlack
+    suitStorage: OxygenTankFilled
+  inhand:
+  - WeaponRifleAsakimAutopulser
+  - WeaponPhaseBlade
+  storage:
+    back:
+    - DoubleEmergencyOxygenTankFilled
+    - MedkitCombatFilled
+    - MedkitCombatFilled
+    - SyringeCaseAltFilled
+    - JetpackADMFilled # Exodus-asakim-pre-fracture-jetpack
+    # Exodus-asakim-auto-implant: FreedomImplant is injected on spawn.
+    - CognizineChemistryBottle
+    - Syringe
+    - RadioHandheldNF
+    - AsakimGoJuiceAutoInjector30 # Exodus-go-juice: starting dependency supplies.
+    - AsakimGoJuiceAutoInjector15 # Exodus-go-juice
+    belt:
+    - CombatMedipen
+    - CombatMedipen
+    - CombatMedipen
+    - CombatMedipen
+    - HandHeldMassScannerBorg
+    - PowerDrill
+    - JawsOfLife
+    - WelderExperimental

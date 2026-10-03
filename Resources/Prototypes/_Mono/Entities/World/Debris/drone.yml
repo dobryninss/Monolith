@@ -30,6 +30,17 @@
     nameGrid: false
 
 - type: entity
+  id: MonoDroneSpawnerT0 #Used in LINEAR cluster biome
+  parent: MarkerBase
+  categories: [Spawner]
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - SpawnDroneMote
+    - SpawnDroneDander
+    - SpawnDroneMPulsar
+
+- type: entity
   id: MonoDroneSpawnerT1
   parent: MarkerBase
   categories: [Spawner]
@@ -52,6 +63,7 @@
     - SpawnDroneCrown
     - SpawnDroneGust
     - SpawnDronePiercer
+    - SpawnDroneReaper # Exodus drone-reaper
 
 - type: entity
   id: MonoDroneSpawnerT2Middle
@@ -89,6 +101,8 @@
       weight: 10
     - id: SpawnDroneFlashbang # Exodus drone-flashbang
       weight: 10
+    - id: SpawnDroneReaper # Exodus drone-reaper
+      weight: 10
 
 - type: entityTable
   id: DroneTableT22
@@ -99,6 +113,8 @@
     - id: SpawnDroneAssembly
       weight: 10
     - id: SpawnDroneBracket
+      weight: 10
+    - id: SpawnDroneReaper # Exodus drone-reaper
       weight: 10
 
 - type: entityTable
@@ -111,7 +127,7 @@
       weight: 10
     - id: SpawnDroneDeflector # Exodus drone-deflector
       weight: 10
-
+  
 - type: entityTable
   id: DroneSpawnTableT2Middle
   table: !type:GroupSelector
@@ -174,6 +190,48 @@
       nameSegments:
       - "КЛИН" # Ru-Localization
       - DroneAltHex # Exodus-Tweak
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false
+
+#region T0
+
+- type: entity
+  id: SpawnDroneDander
+  parent: SpawnDroneBase
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_Mono/Shuttles/World/dander.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - "DANDER"
+      - " 0x"
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false
+    
+- type: entity
+  id: SpawnDroneMote
+  parent: SpawnDroneBase
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_Mono/Shuttles/World/mote.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - "MOTE"
+      - " 0x"
       - DroneHex
       - DroneHex
       - DroneHex

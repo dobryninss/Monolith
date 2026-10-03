@@ -1,3 +1,4 @@
+using Content.Shared._Exodus.Weapons.Hardpoints; // Exodus hardpoint cooldown protection
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
@@ -239,7 +240,20 @@ public abstract partial class SharedGunSystem
             gunComp is { FireRateModified: > 0f } &&
             !Paused(uid))
         {
-            gunComp.NextFire = Timing.CurTime + TimeSpan.FromSeconds(1 / gunComp.FireRateModified);
+            // Exodus-begin: cycling a ship gun must respect mount penalties and cannot skip burst recovery.
+            var cycleDelay = TimeSpan.FromSeconds(1 / gunComp.FireRateModified);
+            var nextFire = Timing.CurTime + cycleDelay;
+            if (HasComp<ExodusHardpointWeaponComponent>(uid))
+            {
+                var multiplier = new QueryFireRateMultiplierEvent(1f);
+                RaiseLocalEvent(uid, ref multiplier);
+                nextFire = Timing.CurTime + cycleDelay * multiplier.ReloadTimeMul;
+                if (nextFire < gunComp.NextFire)
+                    nextFire = gunComp.NextFire;
+            }
+
+            gunComp.NextFire = nextFire;
+            // Exodus-end
             DirtyField(uid, gunComp, nameof(GunComponent.NextFire));
         }
 
@@ -290,14 +304,15 @@ public abstract partial class SharedGunSystem
 
             if (component.Entities.Count > 0)
             {
-                entity = component.Entities[^1];
+                var index = component.FireInLoadOrder ? 0 : component.Entities.Count - 1;
+                entity = component.Entities[index];
 
                 args.Ammo.Add((entity, EnsureShootable(entity)));
 
                 if (!component.AutoCycle) //  Goobstation - do not remove spent ammo from the gun it doesn't autocycle
                     break;
 
-                component.Entities.RemoveAt(component.Entities.Count - 1);
+                component.Entities.RemoveAt(index);
                 DirtyField(uid, component, nameof(BallisticAmmoProviderComponent.Entities));
                 Containers.Remove(entity, component.Container);
             }
@@ -331,7 +346,8 @@ public abstract partial class SharedGunSystem
     {
         if (ent.Comp.Entities.Count > 0)
         {
-            var ammo = ent.Comp.Entities[^1];
+            var index = ent.Comp.FireInLoadOrder ? 0 : ent.Comp.Entities.Count - 1;
+            var ammo = ent.Comp.Entities[index];
             args.ShootPrototype = MetaData(ammo).EntityPrototype;
         }
         else if (ent.Comp.UnspawnedCount > 0 || ent.Comp.InfiniteUnspawned)

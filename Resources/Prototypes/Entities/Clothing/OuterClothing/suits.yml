@@ -79,6 +79,11 @@
   name: atmos fire suit
   description: An expensive firesuit that protects against even the most deadly of station fires. Designed to protect even if the wearer is set aflame.
   components:
+  # Exodus-begin: pressure-sealed suit protection against infection.
+  - type: VirusProtection
+    vectors: Contact, Proximity, Splash
+    blockChance: 0.9
+  # Exodus-end
   - type: Sprite
     sprite: Clothing/OuterClothing/Suits/atmos_firesuit.rsi
   - type: Clothing
@@ -117,7 +122,7 @@
     modifiers:
       coefficients:
         Heat: 0.90
-        Radiation: 0.01
+        Radiation: 0.1
   - type: Clothing
     sprite: Clothing/OuterClothing/Suits/rad.rsi
   - type: GroupExamine
@@ -133,6 +138,12 @@
   name: space ninja suit
   description: This black technologically advanced, cybernetically-enhanced suit provides many abilities like invisibility or teleportation.
   components:
+  # SS220 / Exodus: virology.
+  - type: VirusProtection
+    vectors: Contact, Proximity, Splash
+    blockChance: 1
+  # SS220-End
+  # hardsuit stuff
   - type: Sprite
     sprite: Clothing/OuterClothing/Suits/spaceninja.rsi
   - type: Clothing
@@ -302,6 +313,11 @@
   suffix: Hardsuit, DO NOT MAP
   categories: [ DoNotMap ]
   components:
+  # Exodus-begin: hardsuit protection against infection.
+  - type: VirusProtection
+    vectors: Contact, Proximity, Splash
+    blockChance: 0.9
+  # Exodus-end
   - type: PressureProtection
     highPressureMultiplier: 0.6
     lowPressureMultiplier: 1000

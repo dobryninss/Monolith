@@ -54,6 +54,7 @@
     ensureTailDebrisChunksLoaded: true
     retainLoadedChunksRadius: 2
   - type: CleanupImmune
+  - type: NoFTL
   - type: PointLight
     color: "#FF8227FF"
     radius: 3
@@ -167,7 +168,7 @@
     noRot: false
   - type: NightVision # Exodus: toggleable Leviathan PNV
     relayOverlay: false
-    goggleEffect: true
+    goggleEffect: false # Natural night vision without tint or goggle mask.
     viewCircleRadius: 2000 # Exodus: matches the Leviathan's 4.458x view range.
     viewCircleCount: 4
     viewCircleSpacing: 1250 # Exodus: matches the Leviathan's 4.458x view range.
@@ -216,6 +217,7 @@
   suffix: do not spawn
   components:
   - type: CleanupImmune
+  - type: NoFTL
   - type: Damageable
     damageModifierSet: Leviathan
     damageContainer: Biological
@@ -303,6 +305,8 @@
     - id: ClothingBackpackFleetLootT1
       amount: 1
       maxAmount: 4
+    - id: GoJuicePlantSeeds
+      amount: 2
     - id: ClothingHeadHatLeviathanChitinCrown
       prob: 0.2
     - id: ClothingHandsGlovesLeviathanChitin

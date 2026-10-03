@@ -5,11 +5,11 @@
   parent: BaseVesselAntag
   name: Шив # Ru-Localization
   description: Рабочая лошадка флота ТСФ. Оснащена исследовательским отсеком для изучения артефактов и хорошими рудодобывающими возможностями. # Ru-Localization
-  price: 65000 # Exodus: prevent shipyard salvage arbitrage.
+  price: 84700 # Exodus: appraised minimum + 5%, rounded up to 100.
   category: Small
   group: Security
   access: Security
-  shuttlePath: /SharedMaps/_Mono/Shuttles/Nfsd/shiv.yml
+  shuttlePath: /SharedMaps/_Mono/Shuttles/TSF/shiv.yml # Exodus: upstream remap, existing vessel settings retained.
   addComponents: # Exodus faction-owned shuttle target filtering
   - type: NpcFactionMember
     factions:
@@ -24,7 +24,7 @@
 - type: gameMap
   id: Shiv
   mapName: 'Шив' # Ru-Localization
-  mapPath: /SharedMaps/_Mono/Shuttles/Nfsd/shiv.yml
+  mapPath: /SharedMaps/_Mono/Shuttles/TSF/shiv.yml # Exodus: upstream remap, existing vessel settings retained.
   minPlayers: 0
   stations:
     Shiv:
@@ -39,4 +39,3 @@
         availableJobs:
           Deputy: [ 0, 0 ]
           TsfBorg: [ 0, 0 ]
-

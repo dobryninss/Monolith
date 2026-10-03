@@ -8,6 +8,7 @@
     name: ghost-role-information-prefect-asakim-name
     description: ghost-role-information-prefect-asakim-description
     rules: ghost-role-information-prefect-asakim-rules
+    job: AsakimPrefect
     mindRoles:
     - MindRoleGhostRoleNeutral
     - MindRoleAsakim
@@ -17,6 +18,7 @@
     - !type:OverallPlaytimeRequirement
       time: 360000 # 100 hrs
   - type: GhostTakeoverAvailable
+  - type: NeedsActivation
 
 - type: entity
   parent: MobPrefectAsakimGhostrole

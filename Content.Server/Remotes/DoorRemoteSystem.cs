@@ -1,5 +1,6 @@
 using Content.Server.Administration.Logs;
 using Content.Server.Doors.Systems;
+using Content.Shared.Electrocution;
 using Content.Server.Power.EntitySystems;
 using Content.Shared.Access.Components;
 using Content.Shared.Database;
@@ -8,15 +9,18 @@ using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Remotes.Components;
 using Content.Shared.Remotes.EntitySystems;
+using Robust.Shared.Audio.Systems;
 
 namespace Content.Shared.Remotes
 {
-    public sealed partial class DoorRemoteSystem : SharedDoorRemoteSystem
+    public sealed partial class DoorRemoteSystem : SharedDoorRemoteSystem // Exodus: generated dependency injection.
     {
-        [Dependency] private IAdminLogManager _adminLogger = default!;
-        [Dependency] private AirlockSystem _airlock = default!;
-        [Dependency] private DoorSystem _doorSystem = default!;
-        [Dependency] private ExamineSystemShared _examine = default!;
+        [Dependency] private IAdminLogManager _adminLogger = default!; // Exodus: generated dependency injection.
+        [Dependency] private AirlockSystem _airlock = default!; // Exodus: generated dependency injection.
+        [Dependency] private DoorSystem _doorSystem = default!; // Exodus: generated dependency injection.
+        [Dependency] private ExamineSystemShared _examine = default!; // Exodus: generated dependency injection.
+        [Dependency] private SharedElectrocutionSystem _electrify = default!; // Exodus: generated dependency injection.
+        [Dependency] private SharedAudioSystem _audio = default!; // Exodus: generated dependency injection.
 
         public override void Initialize()
         {
@@ -90,6 +94,22 @@ namespace Content.Shared.Remotes
                             $"{ToPrettyString(args.User):player} used {ToPrettyString(args.Used)} on {ToPrettyString(args.Target.Value)} to set emergency access {(airlockComp.EmergencyAccess ? "on" : "off")}");
                     }
 
+                    break;
+                case OperatingMode.ToggleOvercharge:
+                    {
+                    if (!TryComp<ElectrifiedComponent>(args.Target, out var electrifiedComp))
+                    break;
+                        var newState = !electrifiedComp.Enabled;
+                        _electrify.SetElectrified((args.Target.Value, electrifiedComp), newState);
+                        var soundToPlay = newState
+                        ? electrifiedComp.AirlockElectrifyDisabled
+                        : electrifiedComp.AirlockElectrifyEnabled;
+                        _audio.PlayPvs(soundToPlay, args.Target.Value);
+                        _adminLogger.Add(LogType.Action,
+                            LogImpact.Medium,
+                            $"{ToPrettyString(args.User):player} used {ToPrettyString(args.Used)} on {ToPrettyString(args.Target.Value)} to {(electrifiedComp.Enabled ? "" : "un")}electrify it");
+                }
+                    
                     break;
                 default:
                     throw new InvalidOperationException(

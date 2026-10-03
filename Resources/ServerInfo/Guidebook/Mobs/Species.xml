@@ -1,3 +1,4 @@
+<!-- Exodus: retained localized species captions and localized the upstream Feroxi entry. -->
 <Document>
   # Расы
 
@@ -29,6 +30,7 @@
     <GuideEntityEmbed Entity="MobHarpy" Caption="Гарпия"/>
     <GuideEntityEmbed Entity="MobOni" Caption="Они"/>
     <GuideEntityEmbed Entity="MobChitinid" Caption="Хитинид"/>
+    <GuideEntityEmbed Entity="MobFeroxi" Caption="Ферокси"/>
   </Box>
 
   # Расы Monolith
@@ -41,5 +43,9 @@
     <GuideEntityEmbed Entity="MobTajaran" Caption="Таяр"/>
     <GuideEntityEmbed Entity="MobYowie" Caption="Йови"/>
   </Box>
+
+  <!-- Exodus: races restricted to ghost roles and events. -->
+  # Недоступные расы
+  Некоторые разумные виды нельзя выбрать на старте раунда. Подробнее — в разделе [textlink="Недоступные расы" link="ExodusUnavailableSpecies"].
 
 </Document>

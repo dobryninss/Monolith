@@ -16,6 +16,7 @@
   - type: Tag
     tags:
     - WhitelistChameleon
+    - PetWearable
   - type: HideLayerClothing
     slots:
     - HeadTop
@@ -44,6 +45,7 @@
     tags:
     - WhitelistChameleon
     - SecurityHelmet
+    - PetWearable
 
 #Mercenary Helmet
 - type: entity
@@ -56,10 +58,13 @@
     sprite: Clothing/Head/Helmets/merc_helmet.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/merc_helmet.rsi
+  - type: Tag
+    tags:
+    - PetWearable
 
 #SWAT Helmet
 - type: entity
-  parent: ClothingHeadBase
+  parent: [ClothingHeadBase, BaseFactionGearOtherFactionT2]
   id: ClothingHeadHelmetSwat
   name: SWAT helmet
   description: An extremely robust helmet, commonly used by paramilitary forces. This one has the Nanotrasen logo emblazoned on the top.
@@ -79,6 +84,9 @@
         Caustic: 0.95
   - type: ExplosionResistance
     damageCoefficient: 0.75
+  - type: Tag
+    tags:
+    - PetWearable
 
 #Syndicate SWAT Helmet
 - type: entity
@@ -92,7 +100,10 @@
     sprite: Clothing/Head/Helmets/swat_syndicate.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/swat_syndicate.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Light Riot Helmet
 - type: entity
   parent: ClothingHeadBase
@@ -111,7 +122,10 @@
         Blunt: 0.8
         Slash: 0.8
         Piercing: 0.95
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Bombsuit Helmet
 - type: entity
   parent: ClothingHeadBase
@@ -138,7 +152,10 @@
     - Snout
     - HeadTop
     - HeadSide
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Janitorial Bombsuit Helmet
 - type: entity
   parent: ClothingHeadHelmetBombSuit
@@ -151,7 +168,10 @@
     sprite: Clothing/Head/Helmets/janitor_bombsuit.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/janitor_bombsuit.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Cult Helmet
 - type: entity
   parent: [ClothingHeadBase]
@@ -171,7 +191,10 @@
         Slash: 0.8
         Piercing: 0.9
         Heat: 0.9
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Space Ninja Helmet
 - type: entity
   parent: [ClothingHeadEVAHelmetBase]
@@ -179,6 +202,11 @@
   name: space ninja helmet
   description: What may appear to be a simple black garment is in fact a highly sophisticated nano-weave helmet. Standard issue ninja gear.
   components:
+  # SS220 / Exodus: virology.
+  - type: VirusProtection
+    vectors: Contact, Proximity
+    blockChance: 1
+  # SS220-End
   - type: Sprite
     sprite: Clothing/Head/Helmets/spaceninja.rsi
   - type: Clothing
@@ -186,6 +214,7 @@
   - type: Tag
     tags:
     - WhitelistChameleon
+    - PetWearable
   - type: IngestionBlocker
   - type: IdentityBlocker
   - type: HideLayerClothing
@@ -208,7 +237,10 @@
     sprite: Clothing/Head/Helmets/templar.rsi
   - type: IngestionBlocker
   - type: IdentityBlocker
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Thunderdome Helmet
 - type: entity
   parent: ClothingHeadBase
@@ -220,7 +252,10 @@
     sprite: Clothing/Head/Helmets/thunderdome.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/thunderdome.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Wizard Helmet
 - type: entity
   parent: [ClothingHeadBase]
@@ -234,7 +269,10 @@
     sprite: Clothing/Head/Helmets/wizardhelm.rsi
   - type: IngestionBlocker
   - type: IdentityBlocker
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Fire Helmet
 - type: entity
   parent: ClothingHeadLightBase
@@ -258,6 +296,7 @@
     tags:
     - WhitelistChameleon
     - FireHelmet
+    - PetWearable
   - type: HideLayerClothing
     slots:
     - Hair
@@ -291,6 +330,7 @@
     tags:
     - WhitelistChameleon
     - FireHelmet
+    - PetWearable
   - type: HideLayerClothing
     slots:
     - Hair
@@ -317,6 +357,9 @@
         Slash: 0.5
         Piercing: 0.5
         Heat: 0.9
+  - type: Tag
+    tags:
+    - PetWearable
 
 #ERT HELMETS
 #ERT Leader Helmet
@@ -330,7 +373,10 @@
     sprite: Clothing/Head/Helmets/ert_leader.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/ert_leader.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #ERT Security Helmet
 - type: entity
   parent: ClothingHeadHelmetBase
@@ -342,7 +388,10 @@
     sprite: Clothing/Head/Helmets/ert_security.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/ert_security.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #ERT Medic Helmet
 - type: entity
   parent: ClothingHeadHelmetBase
@@ -354,7 +403,10 @@
     sprite: Clothing/Head/Helmets/ert_medic.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/ert_medic.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #ERT Engineer Helmet
 - type: entity
   parent: ClothingHeadHelmetBase
@@ -366,7 +418,10 @@
     sprite: Clothing/Head/Helmets/ert_engineer.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/ert_engineer.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #ERT Janitor Helmet
 - type: entity
   parent: ClothingHeadHelmetBase
@@ -378,7 +433,10 @@
     sprite: Clothing/Head/Helmets/ert_janitor.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/ert_janitor.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: ClothingHeadHelmetBase
   id: ClothingHeadHelmetRaid
@@ -396,7 +454,10 @@
         Slash: 0.85
         Piercing: 0.85
         Heat: 0.85
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Bone Helmet
 - type: entity
   parent: ClothingHeadHelmetBase
@@ -411,7 +472,10 @@
   - type: Construction
     graph: BoneHelmet
     node: helmet
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: ClothingHeadHelmetBase
   id: ClothingHeadHelmetPodWars
@@ -422,7 +486,10 @@
     sprite: Clothing/Head/Helmets/podwars_helmet.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/podwars_helmet.rsi
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 #Justice Helmet
 - type: entity
   parent: ClothingHeadHelmetBase
@@ -493,7 +560,10 @@
   - type: Construction
     graph: HelmetJustice
     node: helmet
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: ClothingHeadHelmetJustice
   id: ClothingHeadHelmetJusticeEmpty
@@ -503,7 +573,10 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   id: ActionToggleJusticeHelm
   name: Toggle Justice Helm

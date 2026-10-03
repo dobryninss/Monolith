@@ -1,5 +1,6 @@
 using Content.Shared.Guidebook;
 using Content.Shared.Tag;
+using Content.Shared._Mono.Company; // Exodus company-fleet
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
 using Robust.Shared.Utility;
@@ -146,6 +147,15 @@ public sealed partial class VesselPrototype : IPrototype, IInheritingPrototype
     /// </summary>
     [DataField]
     public List<string> Company = new();
+
+    // Exodus-begin company-fleet
+    /// <summary>
+    /// If non-empty, this vessel is only listed/purchasable when the buyer's ID (or voucher)
+    /// company is in this list. Empty = no company restriction.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<CompanyPrototype>> RequiredCompanies = new();
+    // Exodus-end
 }
 
 public enum VesselSize : byte
@@ -191,6 +201,15 @@ public enum VesselClass : byte
     Destroyer,
     Cruiser,
     // i doubt we'll ever get to cruisers
+    Escort, // PD heavy, decent manueverability
+    Brawler, // good firing arcs and anti-ship weapons, poor PD
+    MissileCarrier, // ships armed with primarly LIGHT missiles like vesperas/vanyks for SMALL SHIPS
+    AntiShipMissileCarrier, // hello slava-class guided missile cruiser - use this for ships that carry a heavy armament of AShMs like paladins/tridents
+    Carrier, // carriers w/ crewed fighters
+    DroneCarrier, // carriers w/ drone fighters
+    MechCarrier, // carriers w/ mech bays
+    EarlyWarning, // elite+ radar
+    Stealth, // stealth thrusters and generators
 }
 
 public enum VesselEngine : byte

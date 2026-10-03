@@ -75,6 +75,7 @@ namespace Content.Client.Entry
         [Dependency] private GhostKickManager _ghostKick = default!;
         [Dependency] private ExtendedDisconnectInformationManager _extendedDisconnectInformation = default!;
         [Dependency] private JobRequirementsManager _jobRequirements = default!;
+        [Dependency] private Content.Client._Exodus.Chat.ChatRequirementsManager _chatRequirements = default!; // SS220 chat bans
         [Dependency] private ContentLocalizationManager _contentLoc = default!;
         [Dependency] private ContentReplayPlaybackManager _playbackMan = default!;
         [Dependency] private IResourceManager _resourceManager = default!;
@@ -143,7 +144,10 @@ namespace Content.Client.Entry
             _prototypeManager.RegisterIgnore("nukeopsRole");
             _prototypeManager.RegisterIgnore("ghostRoleRaffleDecider");
             _prototypeManager.RegisterIgnore("pointOfInterest"); // Frontier: worldgen-related, server-only
+            _prototypeManager.RegisterIgnore("relativePoiPlacement"); // Exodus: server-only POI placement rules.
             _prototypeManager.RegisterIgnore("territoryProfile"); // Exodus: territory profiles use server-only gameMap prototypes
+            _prototypeManager.RegisterIgnore("corporateIncome"); // Exodus: corporate income configuration is server-only.
+            _prototypeManager.RegisterIgnore("playtimeSalary"); // Exodus: playtime savings rewards are configured server-side.
             _prototypeManager.RegisterIgnore("radialDamageFieldProfile"); // Exodus: radial damage field profiles are server-only
 
             _componentFactory.GenerateNetIds();
@@ -155,6 +159,7 @@ namespace Content.Client.Entry
             _ghostKick.Initialize();
             _extendedDisconnectInformation.Initialize();
             _jobRequirements.Initialize();
+            _chatRequirements.Initialize(); // SS220 chat bans
             _playbackMan.Initialize();
             _companyManager.Initialize(); // Mono
             _coinsManager.Initialize(); // Mono

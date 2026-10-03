@@ -16,6 +16,7 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
     {
         SubscribeLocalEvent<ShipRepairToolComponent, AfterInteractEvent>(OnAfterInteract);
         SubscribeLocalEvent<ShipRepairToolComponent, ShipRepairDoAfterEvent>(OnRepairDoAfter);
+        SubscribeLocalEvent<ShipRepairToolComponent, DoAfterAttemptEvent<ShipRepairDoAfterEvent>>(OnRepairAttempt); // Exodus: keep checking access while repairing.
     }
 
     private void OnAfterInteract(Entity<ShipRepairToolComponent> ent, ref AfterInteractEvent args)
@@ -31,7 +32,7 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
         var clickPos = args.ClickLocation;
         var clickWorld = _transform.ToWorldPosition(clickPos);
         var grids = new List<Entity<MapGridComponent>>();
-        _mapMan.FindGridsIntersecting(ourXform.MapID, Box2.CenteredAround(clickWorld, new Vector2(1f, 1f)), ref grids, false, false);
+        _mapMan.FindGridsIntersecting(ourXform.MapID, Box2.CenteredAround(clickWorld, new Vector2(1.5f, 1.5f)), ref grids, false, false);
         if (grids.Count == 0 && ourXform.GridUid == null)
             return;
 
@@ -66,13 +67,14 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
 
             if (storedTile != currentTile.TypeId)
             {
-                StartRepair(ent, args.User, targetGrid, gridIndices, ent.Comp.TileRepairTime * ent.Comp.RepairTimeMultiplier, ent.Comp.TileRepairCost);
+                StartRepair(ent, args, targetGrid, gridIndices, ent.Comp.TileRepairTime * ent.Comp.RepairTimeMultiplier, ent.Comp.TileRepairCost); // Exodus: retain the interaction target.
                 return; // do not attempt anything else
             }
         }
 
         var alreadyExists = false;
         var notEnoughCharges = false;
+        var mostCharges = 0;
         // try entity repair if we haven't done tile repair
         if (ent.Comp.EnableEntityRepair)
         {
@@ -131,7 +133,9 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
                             continue;
                         }
 
-                        if (repairEv.TargetGridIndices == gridIndices && repairEv.RepairId == id)
+                        // Exodus: a repair against the previous snapshot cannot block a new one.
+                        if (repairEv.TargetGrid == targetGrid.Owner && repairEv.SnapshotRevision == repairData.Revision &&
+                            repairEv.TargetGridIndices == gridIndices && repairEv.RepairId == id)
                         {
                             hasIdentical = true;
                             break;
@@ -148,30 +152,54 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
                 notEnoughCharges |= !enough;
                 if (needsRepair && enough)
                 {
-                    StartRepair(ent, args.User, targetGrid, gridIndices, delay, cost, id);
+                    StartRepair(ent, args, targetGrid, gridIndices, delay, cost, id); // Exodus: retain the interaction target.
                     return;
                 }
+
+                if (cost > mostCharges)
+                    mostCharges = cost;
             }
         }
         if (notEnoughCharges)
-            _popup.PopupClient(Loc.GetString("ship-repair-tool-insufficient-ammo"), ent, args.User);
+            _popup.PopupClient(Loc.GetString("ship-repair-tool-insufficient-ammo", ("cost", mostCharges)), ent, args.User);
         else if (alreadyExists && _net.IsServer && ent.Comp.CheckPreExistingEntities) // else we show it once or twice depending on whether it's in PVS
             _popup.PopupEntity(Loc.GetString("ship-repair-tool-entity-exists"), ent, args.User, PopupType.SmallCaution);
     }
 
-    private void StartRepair(Entity<ShipRepairToolComponent> tool, EntityUid user, Entity<MapGridComponent> grid, Vector2i tileIndices, float delay, int cost, int? repairId = null)
+    // Exodus: retain the target and grid-relative repair position throughout the DoAfter.
+    private void StartRepair(Entity<ShipRepairToolComponent> tool, AfterInteractEvent interaction, Entity<MapGridComponent> grid, Vector2i tileIndices, float delay, int cost, int? repairId = null)
     {
+        // Exodus: bind tile and entity repairs to the exact snapshot used to calculate their cost.
+        if (!TryComp<ShipRepairDataComponent>(grid, out var repairData))
+            return;
+
+        // Exodus: an isolated missing tile would split off immediately instead of repairing the ship.
+        if (repairId == null && !CanRestoreRepairTile(grid, tileIndices))
+            return;
+
+        // Exodus-begin: follow the repair grid, rather than the user's position or a world-space point.
+        var user = interaction.User;
+        var targetCoordinates = interaction.Target is { } target
+            ? Transform(target).Coordinates
+            : interaction.ClickLocation;
+        var coordinates = _transform.WithEntityId(targetCoordinates, grid);
+        // Exodus-end
         var ev = new ShipRepairDoAfterEvent
         {
             TargetGridIndices = tileIndices,
             RepairId = repairId,
-            Cost = cost
+            Cost = cost,
+            TargetGrid = grid,
+            SnapshotRevision = repairData.Revision, // Exodus
+            Coordinates = GetNetCoordinates(coordinates), // Exodus: serialized for predicted reach checks.
         };
 
-        var args = new DoAfterArgs(EntityManager, user, delay, ev, tool, grid)
+        var args = new DoAfterArgs(EntityManager, user, delay, ev, tool, target: interaction.Target, used: tool) // Exodus: validate target and tool access.
         {
             BreakOnMove = true,
             BreakOnDamage = true,
+            MovementThreshold = 0.5f,
+            AttemptFrequency = AttemptFrequency.EveryTick, // Exodus: movement exemptions must not bypass reach.
             // only block if we're trying the exact same
             DuplicateCondition = DuplicateConditions.SameEvent
         };
@@ -197,7 +225,15 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
         if (args.Cancelled || args.Handled)
             return;
 
-        if (args.Target is not { } targetGrid || !TryComp<ShipRepairDataComponent>(targetGrid, out var repairData))
+        // Exodus: validate again before restoring anything or consuming charges.
+        if (!CanReachRepairLocation(args))
+            return;
+
+        if (args.TargetGrid is not { } targetGrid || !TryComp<ShipRepairDataComponent>(targetGrid, out var repairData))
+            return;
+
+        // Exodus: do not charge or restore an unrelated entity after a snapshot refresh.
+        if (TerminatingOrDeleted(targetGrid) || args.SnapshotRevision != repairData.Revision)
             return;
 
         if (!TryGetChunk(repairData, args.TargetGridIndices, out var chunk))
@@ -205,7 +241,7 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
 
         if (_charges.HasInsufficientCharges(ent, args.Cost))
         {
-            _popup.PopupEntity(Loc.GetString("ship-repair-tool-insufficient-ammo"), ent, args.User);
+            _popup.PopupEntity(Loc.GetString("ship-repair-tool-insufficient-ammo", ("cost", args.Cost)), ent, args.User);
             return;
         }
 
@@ -225,20 +261,17 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
                     return;
             }
 
-            var protoId = repairData.EntityPalette[spec.ProtoIndex];
-            var coords = new EntityCoordinates(targetGrid, spec.LocalPosition);
-
-            var spawned = Spawn(protoId, coords);
-            _transform.SetLocalRotation(spawned, spec.Rotation);
-
-            spec.OriginalEntity = GetNetEntity(spawned);
-
-            var dirtMsg = new RepairEntityMessage(GetNetEntity(targetGrid), args.TargetGridIndices, args.RepairId.Value, spec);
-            RaiseNetworkEvent(dirtMsg);
+            // Exodus-begin: retain debris relocation, but let physics separate mobile occupants during handheld repairs.
+            if (!TryRestoreSnapshotEntity(ent, (targetGrid, repairData), args.TargetGridIndices, args.RepairId.Value, spec,
+                    checkMobileObstructions: false))
+                return;
+            // Exodus-end
         }
         else
         {
-            TryRepairTileTile((targetGrid, repairData), args.TargetGridIndices);
+            // Exodus: do not charge for a lost support or a tile repaired by someone else during the delay.
+            if (!TryRepairTileTile((targetGrid, repairData), args.TargetGridIndices))
+                return;
         }
 
         _charges.UseCharges(ent, args.Cost);

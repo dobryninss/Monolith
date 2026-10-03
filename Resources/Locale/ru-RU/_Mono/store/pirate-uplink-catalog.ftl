@@ -77,8 +77,10 @@ uplink-pirate-energy-sword-name = Energy Sword
 uplink-pirate-energy-sword-desc = Courtesy of the Gorlex Marauders. Make your mark, leave no witnesses.
 uplink-pirate-python-name = Python
 uplink-pirate-python-desc = A brutally simple, effective, and loud revolver. Comes loaded with .45 magnum rounds.
-uplink-pirate-viper-name = Viper
-uplink-pirate-viper-desc = A small, easily concealable, but somewhat underpowered gun. Retrofitted with a fully automatic receiver. Uses pistol magazines (9x19mm FMJ).
+# Exodus-begin: Viper equipment localization
+uplink-pirate-viper-name = «Гадюка»
+uplink-pirate-viper-desc = Небольшой и легко скрываемый, но сравнительно слабый пистолет с автоматическим режимом огня. Использует пистолетные магазины с патронами 9×19 мм FMJ.
+# Exodus-end
 uplink-pirate-kanabou-name = Kanabou
 uplink-pirate-kanabou-desc = A weapon for those who wish to forgo subtlety. Particularly suited to oni.
 uplink-pirate-ak-name = AKM
@@ -88,7 +90,8 @@ uplink-pirate-laser-gun-desc = A civilian grade weapon using light amplified by 
 uplink-pirate-c20-name = C-20r Bundle
 uplink-pirate-c20-desc = A 9x19mm light SMG, packaged with a few mags.
 uplink-pirate-atreides-name = Atreides bundle
-uplink-pirate-atreides-desc = A .35 one-handed light SMG, packaged with some magazines.
+# Exodus: match the imported catalogue and actual ammunition.
+uplink-pirate-atreides-desc = Лёгкий пистолет-пулемёт калибра 5,7×28 мм для стрельбы одной рукой, в комплекте с магазинами.
 uplink-pirate-bulldog-name = Bulldog Bundle
 uplink-pirate-bulldog-desc = A automatic 12 gauge shotgun, packaged with a few drums.
 uplink-pirate-vt7-name = VT7 HF Blade
@@ -116,8 +119,9 @@ uplink-pirate-magazine-box-45_magnum-name = Box of .45 magnum speedloaders
 uplink-pirate-magazine-box-45_magnum-desc = A box containing 4 .45 magnum speedloaders.
 uplink-pirate-light-rifle-magazine-box-big-name = Ammunition box (7.62x39mm FMJ)
 uplink-pirate-light-rifle-magazine-box-big-desc = A box containing 200 7.62x39mm catridges.
-uplink-pirate-shell-box-lethal-name = Shell box (lethal)
-uplink-pirate-shell-box-lethal-desc = A box containing 16, 12 gauge shotgun shells.
+# Exodus: match the imported catalogue and actual ammunition.
+uplink-pirate-shell-box-lethal-name = Коробка патронов 12 калибра (летальные)
+uplink-pirate-shell-box-lethal-desc = Коробка с 32 патронами 12 калибра.
 uplink-pirate-smg-ammo-box-name = Ammunition box (9x19mm FMJ)
 uplink-pirate-smg-ammo-box-desc = A box containing 60 9x19mm pistol catridges. Can be used to load SMG magazines.
 uplink-pirate-box-bulldog-ammo-name = Box of 12 gauge buckshot drums
@@ -125,7 +129,8 @@ uplink-pirate-box-bulldog-ammo-desc = A box containing 4 12 gauge buckshot shotg
 uplink-pirate-box-bulldog-slug-ammo-name = Box of 12 gauge slug drums
 uplink-pirate-box-bulldog-slug-ammo-desc = A box containing 4 12 gauge slug shotgun drums.
 uplink-pirate-box-smg-magazine-name = Box of 9x19mm SMG magazines
-uplink-pirate-box-smg-magazine-desc = A box filled with 3 9x19mm smg magazines.
+# Exodus: match the imported catalogue and actual ammunition.
+uplink-pirate-box-smg-magazine-desc = Коробка с 4 магазинами для пистолета-пулемёта калибра 9×19 мм.
 uplink-subsonic-mag-name = 7.62x39mm subsonic rifle mag
 uplink-subsonic-mag-desc = Supports the WSPR.
 uplink-subsonic-box-name = 7.62x39mm subsonic rifle box
@@ -147,10 +152,12 @@ uplink-pirate-blast-grenade-desc = A highly lethal 40mm thermobaric grenade for 
 
 uplink-pirate-combat-hardsuit-name = SCAF Tacsuit
 uplink-pirate-combat-hardsuit-desc = Basic protective gear of PDV military groups.
-uplink-pirate-viper-group-standard-hardsuit-name = Viper Group JACKAL Hardsuit
-uplink-pirate-viper-group-standard-hardsuit-desc = A heavy hardsuit adorned with signature markings of the Viper Group. The armor is remarkably flexible for its protection and has a built-in nightvision system.
-uplink-pirate-viper-group-medic-hardsuit-name = Viper Group IMP Hardsuit
-uplink-pirate-viper-group-medic-hardsuit-desc = A light hardsuit adorned with signature markings of the Viper Group. The armor features various reinforced plating in vital areas and a medical HUD complemented by thermal pulse systems.
+# Exodus-begin: Viper equipment localization
+uplink-pirate-viper-group-standard-hardsuit-name = скафандр «Вайперов» JACKAL
+uplink-pirate-viper-group-standard-hardsuit-desc = Тяжёлый скафандр со знаками «Вайперов», гибкой бронёй и встроенной системой ночного видения.
+uplink-pirate-viper-group-medic-hardsuit-name = медицинский скафандр «Вайперов» RIPPER
+uplink-pirate-viper-group-medic-hardsuit-desc = Лёгкий скафандр со знаками «Вайперов», усиленными жизненно важными областями, медицинским визором и тепловым сканером.
+# Exodus-end
 uplink-pirate-webvest-name = Webvest
 uplink-pirate-webvest-desc = A webvest smuggled into the sector that hasn't been downgraded like ones utilized by civilian contractors. Great pierce resist, poor heat resist.
 uplink-pirate-syndie-mask-name = Syndicate Gas Mask

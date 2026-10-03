@@ -6,13 +6,13 @@
   name: TSF-SKR Fujian
   description: A decently-sized escort carrier, capable of holding 4 Zephyrs or Zephyr-ECs. Carries quite a bit of armor to defend itself and its fighters.
   limit: 2
-  hyperwarLimit: 3
-  price: 258680
+  hyperwarLimit: 0 # For lag and balance reasons, but mostly lag.
+  price: 435400 # Exodus: appraised minimum + 5%, rounded up to 100.
   category: Large
   purchasable: false # voucher only
   group: Security
   access: Security
-  shuttlePath: /SharedMaps/_Mono/Shuttles/Nfsd/fujian.yml
+  shuttlePath: /SharedMaps/_Mono/Shuttles/TSF/fujian.yml # Exodus: upstream remap, existing vessel settings retained.
   addComponents: # Exodus faction-owned shuttle target filtering
   - type: NpcFactionMember
     factions:
@@ -27,7 +27,7 @@
 - type: gameMap
   id: Fujian
   mapName: 'Fujian'
-  mapPath: /SharedMaps/_Mono/Shuttles/Nfsd/fujian.yml
+  mapPath: /SharedMaps/_Mono/Shuttles/TSF/fujian.yml # Exodus: upstream remap, existing vessel settings retained.
   minPlayers: 0
   stations:
     Fujian:
@@ -42,4 +42,3 @@
         availableJobs:
           Deputy: [ 0, 0 ]
           TsfBorg: [ 0, 0 ]
-

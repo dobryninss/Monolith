@@ -14,14 +14,13 @@
   name: 'Форт Камелот' # Ru-Localization
   minimumDistance: 20000 # Exodus-nebula-update
   maximumDistance: 37500 # Exodus-nebula-update
-  spawnGamePreset: [ NFAdventure, NFPirate, MonoStandard, MonoRogueUSSP, MonoTSFUSSP, MonoADS, MonoChimera, MonoMixed, MonoAllAtOnce ]
+  spawnGamePreset: [ NFAdventure, NFPirate, MonoStandard, MonoRogueUSSP, MonoTSFUSSP, MonoADS, MonoChimera, MonoMixed, ExodusRot, MonoAllAtOnce ] # Exodus: include Rot in normal sector generation.
   spawnGroup: Required
   gridPath: /Maps/_Exodus/POI/camelot.yml # Exodus
   addComponents:
   - type: IFF
     color: "#ccaa55"
-  - type: Tower7G # Exodus-Adminbus
-    range: 128
+  # Exodus: anti-chimera towers are reserved for Colossus Central.
 
 - type: gameMap
   id: USSPCamelot
@@ -55,13 +54,20 @@
             # USSPCommissar: [1, 1]
             # USSPSergeant: [4, 4]
             # USSPRifleman: [-1, -1]
-            # VGCommander: [1, 1]
-            # VGLieutenant: [2, 2]
-            # VGInfanteer: [-1, -1]
+            # Exodus-end
+            # Exodus-begin enable-viper-group
+            VGCommander: [1, 1]
+            VGLieutenant: [2, 2]
+            VGInfanteer: [-1, -1]
             # Exodus-end
             Contractor: [-1, -1]
-            Pilot: [0, -1]
-            Mercenary: [0, -1]
+            Pilot: [-1, -1] # Exodus keep round-start and latejoin spawn
+            Mercenary: [-1, -1] # Exodus keep round-start and latejoin spawn
+          # Exodus-begin: preserve the existing Viper staffing through records consoles.
+          jobLimits:
+            VGCommander: { min: 1 }
+            VGLieutenant: { min: 2 }
+          # Exodus-end
           # tags: # Exodus disable-ussp-faction
           # - USSPCommand
         - type: StationDeadDrop

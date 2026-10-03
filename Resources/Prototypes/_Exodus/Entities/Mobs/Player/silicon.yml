@@ -17,6 +17,8 @@
   parent: PlayerStationAiEmpty
   suffix: Ghost Role, Colossus
   components:
+  - type: PlaytimeSalary
+    salary: Silicon
   - type: ContainerComp
     proto: AiHeldColossus
     container: station_ai_mind_slot
@@ -40,6 +42,11 @@
   parent: StationAiBrain
   categories: [ HideSpawnMenu, DoNotMap ]
   components:
+  # Keep station access aligned with the commandant; retain silicon-specific permissions.
+  - type: Access
+    groups:
+    - AllAccess
+    - Silicon
   - type: Sprite
   - type: SiliconLawProvider
     laws: ColossusLawset

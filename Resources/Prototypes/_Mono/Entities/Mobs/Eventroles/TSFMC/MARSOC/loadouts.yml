@@ -1,0 +1,41 @@
+- type: startingGear
+  id: MarsocOperativeGear
+  equipment:
+    jumpsuit: ClothingUniformTsfmcMopp
+    back: ClothingBackpackERTLeader
+    eyes: ClothingEyesHudNfsd
+    ears: ClothingHeadsetAltTsfmcMarsoc
+    gloves: ClothingHandsGlovesTacticalCombatBlack
+    outerClothing: ClothingOuterHardsuitM86Mk4
+    shoes: ClothingShoesBootsMagAdv
+    id: MarsocPDA
+    # Exodus: pocket1 is reserved for the filled species-appropriate tank from ExodusMarsocGhostSurvival.
+    pocket2: WeaponPistolMk58
+    belt: ClothingBeltWebbingsNormalTSFMC
+    neck: ClothingNeckIFFCyan
+    suitstorage: WeaponEnergyHalberdMARSOC # Exodus: carry the halberd on the armor mount.
+  inhand:
+  - WeaponLMGMR8B
+  - GunAttachmentGripErebusLAM
+  storage:
+    back:
+    - RadioHandheldNF
+    - BaseSecurityUplinkRadioDeputy
+    - CrowbarPocket # Exodus: move the crowbar here instead of issuing an empty reserve tank.
+    - MedkitCombatFilled
+    - MedkitCombatFilled
+    - SyringeCaseAltFilled
+    - JetpackMiniFilled
+    - EnergyShieldNfsd
+    - EnergySwordNfsd
+    # Exodus: The bluespace lifeline is installed by the MARSOC ghost role.
+    - PinpointerUniversal
+    belt:
+    - Magazine8x65mmSKR
+    - Magazine8x65mmSKR
+    - Magazine8x65mmSKR
+    - Magazine8x65mmSKR
+    - AmmoBox8x65mmSKR
+    - AmmoBox8x65mmSKRIncendiary
+    - MotionDetectorBorg
+    - HandHeldMassScannerBorg

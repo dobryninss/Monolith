@@ -11,10 +11,12 @@
   name: 'ДФ | Крепость Гелиос' # Ru-Localization
   minimumDistance: 17500 # Exodus-nebula-update
   maximumDistance: 30000 # Exodus-nebula-update
-  spawnGamePreset: [ NFAdventure, NFPirate, MonoStandard, MonoRogueTSF, MonoRogueUSSP, MonoTSFUSSP, MonoADS, MonoChimera, MonoMixed, MonoAllAtOnce ] # Exodus paired faction POI spawn
+  spawnGamePreset: [ NFAdventure, NFPirate, MonoStandard, MonoRogueTSF, MonoRogueUSSP, MonoTSFUSSP, MonoADS, MonoChimera, MonoMixed, ExodusRot, MonoAllAtOnce ] # Exodus paired faction POI spawn
   spawnGroup: PairedFactionPoi # Exodus paired faction POI spawn
   gridPath: /Maps/_Exodus/POI/pdvhelios.yml # Exodus ai-remote-borgs
   addComponents:
+  - type: IffAffiliation
+    mode: CorporateControl
   - type: IFF
     color: "#DE9E59"
     readOnly: true # mono
@@ -48,12 +50,21 @@
           stationDescription: 'frontier-lobby-pirate-description'
         - type: StationJobs
           availableJobs:
+            # Civilian round-start and late-join slots moved to PDVCivilianOutpost.
             PirateCaptain: [ 1, 1 ]
             PirateFirstMate: [ 1, 1 ]
             PDVDenasvar: [ 3, 3 ]
             PDVInfiltrator: [ 2, 2 ]
             Pirate: [ -1, -1 ]
             PdvBorg: [ 2, 2 ]
+            PDVTarkhan: [ 1, 1 ] # One base operative, available at round start and for late joins.
+          jobLimits:
+            PirateCaptain: { min: 1, max: 1 }
+            PirateFirstMate: { min: 1 }
+            PDVDenasvar: { min: 3 }
+            PDVInfiltrator: { min: 2 }
+            PdvBorg: { min: 2 }
+            PDVTarkhan: { min: 1, max: 1 }
           tags:
           - GrandVizier
         - type: StationDeadDropReporting
@@ -72,6 +83,9 @@
   spawnGroup: Required
   gridPath: /Maps/_Mono/POI/pdvhelios_hw.yml
   addComponents:
+  - type: IffAffiliation
+    mode: Faction
+    faction: PDV
   - type: IFF
     color: "#DE9E59"
     readOnly: true # mono
@@ -102,6 +116,12 @@
             PDVInfiltrator: [ 2, 2 ]
             Pirate: [ -1, -1 ]
             PdvBorg: [ 2, 2 ]
+          jobLimits:
+            PirateCaptain: { min: 1, max: 1 }
+            PirateFirstMate: { min: 3 }
+            PDVDenasvar: { min: 5 }
+            PDVInfiltrator: { min: 2 }
+            PdvBorg: { min: 2 }
           tags:
           - GrandVizier
         - type: StationDeadDropReporting

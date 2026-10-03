@@ -19,9 +19,7 @@
   id: MonoTSFWeaponsDynamicRanged
   recipes:
   - WeaponRifleLecterTSF
-  - WeaponRifleVulcanTSF
   - WeaponSubMachineGunDrozdTSF
-  - WeaponRifleMR3CTSF
   - WeaponRifleAnnieTSF
   #- WeaponLMGMR8BTSF
   - WeaponRifleMR8CTSF
@@ -29,7 +27,7 @@
   - WeaponLMGGrizzlyTSF
   - WeaponDEWCalico
   - WeaponDEWSmilodon
-  - WeaponLauncherTSFOsiris
+  #- WeaponLauncherTSFOsiris
   - WeaponLauncherTSFAnubis
   - WeaponAMRShenzhenTSF
   - WeaponRifleRiversongTSF
@@ -38,8 +36,11 @@
 - type: latheRecipePack
   id: MonoTSFVouchersDynamic
   recipes:
+  # Exodus: new upstream ships; all existing choices remain.
+  - ShipVoucherLudaRecipe
   - FlyssaVoucherTSF
   - FujianVoucherTSF
+  - ZephyrVoucherTSF
   - AltairVoucherTSF
   - PolarisVoucherTSF
   - ShipVoucherTsfT0Recipe
@@ -58,3 +59,5 @@
   - MotionDetectorTSF
   - BasicBorgCombatModuleTSF
   - AdvancedBorgCombatModuleTSF
+  - AutosurgeonSandevistanTSF
+#  - AutosurgeonShuntTSF

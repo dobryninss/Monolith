@@ -41,6 +41,12 @@ public sealed class DCCVars
         CVarDef.Create("accessibility.no_vision_filters", false, CVar.CLIENTONLY | CVar.ARCHIVE); // Mono - false by default
 
     /// <summary>
+    /// What year it is in the game. Actual value shown in game is server date + this value.
+    /// </summary>
+    public static readonly CVarDef<int> YearOffset =
+        CVarDef.Create("game.current_year_offset", 1000, CVar.SERVERONLY); // Exodus: IC calendar runs 1,000 years ahead.
+
+    /// <summary>
     /// Whether the Shipyard is enabled.
     /// </summary>
     //public static readonly CVarDef<bool> Shipyard =

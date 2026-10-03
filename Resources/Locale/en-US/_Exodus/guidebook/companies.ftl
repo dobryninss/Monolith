@@ -1,0 +1,11 @@
+guide-entry-corporations = Corporations
+guidebook-corporations-overview = This section lists the four playable concerns, their constituent companies and the technologies included in each shared research disk.
+guidebook-corporations-disk-overview = The first time a concern member spawns during a round, they receive a sealed case containing that concern's shared technology disk.
+guidebook-corporations-territory-ring = Only a concern banner can claim corporate territory. Subsidiary banners are decorative. A station under corporate control has an additional outline outside its faction territory on the mass scanner and BSS map. The outline uses the concern's color and displays its name along the circumference. Removing the concern banner removes the outline; the territory's actual radius stays the same.
+guidebook-corporation-banner-heading = Concern banner
+guidebook-corporation-banner-usage = Build this banner from the construction menu and anchor it on a station already claimed by a faction. You need an ID card for the matching concern.
+guidebook-corporation-tech-disk-heading = Corporate technology disk
+guidebook-corporation-tech-disk-acquisition = The first time a concern member spawns during a round, they receive a sealed case containing the shared disk shown below.
+guidebook-corporation-tech-disk-usage = The case can only be opened with an ID card assigned to the matching concern. Hold the disk and use it on a research server: its recipes will be added to that server's technology database and the disk will be consumed.
+guidebook-hive-recognition = Chimeras recognize CORPUS members by a purple marker beside them. The marker follows concern membership: removing a PDA does not hide it, and carrying someone else's ID card does not grant it.
+guidebook-medical-biofabrication = Producing organs requires a medical biofabricator. Research Industrial Medicine, then Medical Biofabrication for 15,000 points at the research console. Connect a circuit imprinter to the same research server and print the board using 10 steel, 20 glass, 10 gold and 10 silver. Assemble the machine in a machine frame with the board, two matter bins and two manipulators. Connect the biofabricator to power and the research server, then load the materials for the desired organ. Concern organs also require their concern's technology disk.

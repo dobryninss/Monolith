@@ -13,6 +13,7 @@
   description: department-NFCivilian-description # Frontier
   color: "#9FED58"
   weight: 130 # Mono
+  primary: false
   roles:
   # - Bartender # Frontier
   # - Botanist # Frontier
@@ -32,8 +33,10 @@
   # - ServiceWorker # Frontier
   - Contractor # Frontier
   - Mercenary # Frontier
-  - Pilot # Frontier
+  - Pilot # Exodus preserve existing department membership
   - Borg # Frontier
+  - TsfCivilian
+  - PdvCivilian
 
 - type: department
   id: CentralCommand
@@ -74,6 +77,7 @@
   roles: # Mono
   - DirectorOfCare # Mono
   - MdMedic # Mono
+  - Virologist # SS220 / Exodus
 
 - type: department
   id: Security
@@ -100,6 +104,7 @@
   - TsfEngineer # Mono
   - TsfMarsoc # Mono
   - TsfBorg # Mono
+  - TsfCivilian
 
 # Exodus
 - type: department
@@ -116,11 +121,17 @@
   - Bailiff
   - Sheriff
   - SeniorOfficer
+  - TsfMarsoc # Exodus: count the lobby operative as a combatant.
+  - Brigmedic # Exodus: count faction support personnel as combatants.
+  - TsfEngineer # Exodus: count faction support personnel as combatants.
+  - TsfBorg # Exodus: count faction cyborg jobs as combatants.
+  - PdvBorg # Exodus: count faction cyborg jobs as combatants.
   - Pirate
   - PirateFirstMate
   - PirateCaptain
   - PDVDenasvar
   - PDVInfiltrator
+  - PDVTarkhan # Exodus: count the lobby operative as a combatant.
   - AsakimWarrior # Exodus asakim-combatant
   - AsakimCenturion # Exodus asakim-combatant
   - AsakimPrefect # Exodus asakim-combatant

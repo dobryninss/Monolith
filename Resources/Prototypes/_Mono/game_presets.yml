@@ -9,7 +9,9 @@
   description: mono-standard-description
   showInVote: false # For admin usage really. Not that boring, but I'd rather just let players choose their main threat instead of choosing no threat.
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
+  - SpecialWreckSpawnScheduler # Exodus: one Special wreck spawn attempt per round.
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -18,7 +20,7 @@
   - FrontierRoundstartVariation
   - MonoMonolithicEventsScheduler
   # - PortstrikeAnnounceRuleHour2 # Exodus-NoPortstrikeAnnounce
-  - RoundEndRuleHour8 # Exodus
+  # - RoundEndRuleHour8 # Exodus: round timing is managed externally.
 
 - type: gamePreset
   id: MonoRogueTSF
@@ -26,7 +28,9 @@
   description: mono-roguetsf-description
   showInVote: false # For admin usage really. General player opinion is that this was pretty boring.
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
+  - SpecialWreckSpawnScheduler # Exodus: one Special wreck spawn attempt per round.
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -35,7 +39,7 @@
   - FrontierRoundstartVariation
   - MonoMonolithicEventsScheduler
   # - PortstrikeAnnounceRuleHour2 # Exodus-NoPortstrikeAnnounce
-  - RoundEndRuleHour8 # Exodus
+  # - RoundEndRuleHour8 # Exodus: round timing is managed externally.
 
 - type: gamePreset
   id: MonoRogueUSSP
@@ -43,7 +47,9 @@
   description: mono-rogueussp-description
   showInVote: false # For admin usage really. General player opinion is that this was pretty boring.
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
+  - SpecialWreckSpawnScheduler # Exodus: one Special wreck spawn attempt per round.
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -52,7 +58,7 @@
   - FrontierRoundstartVariation
   - MonoMonolithicEventsScheduler
   # - PortstrikeAnnounceRuleHour2 # Exodus-NoPortstrikeAnnounce
-  - RoundEndRuleHour8 # Exodus
+  # - RoundEndRuleHour8 # Exodus: round timing is managed externally.
 
 - type: gamePreset
   id: MonoTSFUSSP
@@ -60,7 +66,9 @@
   description: mono-tsfussp-description
   showInVote: false # For admin usage really. General player opinion is that this was pretty boring.
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
+  - SpecialWreckSpawnScheduler # Exodus: one Special wreck spawn attempt per round.
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -69,7 +77,7 @@
   - FrontierRoundstartVariation
   - MonoMonolithicEventsScheduler
   # - PortstrikeAnnounceRuleHour2 # Exodus-NoPortstrikeAnnounce
-  - RoundEndRuleHour8 # Exodus
+  # - RoundEndRuleHour8 # Exodus: round timing is managed externally.
 
 - type: gamePreset
   id: MonoADS
@@ -77,7 +85,9 @@
   description: mono-ads-description
   showInVote: false # Exodus
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
+  - SpecialWreckSpawnScheduler # Exodus: one Special wreck spawn attempt per round.
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -87,7 +97,7 @@
   # Exodus: ADS and Asakim shuttle event schedulers replaced by manual emergency beacons.
   - MonoMonolithicEventsScheduler
   # - PortstrikeAnnounceRuleHour2 # Exodus-NoPortstrikeAnnounce
-  - RoundEndRuleHour8 # Exodus
+  # - RoundEndRuleHour8 # Exodus: round timing is managed externally.
 
 - type: gamePreset
   id: MonoChimera
@@ -95,7 +105,9 @@
   description: mono-chimera-description
   showInVote: true
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
+  - SpecialWreckSpawnScheduler # Exodus: one Special wreck spawn attempt per round.
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -105,7 +117,7 @@
   - MonoChimeraSTCShuttleSpawnerScheduler
   - MonoMonolithicEventsScheduler
   # - PortstrikeAnnounceRuleHour2 # Exodus-NoPortstrikeAnnounce
-  - RoundEndRuleHour8 # Exodus
+  # - RoundEndRuleHour8 # Exodus: round timing is managed externally.
 
 - type: gamePreset
   id: MonoMixed
@@ -113,7 +125,9 @@
   description: mono-mixed-description
   showInVote: true
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
+  - SpecialWreckSpawnScheduler # Exodus: one Special wreck spawn attempt per round.
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -128,7 +142,7 @@
   - ExodusSyndicateScheduler # Exodus-syndicate-ships
   - MonoMonolithicEventsScheduler
   # - PortstrikeAnnounceRuleHour2 # Exodus-NoPortstrikeAnnounce
-  - RoundEndRuleHour8 # Exodus
+  # - RoundEndRuleHour8 # Exodus: round timing is managed externally.
 
 - type: gamePreset
   id: MonoAllAtOnce
@@ -137,7 +151,9 @@
   showInVote: false # Exodus
   weight: 0.25 # requires 80% votes
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
+  - SpecialWreckSpawnScheduler # Exodus: one Special wreck spawn attempt per round.
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -148,7 +164,7 @@
   # Exodus: ADS and Asakim shuttle event schedulers replaced by manual emergency beacons.
   - MonoMonolithicEventsScheduler
   - RoundEndRuleHour3
-  - PortstrikeAnnounceRuleHour1
+  # - PortstrikeAnnounceRuleHour1 # Exodus-NoPortstrikeAnnounce
 
 - type: gamePreset
   id: MonoRogueTSFHyperwar
@@ -156,6 +172,7 @@
   description: mono-roguetsf-hyperwar-description
   showInVote: false # AO
   rules:
+  # Exodus: the main star system is generated globally before preset rules.
   - NFAdventure
   - Hyperwar
   - RoundEndRuleHour3

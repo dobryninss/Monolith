@@ -295,6 +295,7 @@ namespace Content.Shared.Preferences
                 Age = age,
                 Gender = gender,
                 Species = species,
+                Voice = voiceId, // Exodus: retain the voice selected for the randomized sex.
                 Appearance = HumanoidCharacterAppearance.Random(species, sex),
             };
         }
@@ -703,6 +704,7 @@ namespace Content.Shared.Preferences
             Appearance = appearance;
             SpawnPriority = spawnPriority;
 
+            Company = Content.Shared._Exodus.Company.CompanyConsolidation.Normalize(Company, prototypeManager); // Exodus concern migration
             // Check if the company exists, if not set to "None"
             if (!string.IsNullOrEmpty(Company) &&
                 Company != "None" &&
@@ -768,6 +770,11 @@ namespace Content.Shared.Preferences
             // Track points count for each group.
             var groups = new Dictionary<string, int>();
             var result = new List<ProtoId<TraitPrototype>>();
+
+            // Exodus-begin: count all drawbacks first without changing the relative order of advantages.
+            traits = traits.OrderBy(trait =>
+                protoManager.TryIndex(trait, out var prototype) && prototype.Cost < 0 ? 0 : 1);
+            // Exodus-end
 
             foreach (var trait in traits)
             {

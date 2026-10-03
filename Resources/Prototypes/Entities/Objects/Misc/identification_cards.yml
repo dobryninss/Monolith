@@ -663,7 +663,7 @@
     job: AtmosphericTechnician
 
 - type: entity
-  parent: IDCardStandard
+  parent: [IDCardStandard, BaseFactionGearOtherFactionT1]
   id: SyndicateIDCard
   name: syndicate ID card
   components:
@@ -833,6 +833,32 @@
     - Wizard
     - External
     - Maintenance
+# Xenoborg
+- type: entity
+  parent: IDCardStandard
+  id: XenoborgIDCard
+  name: xenoborg ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: Access
+    tags:
+    - Xenoborg
+
+# Xenoborg
+- type: entity
+  parent: IDCardStandard
+  id: MothershipIDCard
+  name: Mothership ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: Access
+    tags:
+    - Xenoborg
+    - Mothership
 
 - type: entity
   parent: IDCardStandard
@@ -854,18 +880,7 @@
     jobTitle: job-title-universal
     jobIcon: JobIconAdmin
   - type: Access
-    groups:
-    - AllAccess
-    - USSPAA # Mono
-    tags:
-    - CentralCommand
-    - NuclearOperative
-    - SyndicateAgent
-    - Wizard
-    - Pirate # Mono
-    - TsfmcEngineering # Mono
-    - GrandVizier # Mono
-    - PDVCommand # Mono
+  - type: UniversalAccess # Exodus - all current and future access levels and companies.
   - type: Tag #  Ignore Chameleon tags
     tags:
     - DoorBumpOpener

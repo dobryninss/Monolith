@@ -9,10 +9,10 @@
   parent: BaseVessel
   name: Тигр # Ru-Localization
   description: Списанный гоночный шаттл. Используется компанией Нова Шаркс как хотрод и как безумно быстрый грузовой шаттл. # Ru-Localization
-  price: 32000 # race ship tax since its gonna be used for smuggling.
+  price: 50800 # Exodus: appraised minimum + 5%, rounded up to 100.
   category: Small
   group: Shipyard
-  shuttlePath: /SharedMaps/_Mono/Shuttles/tiger.yml
+  shuttlePath: /SharedMaps/_Mono/Shuttles/Civilian/tiger.yml # Exodus: upstream remap, existing vessel settings retained.
   addComponents:
   - type: NpcFactionMember # Exodus NanoTrasen faction
     factions:
@@ -26,7 +26,7 @@
 - type: gameMap
   id: Tiger
   mapName: 'Тигр' # Ru-Localization
-  mapPath: /SharedMaps/_Mono/Shuttles/tiger.yml
+  mapPath: /SharedMaps/_Mono/Shuttles/Civilian/tiger.yml # Exodus: upstream remap, existing vessel settings retained.
   minPlayers: 0
   stations:
     Tiger:
