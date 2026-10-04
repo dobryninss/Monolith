@@ -45,6 +45,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     private readonly SharedTransformSystem _transform;
     private readonly RadarBlipsSystem _blips;
     private readonly TerritoryPoiColorSystem _territoryPoiColors; // Exodus - territory POI colors
+    private readonly TerritoryCaptureDisplaySystem _territoryCapture; // Exodus contested territory countdown
     private readonly IPrototypeManager _prototype; // Exodus - faction AI radar label
 
     // Exodus - SafeZone - Start
@@ -188,6 +189,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         _station = EntManager.System<StationSystem>(); // Frontier
         _blips = EntManager.System<RadarBlipsSystem>();
         _territoryPoiColors = EntManager.System<TerritoryPoiColorSystem>(); // Exodus - territory POI colors
+        _territoryCapture = EntManager.System<TerritoryCaptureDisplaySystem>(); // Exodus contested territory countdown
         _prototype = IoCManager.Resolve<IPrototypeManager>(); // Exodus - faction AI radar label
 
         // Exodus - SafeZone - Start
@@ -673,6 +675,10 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // Exodus-end
 
         DrawStarSystem(handle, worldToShuttle, shuttleToView, xform.MapUid); // Far Horizons
+        // Exodus-begin hatched-ftl-zones: blips are fetched before the grids so suppression fields lie under them.
+        var rawBlips = _blips.GetCurrentBlips();
+        DrawSuppressionFields(handle, worldToView, rawBlips);
+        // Exodus-end
 
         _grids.Clear();
         _mapManager.FindGridsIntersecting(xform.MapID, new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector), ref _grids, approx: true, includeMap: false);
@@ -692,7 +698,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             DrawGrid(handle, ourGridToView, (ourGridId.Value, ourGrid), color, 0.01f, true);
         }
 
-        DrawGridFills(_grids, handle, (ourGrid != null && ourGridId.HasValue) ? (ourGridId.Value, ourGrid) : null);
+        DrawGridFills(_grids, handle, (ourGrid != null && ourGridId.HasValue) ? (ourGridId.Value, ourGrid) : null, viewAABB); // Exodus radar-grid-cache: cull fills to the view
 
         DrawCircles(handle);
 
@@ -1047,7 +1053,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         handle.DrawLine(origin, origin + angle.ToVec() * ScaledMinimapRadius * 1.42f, Color.Red.WithAlpha(0.1f));
 
         // Get blips
-        var rawBlips = _blips.GetCurrentBlips();
+        // Exodus hatched-ftl-zones: rawBlips are fetched before the grids are drawn.
 
         // Prepare view bounds for culling
         var monoViewBounds = new Box2(-3f, -3f, PixelSize.X + 3f, PixelSize.Y + 3f);
@@ -1056,7 +1062,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         foreach (var blip in rawBlips)
         {
             // Exodus-begin territory-marker
-            if (blip.Config.Shape == RadarBlipShape.TerritoryCircle)
+            if (blip.Config.Shape is RadarBlipShape.TerritoryCircle or RadarBlipShape.SuppressionField) // Exodus hatched-ftl-zones
                 continue;
             // Exodus-end
 
@@ -1164,13 +1170,15 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // Exodus-end
 
         DrawSafeZones(handle, worldToView, ourGridId); // Exodus - SafeZone
+        DrawAdditionalOverlays(handle, worldToView, xform.MapID, rawBlips, ourGridId); // Exodus: reuse radar blips and the view transform for mining beams.
     }
 
     // Exodus-begin: integrate the upstream filled-grid pre-pass with our detailed radar renderer.
     private void DrawGridFills(
         List<Entity<MapGridComponent>> grids,
         DrawingHandleScreen handle,
-        Entity<MapGridComponent>? ourGrid)
+        Entity<MapGridComponent>? ourGrid,
+        Box2 viewAABB)
     {
         var worldRot = _rotation!.Value;
         var mapPos = _transform.ToMapCoordinates(_coordinates!.Value).Offset(worldRot.RotateVec(Offset));
@@ -1182,6 +1190,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         foreach (var grid in grids)
         {
             if (ourGrid != null && grid.Owner == ourGrid.Value.Owner)
+                continue;
+
+            // Off-screen fills cost nothing, whatever the radar range.
+            var curGridToWorld = _transform.GetWorldMatrix(grid.Owner);
+            if (!curGridToWorld.TransformBox(grid.Comp.LocalAABB).Intersects(viewAABB))
                 continue;
 
             var detectionLevel = _consoleEntity == null ? DetectionLevel.Detected : GetGridDetected(grid.Owner);
@@ -1198,7 +1211,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             var hideLabel = iff != null && (iff.Flags & IFFFlags.HideLabel) != 0x0;
             var hideColor = hideLabel && iff != null && (iff.Flags & IFFFlags.AlwaysShowColor) == 0x0;
             var labelColor = hideColor ? Color.White : _shuttles.GetIFFColor(grid, self: false, iff);
-            var curGridToView = _transform.GetWorldMatrix(grid.Owner) * worldToView;
+            var curGridToView = curGridToWorld * worldToView;
 
             DrawGrid(handle, curGridToView, grid, labelColor, 0.01f, true);
         }
@@ -1703,6 +1716,14 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
             ChainShape chain = (ChainShape)shieldFixture.Shape;
 
+            // Exodus-begin rippling ship shield scanner visuals
+            if (visuals.RippleWidth > 0f)
+            {
+                DrawRipplingShieldOnRadar(handle, (uid, visuals, xform), chain, matrix);
+                continue;
+            }
+            // Exodus-end
+
             var count = chain.Count;
             var verticies = chain.Vertices;
             // Exodus-begin layered ship shield scanner visuals
@@ -1812,7 +1833,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             return;
 
         // Exodus mass-scanner-perf: cache localized territory labels across frames.
-        if (!_territoryLabelCache.TryGetValue(config.Label, out var text))
+        // Exodus: the server sends a deadline; the client formats and caches the remaining seconds.
+        string? text; // Exodus: TryGetValue may assign null when the label is not cached.
+        if (config.CaptureEndsAt is { } captureEndsAt) // Exodus contested territory countdown
+            text = _territoryCapture.GetCountdown(captureEndsAt); // Exodus contested territory countdown
+        else if (!_territoryLabelCache.TryGetValue(config.Label, out text)) // Exodus contested territory countdown
         {
             text = Loc.GetString(config.Label);
             _territoryLabelCache[config.Label] = text;
@@ -1838,6 +1863,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         var textScale = UIScale * 1.2f;
         var baseAlpha = 0.35f;
         var textColor = new Color(0.65f, 0.65f, 0.65f);
+        if (config.CaptureEndsAt != null) // Exodus contested territory color
+            textColor = config.BorderColor.WithAlpha(1f); // Exodus contested territory color
         var textDims = handle.GetDimensions(Font, text, textScale);
         var textDrawOffset = new Vector2(
             -textDims.X * 0.5f,

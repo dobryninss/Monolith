@@ -21,11 +21,16 @@ public sealed partial class VirusRadiophasiaSystem : EntitySystem
 
         SubscribeLocalEvent<VirusRadiophasiaComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<VirusRadiophasiaComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<VirusRadiophasiaComponent, DamageModifyEvent>(OnDamageTaken);
         SubscribeLocalEvent<VirusRadiophasiaComponent, OnIrradiatedEvent>(OnIrradiated);
     }
 
     private void OnStartup(Entity<VirusRadiophasiaComponent> ent, ref ComponentStartup args)
     {
+        if (ent.Comp.StateApplied)
+            return;
+        ent.Comp.StateApplied = true;
+
         if (TryComp<RadiationSourceComponent>(ent.Owner, out var existing))
             ent.Comp.PreviousIntensity = existing.Intensity;
         else
@@ -46,6 +51,20 @@ public sealed partial class VirusRadiophasiaSystem : EntitySystem
             _radiation.SetIntensity(ent.Owner, previous);
     }
 
+    private void OnDamageTaken(Entity<VirusRadiophasiaComponent> ent, ref DamageModifyEvent args) // Radiation damage originating from anything except the RadiationSystem was unhandled
+    {
+        if (ent.Comp.HealPerDamageUnit.Empty)
+            return;
+
+        if (!args.Damage.DamageDict.TryGetValue("Radiation", out var damageValue) ||
+            damageValue <= 0)
+            return;
+
+        args.Damage += ent.Comp.HealPerDamageUnit * damageValue;
+
+        if (ent.Comp.RadImmunity)
+            args.Damage.DamageDict["Radiation"] = 0;
+    }
     private void OnIrradiated(Entity<VirusRadiophasiaComponent> ent, ref OnIrradiatedEvent args)
     {
         if (ent.Comp.HealPerRad.Empty)

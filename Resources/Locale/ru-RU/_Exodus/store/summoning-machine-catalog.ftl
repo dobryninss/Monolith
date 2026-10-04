@@ -5,6 +5,13 @@ store-category-summoning-technical-contour = Узел: Энергетика
 store-category-summoning-emergency-beacons = Узел: Маячки
 store-category-summoning-field-reserve = Узел: Снабжение
 
+summoning-machine-go-juice-15-name = { ent-AsakimGoJuiceAutoInjector15 }
+summoning-machine-go-juice-15-desc = { ent-AsakimGoJuiceAutoInjector15.desc }
+summoning-machine-go-juice-30-name = { ent-AsakimGoJuiceAutoInjector30 }
+summoning-machine-go-juice-30-desc = { ent-AsakimGoJuiceAutoInjector30.desc }
+summoning-machine-go-juice-45-name = { ent-AsakimGoJuiceAutoInjector45 }
+summoning-machine-go-juice-45-desc = { ent-AsakimGoJuiceAutoInjector45.desc }
+
 summoning-machine-phase-blade-name = Нанолюминитный фазовый клинок
 summoning-machine-phase-blade-desc = Тяжёлый клинок эпохи до Раскола. Переключается под боевые нужды.
 summoning-machine-magboots-name = Дораскольные магнитные ботинки
@@ -100,7 +107,7 @@ summoning-machine-beacon-stratostar-desc = Одноразовый маячок �
 summoning-machine-asakim-ai-core-name = Боевое ядро Кхси'Ра
 summoning-machine-asakim-ai-core-desc = Скручиваемое боевое ядро, настроенное под параметры наведения Автоматической Системы Защиты, уничтожает все враждебные цели.
 summoning-machine-beacon-horizont-name = Маячок: ВЭФ Горизонт
-summoning-machine-beacon-horizont-desc = Одноразовый маячок вызова ВЭФ Горизонт. Межпространственному шлюзу потребуется шесть часов, чтобы протащить этот тяжёлый линкор ВЭФ в сектор.
+summoning-machine-beacon-horizont-desc = Одноразовый маячок вызова ВЭФ Горизонт. Межпространственному шлюзу потребуется восемь часов, чтобы протащить этот тяжёлый линкор ВЭФ в сектор.
 summoning-machine-beacon-kit-surplus-name = Ящик распределения маячков
 summoning-machine-beacon-kit-surplus-desc = Запечатанный ящик дораскольного распределения. Внутри — один случайный набор маячков. Состава нет, возврата нет, второй попытки нет.
 summoning-machine-banner-khsira-name = знамя Империи Кхси'Ра
@@ -135,3 +142,10 @@ summoning-machine-gravity-projector-name = Гравитационный излу
 summoning-machine-gravity-projector-desc = Пехотное гравитационное оружие ближнего боя с передней рукояткой и выпуклым излучателем.
 summoning-machine-kunisa-machine-gun-name = Плазменный пулемёт «Куниса»
 summoning-machine-kunisa-machine-gun-desc = Пехотный пулемёт с увеличенным конденсатором. Стреляет быстрее стандартного автопульсера.
+# Ship repair drone equipment
+summoning-machine-ship-repair-drone-station-name = Станция ремонтных дронов (флэтпак)
+summoning-machine-ship-repair-drone-station-desc = Упакованная станция с пятью ячейками для ремонтных дронов.
+summoning-machine-asakim-repair-drone-name = Ремонтный дрон ВЭФ
+summoning-machine-asakim-repair-drone-desc = Фазовый ремонтный дрон для восстановления кораблей по снимку СРД.
+summoning-machine-asakim-repair-drone-kit-name = Комплект ремонтных дронов
+summoning-machine-asakim-repair-drone-kit-desc = Ящик с тремя дронами ВЭФ и флэтпаком станции ремонтных дронов.

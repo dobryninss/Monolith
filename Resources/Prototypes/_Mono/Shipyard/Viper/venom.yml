@@ -8,11 +8,11 @@
   parent: BaseVessel
   name: Вайперы «Веном» # Exodus Viper localization
   description: Средний эсминец с возможностями задержания. Вооружён главным орудием CYREXA, четырьмя 90-мм автопушками DRAVON и двумя АК-570. # Exodus Viper localization
-  price: 138300 # Exodus: appraised minimum + 5%, rounded up to 100.
+  price: 144700 # Exodus: appraised minimum, rounded up to 100.
   category: Medium
   group: Viper
   access: Viper
-  shuttlePath: /SharedMaps/_Mono/Shuttles/Viper/venom.yml
+  shuttlePath: /SharedMaps/_Mono/Shuttles/VG/venom.yml # Exodus: upstream remap, existing vessel settings retained.
   addComponents:
   - type: NpcFactionMember # Exodus NanoTrasen faction
     factions:
@@ -27,7 +27,7 @@
 - type: gameMap
   id: Venom
   mapName: 'Вайперы «Веном»' # Exodus Viper localization
-  mapPath: /SharedMaps/_Mono/Shuttles/Viper/venom.yml
+  mapPath: /SharedMaps/_Mono/Shuttles/VG/venom.yml # Exodus: upstream remap, existing vessel settings retained.
   minPlayers: 0
   stations:
     Venom:

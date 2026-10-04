@@ -1,0 +1,46 @@
+# Author's Info
+# GitHub: R-R0S Discord: mq.gg
+# Discord: DegonX5
+
+- type: vessel
+  id: regenerator
+  parent: BaseVessel
+  name: company-vessel-regenerator-name
+  description: company-vessel-regenerator-description
+  price: 444444 # ~305k base price
+  category: Large
+  group: Shipyard
+  requiredCompanies:
+  - HorizonHarmonyHammerMatter
+  shuttlePath: /SharedMaps/_Exodus/Shuttles/Companies/HMI/regenerator.yml
+  addComponents:
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
+  guidebookPage: Null
+  class:
+  - Mercenary
+  - Medical
+  - Chemistry
+  engine:
+  - Plasma
+
+- type: gameMap
+  id: regenerator
+  mapName: 'ХМИ Регенератор'
+  mapPath: /SharedMaps/_Exodus/Shuttles/Companies/HMI/regenerator.yml
+  minPlayers: 0
+  stations:
+    regenerator:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Регенератор{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+          Pilot: [ 0, 0 ]
+          Mercenary: [ 0, 0 ]

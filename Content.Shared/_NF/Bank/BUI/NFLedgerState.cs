@@ -43,6 +43,8 @@ public enum LedgerEntryType : byte
     StationDepositDonation,
     StationDepositAssetsSold,
     StationDepositOther,
+    CorporateTerritoryIncome, // Exodus: passive income from corporate territory control.
+    ProductSales, // Exodus: full proceeds from configured vending and loadout purchases.
     // Expense entries
     MailPenalty,
     // Mono Begin

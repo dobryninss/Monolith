@@ -9,21 +9,23 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Physics;
+using Content.Shared.Whitelist;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Exodus.Teleport;
 
-public sealed class NearestShuttleTeleporterSystem : EntitySystem
+public sealed partial class NearestShuttleTeleporterSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedMapSystem _map = default!;
-    [Dependency] private readonly PopupSystem _popup = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly PullingSystem _pulling = default!;
-    [Dependency] private readonly TurfSystem _turf = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private PullingSystem _pulling = default!;
+    [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private EntityWhitelistSystem _whitelist = default!;
 
     private EntityQuery<MapGridComponent> _gridQuery;
     private readonly List<(EntityUid Grid, float DistanceSquared)> _candidateGridBuffer = new();
@@ -89,7 +91,7 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
         }
 
         var origin = _transform.GetWorldPosition(padXform);
-        if (!TryFindDestination(mapUid, currentGrid, origin, ent.Comp.MaxRange, out var destCoords))
+        if (!TryFindDestination(ent, mapUid, currentGrid, origin, out var destCoords))
         {
             ent.Comp.NextUse = curTime + ent.Comp.FailureCooldown;
             _popup.PopupEntity(Loc.GetString(ent.Comp.PopupFail), user, user);
@@ -112,13 +114,14 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
     }
 
     private bool TryFindDestination(
+        Entity<NearestShuttleTeleporterComponent> ent,
         EntityUid mapUid,
         EntityUid excludeGrid,
         Vector2 origin,
-        float maxRange,
         out EntityCoordinates destCoords)
     {
         destCoords = default;
+        var maxRange = ent.Comp.MaxRange;
         var maxDistanceSquared = maxRange > 0f ? maxRange * maxRange : float.MaxValue;
         _candidateGridBuffer.Clear();
 
@@ -131,6 +134,9 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
             var delta = _transform.GetWorldPosition(xform) - origin;
             var distanceSquared = delta.LengthSquared();
             if (distanceSquared > maxDistanceSquared)
+                continue;
+
+            if (_whitelist.IsBlacklistPass(ent.Comp.DestinationBlacklist, gridUid))
                 continue;
 
             _candidateGridBuffer.Add((gridUid, distanceSquared));

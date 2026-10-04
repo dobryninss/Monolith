@@ -401,6 +401,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         var rateMulEv = new QueryFireRateMultiplierEvent(1f);
         RaiseLocalEvent(gunUid, ref rateMulEv);
         fireRate *= rateMulEv.ReloadTimeMul;
+        // Exodus: hardpoint shot penalties compose through the event above; burst penalties use GetReloadCooldown.
 
         // First shot
         // Previously we checked shotcounter but in some cases all the bullets got dumped at once

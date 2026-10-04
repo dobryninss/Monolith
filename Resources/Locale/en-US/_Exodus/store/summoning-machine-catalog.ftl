@@ -5,6 +5,13 @@ store-category-summoning-technical-contour = Node: Power
 store-category-summoning-emergency-beacons = Node: Beacons
 store-category-summoning-field-reserve = Node: Supplies
 
+summoning-machine-go-juice-15-name = { ent-AsakimGoJuiceAutoInjector15 }
+summoning-machine-go-juice-15-desc = { ent-AsakimGoJuiceAutoInjector15.desc }
+summoning-machine-go-juice-30-name = { ent-AsakimGoJuiceAutoInjector30 }
+summoning-machine-go-juice-30-desc = { ent-AsakimGoJuiceAutoInjector30.desc }
+summoning-machine-go-juice-45-name = { ent-AsakimGoJuiceAutoInjector45 }
+summoning-machine-go-juice-45-desc = { ent-AsakimGoJuiceAutoInjector45.desc }
+
 summoning-machine-phase-blade-name = Nanoluminite phase blade
 summoning-machine-phase-blade-desc = A heavy pre-Fracture blade with switchable combat tuning. It looks exactly as unhealthy to argue with as it should.
 summoning-machine-magboots-name = Pre-fracture magboots
@@ -100,7 +107,7 @@ summoning-machine-beacon-azimuth-desc = A single-use beacon keyed to call the AS
 summoning-machine-beacon-stratostar-name = Emergency beacon: VEF Stratostar
 summoning-machine-beacon-stratostar-desc = A single-use beacon keyed to call the VEF Stratostar. A heavy VEF cruiser built for sustained sector operations.
 summoning-machine-beacon-horizont-name = Emergency beacon: VEF Horizont
-summoning-machine-beacon-horizont-desc = A single-use beacon keyed to call the VEF Horizont. The gateway needs six hours to bring this heavy VEF battleship into the sector.
+summoning-machine-beacon-horizont-desc = A single-use beacon keyed to call the VEF Horizont. The gateway needs eight hours to bring this heavy VEF battleship into the sector.
 summoning-machine-beacon-kit-surplus-name = Sealed beacon allocation crate
 summoning-machine-beacon-kit-surplus-desc = A sealed pre-fracture allocation crate. Contains one random beacon pack. No inventory list, no refunds, no second chances.
 summoning-machine-banner-khsira-name = Khsira Empire banner
@@ -135,3 +142,10 @@ summoning-machine-gravity-projector-name = Gravitational projector
 summoning-machine-gravity-projector-desc = A short-range infantry weapon with a forward grip and convex gravitational emitter.
 summoning-machine-kunisa-machine-gun-name = Kunisa plasma machine gun
 summoning-machine-kunisa-machine-gun-desc = An infantry machine gun with an enlarged capacitor. Fires faster than the standard autopulser.
+# Ship repair drone equipment
+summoning-machine-ship-repair-drone-station-name = Repair drone station flatpack
+summoning-machine-ship-repair-drone-station-desc = A flatpack containing a station with five repair drone berths.
+summoning-machine-asakim-repair-drone-name = VEF repair drone
+summoning-machine-asakim-repair-drone-desc = A phasing repair drone for restoring ships from an SRD snapshot.
+summoning-machine-asakim-repair-drone-kit-name = Repair drone kit
+summoning-machine-asakim-repair-drone-kit-desc = A crate containing three VEF drones and a repair drone station flatpack.

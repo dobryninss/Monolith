@@ -8,6 +8,7 @@
     name: ghost-role-information-centurion-asakim-name
     description: ghost-role-information-centurion-asakim-description
     rules: ghost-role-information-centurion-asakim-rules
+    job: AsakimCenturion
     mindRoles:
     - MindRoleGhostRoleNeutral
     - MindRoleAsakim
@@ -17,6 +18,7 @@
     - !type:OverallPlaytimeRequirement
       time: 270000 # 75 hrs
   - type: GhostTakeoverAvailable
+  - type: NeedsActivation
 
 - type: entity
   parent: MobCenturionAsakimGhostrole

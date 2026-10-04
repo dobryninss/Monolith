@@ -1,3 +1,4 @@
+# Exodus: legacy disks remain for saved player ships; new characters receive concern disks.
 - type: entity
   parent: TechDiskBase
   id: TechDiskBlackhawkArmor
@@ -36,6 +37,7 @@
       shader: unshaded
   - type: TechnologyDisk
     recipes:
+    - MedicalBeamGun
     - HmeSynthHeart
     - HmeSynthHeartFortified
     - HmeSynthLungs
@@ -107,6 +109,8 @@
   - type: TechnologyDisk
     recipes:
     - SheetPlasteelShm
+    - ShipRepairDrone
+    - ShipRepairDroneStationMachineCircuitboard
 
 - type: entity
   parent: TechDiskBase
@@ -127,6 +131,15 @@
   - type: TechnologyDisk
     recipes:
     - SyndicateBombCerberus
+    - BulkAutoMiningConsoleCircuitboard
+    - BulkMiningRefineryCircuitboard
+    - BulkMiningExhaustCircuitboard
+    - BulkMiningPipeStack10
+    - GasPipeArmoredHalf
+    - GasPipeArmoredStraight
+    - GasPipeArmoredBend
+    - GasPipeArmoredTJunction
+    - GasPipeArmoredFourway
 
 - type: entity
   parent: TechDiskBase
@@ -209,6 +222,9 @@
       shader: unshaded
   - type: TechnologyDisk
     recipes:
+    - GeneticDisk
+    - GeneticsLaboratoryCircuitboard
+    - GeneticInjectorPrinterCircuitboard
     - HiveSynthHeart
     - HiveSynthLungs
     - HiveSynthLiver

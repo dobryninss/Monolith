@@ -19,6 +19,8 @@ public sealed partial class VirologySystem
         {
             Source = protoId,
             Genome = GetGenome(config.Symptoms),
+            Incubation = config.Incubation?.Clone(),
+            SymptomTimeMultiplier = config.SymptomTimeMultiplier,
         };
 
         var used = new HashSet<ProtoId<ReagentPrototype>>();
@@ -57,7 +59,7 @@ public sealed partial class VirologySystem
 
     public VirusCure? ResolveCure(VirusDescriptor descriptor)
     {
-        return descriptor.Source is { } source ? GetRoundCure(source) : descriptor.Cure;
+        return descriptor.Cure ?? (descriptor.Source is { } source ? GetRoundCure(source) : null);
     }
 
     public VirusDescriptor ToDescriptor(Entity<VirusComponent> virus)
@@ -66,13 +68,16 @@ public sealed partial class VirologySystem
         {
             Source = virus.Comp.Source,
             Genome = virus.Comp.Genome,
+            // A saved infection can outlive the round in which its cure was rolled.
+            Cure = virus.Comp.Cure?.Clone(),
             SuppressedRemaining = virus.Comp.SuppressedUntil is { } until ? until - _timing.CurTime : null,
+            Incubation = virus.Comp.Incubation?.Clone(),
+            SymptomTimeMultiplier = virus.Comp.SymptomTimeMultiplier,
         };
 
         if (virus.Comp.Source == null)
         {
             descriptor.Name = virus.Comp.Name;
-            descriptor.Cure = virus.Comp.Cure?.Clone();
             descriptor.Transmission = virus.Comp.Transmission?.Clone();
             descriptor.IsSupervirus = virus.Comp.IsSupervirus;
         }
@@ -107,7 +112,7 @@ public sealed partial class VirologySystem
         if (descriptor.Source is { } source)
         {
             comp.Name = comp.NameLoc is { } loc ? Loc.GetString(loc) : null;
-            comp.Cure = GetRoundCure(source)?.Clone();
+            comp.Cure = ResolveCure(descriptor)?.Clone();
         }
         else
         {
@@ -115,6 +120,8 @@ public sealed partial class VirologySystem
             comp.Cure = descriptor.Cure?.Clone();
             comp.Transmission = descriptor.Transmission?.Clone();
             comp.IsSupervirus = descriptor.IsSupervirus;
+            comp.Incubation = descriptor.Incubation?.Clone();
+            comp.SymptomTimeMultiplier = descriptor.SymptomTimeMultiplier;
         }
 
         foreach (var snapshot in descriptor.Symptoms)
@@ -128,6 +135,8 @@ public sealed partial class VirologySystem
                 Accelerant = snapshot.Accelerant,
             };
         }
+
+        InitializeIncubation(comp);
 
         // if infected with suppressed strain - spawns suppressed and keeps timer
         if (descriptor.SuppressedRemaining is { } remaining && remaining > TimeSpan.Zero)

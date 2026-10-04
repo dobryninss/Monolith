@@ -911,6 +911,7 @@
   - ClothingNeckTransPin
   - ClothingNeckAutismPin
   - ClothingNeckGoldAutismPin
+  - BikeHorn #Mono
 
 - type: loadoutGroup # Mono - removed standard supply boxes.
   id: ContractorBoxSurvival
@@ -967,12 +968,16 @@
   maxLimit: 2
   loadouts:
   - ContractorMedicalTrackingImplanter
+  # Exodus-begin medical service tiers
+  - ContractorMedicalTrackingImplanterSilver
+  - ContractorMedicalTrackingImplanterGold
+  - ContractorMedicalTrackingImplanterPlatinum
+  # Exodus-end
   - ContractorLightImplanter
   - ContractorBikeHornImplanter
   - ContractorSadTromboneImplanter
   - ContractorMimePowersImplanter
-  fallbacks:
-  - ContractorMedicalTrackingImplanter
+  # Exodus: optional paid implants have no free fallback.
 
 - type: loadoutGroup
   id: ContractorBureaucracy

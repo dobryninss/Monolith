@@ -19,7 +19,8 @@
   genome: Dna
   resetProgressOnInfection: true
   stages:
-  - detection:
+  - hiddenOnHealthAnalyzer: true
+    detection:
       description: pathology-rot-detection-1
     progressConditions:
     - !type:VirusTimeProgressCondition
@@ -87,6 +88,9 @@
     - type: VirusBrood
       symptom: RotSyndrome
       offspring: MobRotSpawn
+      offspringCount: 3
+      offspringTable: !type:NestedSelector
+        tableId: RotOffspring
       burstEffect: RotHatchEffect
       incubatingMessage: rot-corpse-examine
       minDelay: 60
@@ -105,15 +109,18 @@
     progressMessage: pathology-rot-progress-4
 
 - type: entity
-  parent: [ SimpleMobBase, MobCombat ]
+  parent: [ SimpleMobBase, MobCombat, BaseRotColonyMob ]
   id: MobRotSpawn
   name: rot spawn
   description: A short-lived carrier grown inside a terminal victim. Destroy it before it takes root.
   components:
+  - type: RotRetaliation
   - type: VirusImmunity
   - type: VirusOffspring
     initialVirus: VirusRot
     remains: RotGrowth
+    remainsTable: !type:NestedSelector
+      tableId: RotRemains
     decayEffect: RotDecayEffect
     lifetime: 300
     infectionChance: 0.65
@@ -164,12 +171,13 @@
         Slash: 3
     soundHit:
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
-  - type: ReplacementAccent
-    accent: genericAggressive
 
 - type: htnCompound
   id: VirusCarrierCompound
   branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:RotRetaliationOperator
   - tasks:
     - !type:HTNPrimitiveTask
       operator: !type:VirusTargetOperator
@@ -191,6 +199,12 @@
         targetKey: Target
         rangeKey: MeleeRange
   - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:RotRallyOperator
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+  - tasks:
     - !type:HTNCompoundTask
       task: IdleCompound
 
@@ -201,6 +215,10 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: RotCreature
+  - type: RotColonyMember
+    size: 0, 0
+    needsSupport: false
   - type: Transform
     anchored: true
   - type: Sprite
@@ -260,6 +278,7 @@
     initialVirus: VirusRot
     range: 2
     infectionChance: 0.3
+  - type: RotColonySite
 
 - type: entity
   id: RotHatchEffect
@@ -299,6 +318,8 @@
   - type: VirusEpidemicRule
     virus: VirusRot
     symptom: RotSyndrome
+    intelligentCorePrototype: MobRotIntelligent
+    intelligentCoreLimit: 2
     preparationMessage: rot-mode-preparation
     warningMessages:
     - rot-mode-warning-1
@@ -309,8 +330,12 @@
     roundEndMessage: rot-mode-round-end
     preparation: 1800
     quietPeriod: 600
-    playersPerCarrier: 25
-    maxCarriers: 4
+    carrierThresholds:
+      1: 1
+      10: 2
+      26: 4
+      51: 5
+      76: 7
 
 - type: gamePreset
   id: ExodusRot
@@ -322,6 +347,7 @@
   rules:
   # Keep the standard sector rules, then add the epidemic.
   - NFAdventure
+  - SpecialWreckSpawnScheduler
   - BasicStationEventScheduler
   - BluespaceEventScheduler
   - BluespaceDungeonEventScheduler
@@ -329,5 +355,5 @@
   - SmugglingEventScheduler
   - FrontierRoundstartVariation
   - MonoMonolithicEventsScheduler
-  - RoundEndRuleHour8
+  # - RoundEndRuleHour8 # Round timing is managed externally.
   - ExodusRotRule

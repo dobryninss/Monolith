@@ -33,11 +33,19 @@ public sealed partial class VirusEpidemicRuleComponent : Component
     [DataField]
     public TimeSpan QuietPeriod = TimeSpan.FromMinutes(10);
 
+    /// <summary>Minimum number of eligible players mapped to the initial carrier count.</summary>
+    [DataField(required: true)]
+    public SortedDictionary<int, int> CarrierThresholds = new();
+
+    /// <summary>Optional core spawned for the first terminal victims of this epidemic.</summary>
     [DataField]
-    public int PlayersPerCarrier = 25;
+    public EntProtoId? IntelligentCorePrototype;
 
     [DataField]
-    public int MaxCarriers = 4;
+    public int IntelligentCoreLimit = 2;
+
+    [DataField]
+    public int IntelligentCoreVictims;
 
     [DataField, AutoPausedField]
     public TimeSpan SeedAt;

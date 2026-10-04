@@ -1,0 +1,80 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:mining="clr-namespace:Content.Client._Exodus.Mining.AutoMining"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      Title="{Loc 'bulk-auto-mining-window-title'}"
+                      SetSize="1120 720" MinSize="900 600">
+    <BoxContainer Orientation="Vertical" SeparationOverride="10" Margin="10">
+        <PanelContainer>
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#202A33" BorderColor="#BF8A43" BorderThickness="3 0 0 0"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Vertical" Margin="12 8" SeparationOverride="4">
+                <BoxContainer SeparationOverride="12">
+                    <Label Name="MiningStatus" Text="{Loc 'bulk-auto-mining-status-idle'}" StyleClasses="LabelHeading" HorizontalExpand="True"/>
+                    <PanelContainer Name="ConsortiumBadge" Visible="False" VerticalAlignment="Center">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#17333A" BorderColor="#3FD6C8" BorderThickness="1"/>
+                        </PanelContainer.PanelOverride>
+                        <Label Name="ConsortiumBadgeLabel" Margin="8 2" FontColorOverride="#C8FBFF"/>
+                    </PanelContainer>
+                    <Label Name="LaserSummary" StyleClasses="LabelSubText" VerticalAlignment="Center"/>
+                </BoxContainer>
+                <RichTextLabel Name="OperationHint"/>
+            </BoxContainer>
+        </PanelContainer>
+        <BoxContainer SeparationOverride="0">
+            <Button Name="MiningModeButton" Text="{Loc 'bulk-auto-mining-mode-mining'}" ToggleMode="True"
+                    StyleClasses="OpenRight" MinWidth="150" MinHeight="30"/>
+            <Button Name="LinkModeButton" Text="{Loc 'bulk-auto-mining-mode-link'}" ToggleMode="True"
+                    StyleClasses="OpenLeft" MinWidth="150" MinHeight="30"/>
+            <Label Name="ModeHint" StyleClasses="LabelSubText" Margin="12 0 0 0" VerticalAlignment="Center" ClipText="True" HorizontalExpand="True"/>
+        </BoxContainer>
+        <LayoutContainer Name="Workspace" InheritChildMeasure="False" VerticalExpand="True">
+            <BoxContainer Name="TargetsPanel" Orientation="Vertical" SetWidth="292" SeparationOverride="8">
+                <Label Text="{Loc 'bulk-auto-mining-target-title'}" StyleClasses="LabelHeading"/>
+                <PanelContainer StyleClasses="BackgroundDark" VerticalExpand="True">
+                    <BoxContainer Orientation="Vertical" Margin="10 8" SeparationOverride="6">
+                        <Label Name="SelectedTargetsSummary" StyleClasses="LabelSubText"/>
+                        <ScrollContainer Name="TargetsScroll" HScrollEnabled="False" VerticalExpand="True" MinHeight="80" ReserveScrollbarSpace="True">
+                            <BoxContainer Orientation="Vertical" SeparationOverride="8">
+                                <RichTextLabel Name="NoTargetsLabel" Text="{Loc 'bulk-auto-mining-select-hint'}"/>
+                                <BoxContainer Name="TargetsBox" Orientation="Vertical" SeparationOverride="10"/>
+                            </BoxContainer>
+                        </ScrollContainer>
+                        <PanelContainer StyleClasses="LowDivider" Margin="0 4"/>
+                        <Label Text="{Loc 'bulk-auto-mining-progress-title'}"/>
+                        <RichTextLabel Name="ProgressLabel"/>
+                        <ProgressBar Name="MiningProgress" MinValue="0" MaxValue="1" Value="0" SetHeight="8">
+                            <ProgressBar.ForegroundStyleBoxOverride>
+                                <gfx:StyleBoxFlat BackgroundColor="#DDA454"/>
+                            </ProgressBar.ForegroundStyleBoxOverride>
+                        </ProgressBar>
+                        <Button Name="StartButton" Text="{Loc 'bulk-auto-mining-start'}" MinHeight="36" Margin="0 6 0 0" Disabled="True"/>
+                        <Button Name="StopButton" Text="{Loc 'bulk-auto-mining-stop'}" MinHeight="36" StyleClasses="Caution" Disabled="True"/>
+                        <RichTextLabel Text="{Loc 'bulk-auto-mining-protected-hint'}" Margin="0 4 0 0"/>
+                    </BoxContainer>
+                </PanelContainer>
+            </BoxContainer>
+            <mining:BulkMiningLinkPanel Name="LinkPanel" SetWidth="292" Visible="False"/>
+            <BoxContainer Name="RadarPanel" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8">
+                <Label Name="RadarTitle" Text="{Loc 'bulk-auto-mining-radar-title'}" StyleClasses="LabelHeading" ClipText="True"/>
+                <mining:BulkAutoMiningNavControl Name="Radar" MinSize="200 200"
+                                               HorizontalExpand="True" VerticalExpand="True"
+                                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <RichTextLabel Name="RadarHint" Text="{Loc 'bulk-auto-mining-radar-hint'}"/>
+            </BoxContainer>
+            <BoxContainer Name="LasersPanel" Orientation="Vertical" SetWidth="324" SeparationOverride="8">
+                <Label Text="{Loc 'bulk-auto-mining-lasers-title'}" StyleClasses="LabelHeading"/>
+                <PanelContainer StyleClasses="BackgroundDark" VerticalExpand="True">
+                    <ScrollContainer HScrollEnabled="False" Margin="6">
+                        <BoxContainer Orientation="Vertical" SeparationOverride="8">
+                            <RichTextLabel Name="NoLasersLabel" Text="{Loc 'bulk-auto-mining-no-lasers'}"/>
+                            <BoxContainer Name="LasersBox" Orientation="Vertical" SeparationOverride="8"/>
+                        </BoxContainer>
+                    </ScrollContainer>
+                </PanelContainer>
+            </BoxContainer>
+        </LayoutContainer>
+    </BoxContainer>
+</controls:FancyWindow>

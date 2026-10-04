@@ -8,6 +8,7 @@
     name: ghost-role-information-asakim-name
     description: ghost-role-information-asakim-description
     rules: ghost-role-information-asakim-rules
+    job: AsakimWarrior # Exodus: count ghost-role warriors as combatants.
     mindRoles: # Exodus-asakim-mind-role
     - MindRoleGhostRoleNeutral
     - MindRoleAsakim
@@ -17,4 +18,5 @@
     - !type:OverallPlaytimeRequirement
       time: 180000 # 50 hrs
   - type: GhostTakeoverAvailable
+  - type: NeedsActivation # Exodus: preserve food, water and chemical reserves until first possession.
   # Exodus-asakim-suit-radio: Remnants radio moved to the Asakim hardsuit.

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._Exodus.Mining.AutoMining; // Exodus: mining beams travel with radar blips outside PVS.
 using Content.Shared._Mono.Company; // Exodus corporate territory rings
 using Robust.Shared.Map;
 using Robust.Shared.Localization; // Exodus bluespace-map-blips
@@ -20,7 +21,8 @@ public enum RadarBlipShape
     Arrow,
     Ring,
     NebulaPolygon, // Exodus nebula-radar-visualization
-    TerritoryCircle // Exodus territory-marker
+    TerritoryCircle, // Exodus territory-marker
+    SuppressionField // Exodus hatched-ftl-zones
 }
 
 [Serializable, NetSerializable]
@@ -103,7 +105,8 @@ public record struct BlipNetData
     Angle Rotation,
     ushort ConfigIndex,
     ushort? OnGridConfigIndex,
-    LocId? Label = null // Exodus bluespace-map-blips
+    LocId? Label = null, // Exodus bluespace-map-blips
+    BulkAutoMiningRadarBeam? MiningBeam = null // Exodus: grid-relative mining beam target.
 );
 
 // Exodus upstream-missile-radar-vectors

@@ -21,3 +21,20 @@ ent-MedicalScannerFlatpack = medical scanner flatpack
     .desc = A flatpack used for constructing a medical scanner.
 ent-ShieldGeneratorSmallFlatpack = MS-100 "Sentinel" shield generator flatpack
     .desc = A flatpack used for constructing an MS-100 "Sentinel" shield generator.
+# Ship repair drone station
+ent-ShipRepairDroneStationFlatpack = repair drone station flatpack
+    .desc = A flatpack used for constructing a station with five repair drone berths.
+ship-repair-drone-station-flatpack-name = repair drone station flatpack
+ship-repair-drone-station-flatpack-description = A flatpack used for constructing a station with five repair drone berths.
+
+ent-NebulaThrusterLargeFlatpack = large phasic thruster flatpack
+    .desc = A flatpack for constructing a 3x1 phasic thruster.
+
+ent-NebulaThrusterCornerFlatpack = corner phasic thruster flatpack
+    .desc = A flatpack for constructing a corner phasic thruster.
+
+ent-MachineFtlSuppressorTsfFlatpack = BS-1000 "Bastion" bluespace suppressor flatpack
+    .desc = A flatpack used for constructing a BS-1000 "Bastion" bluespace suppressor.
+
+ent-MachineFtlSuppressorPdvFlatpack = "Lasso" bluespace suppressor flatpack
+    .desc = A flatpack used for constructing a "Lasso" bluespace suppressor.

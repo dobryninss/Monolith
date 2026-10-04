@@ -1,4 +1,5 @@
 using Content.Shared.FixedPoint;
+using Content.Shared.EntityTable.EntitySelectors;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Exodus.Virology.Lifecycle;
@@ -12,6 +13,10 @@ public sealed partial class VirusBroodComponent : Component
 
     [DataField(required: true)]
     public EntProtoId Offspring;
+
+    /// <summary>Optional replacement for the fixed offspring prototype; rolled separately for each child.</summary>
+    [DataField]
+    public EntityTableSelector? OffspringTable;
 
     [DataField]
     public EntProtoId? BurstEffect;
@@ -29,11 +34,19 @@ public sealed partial class VirusBroodComponent : Component
     [DataField]
     public FixedPoint2 HealthPerOffspring = 75;
 
+    /// <summary>Optional fixed brood size for infections that should not depend on the host's death threshold.</summary>
+    [DataField]
+    public int? OffspringCount;
+
     [DataField]
     public bool Incubating;
 
     [DataField]
     public bool Hatched;
+
+    /// <summary>Prevents duplicate core spawns if a death state event is repeated.</summary>
+    [DataField]
+    public bool IntelligentCoreClaimed;
 
     [DataField]
     public TimeSpan Remaining;

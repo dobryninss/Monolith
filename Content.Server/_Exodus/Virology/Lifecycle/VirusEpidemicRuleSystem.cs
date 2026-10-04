@@ -1,3 +1,4 @@
+using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Shared._Exodus.Virology;
@@ -12,6 +13,7 @@ namespace Content.Server._Exodus.Virology.Lifecycle;
 
 public sealed partial class VirusEpidemicRuleSystem : GameRuleSystem<VirusEpidemicRuleComponent>
 {
+    [Dependency] private ChatSystem _chat = default!;
     [Dependency] private VirologySystem _virology = default!;
     [Dependency] private MobStateSystem _mobState = default!;
 
@@ -20,7 +22,7 @@ public sealed partial class VirusEpidemicRuleSystem : GameRuleSystem<VirusEpidem
     {
         component.SeedAt = Timing.CurTime + component.Preparation;
         component.NextCheck = Timing.CurTime;
-        ChatManager.DispatchServerAnnouncement(Loc.GetString(component.PreparationMessage));
+        _chat.DispatchGlobalAnnouncement(Loc.GetString(component.PreparationMessage));
     }
 
     protected override void ActiveTick(EntityUid uid, VirusEpidemicRuleComponent component,
@@ -45,13 +47,13 @@ public sealed partial class VirusEpidemicRuleSystem : GameRuleSystem<VirusEpidem
         {
             component.WarningStage = stage;
             if (stage <= component.WarningMessages.Length)
-                ChatManager.DispatchServerAnnouncement(Loc.GetString(component.WarningMessages[stage - 1]));
+                _chat.DispatchGlobalAnnouncement(Loc.GetString(component.WarningMessages[stage - 1]));
         }
 
         if (stage > 0)
         {
             if (component.Controlled)
-                ChatManager.DispatchServerAnnouncement(Loc.GetString(component.ResurgenceMessage));
+                _chat.DispatchGlobalAnnouncement(Loc.GetString(component.ResurgenceMessage));
             component.Controlled = false;
             component.QuietSince = null;
         }
@@ -61,7 +63,7 @@ public sealed partial class VirusEpidemicRuleSystem : GameRuleSystem<VirusEpidem
             if (!component.Controlled && now - component.QuietSince >= component.QuietPeriod)
             {
                 component.Controlled = true;
-                ChatManager.DispatchServerAnnouncement(Loc.GetString(component.ControlledMessage));
+                _chat.DispatchGlobalAnnouncement(Loc.GetString(component.ControlledMessage));
             }
         }
     }
@@ -84,9 +86,7 @@ public sealed partial class VirusEpidemicRuleSystem : GameRuleSystem<VirusEpidem
                 candidates.Add(uid);
         }
 
-        var wanted = Math.Min(candidates.Count,
-            Math.Clamp((int)Math.Ceiling(candidates.Count / (double)Math.Max(1, ent.Comp.PlayersPerCarrier)),
-                1, Math.Max(1, ent.Comp.MaxCarriers)));
+        var wanted = GetSeedCount(ent, candidates.Count);
         var grids = new HashSet<EntityUid?>();
         RobustRandom.Shuffle(candidates);
         for (var pass = 0; pass < 2 && ent.Comp.SeededCount < wanted; pass++)
@@ -107,6 +107,57 @@ public sealed partial class VirusEpidemicRuleSystem : GameRuleSystem<VirusEpidem
         }
 
         Log.Info($"Epidemic seeded {ent.Comp.SeededCount} carriers of {ent.Comp.Virus}.");
+    }
+
+    public int GetSeedCount(Entity<VirusEpidemicRuleComponent> ent, int candidateCount)
+    {
+        if (candidateCount <= 0)
+            return 0;
+
+        var count = 0;
+        foreach (var (minimumPlayers, carriers) in ent.Comp.CarrierThresholds)
+        {
+            if (candidateCount < minimumPlayers)
+                break;
+            count = carriers;
+        }
+
+        return Math.Clamp(count, 0, candidateCount);
+    }
+
+    public bool TryClaimIntelligentCore(Entity<VirusBroodComponent> victim, out EntProtoId prototype)
+    {
+        prototype = default;
+        var symptom = victim.Comp.Symptom;
+        if (symptom == default)
+            return false;
+
+        var rules = EntityQueryEnumerator<VirusEpidemicRuleComponent>();
+        while (rules.MoveNext(out _, out var rule))
+        {
+            if (rule.IntelligentCorePrototype is not { } core || rule.IntelligentCoreVictims >= rule.IntelligentCoreLimit
+                || rule.Symptom != symptom)
+                continue;
+
+            var active = false;
+            foreach (var strain in _virology.EnumerateStrains(victim.Owner))
+            {
+                if (strain.Comp.SuppressedUntil == null && strain.Comp.SymptomStates.ContainsKey(symptom))
+                {
+                    active = true;
+                    break;
+                }
+            }
+
+            if (!active)
+                continue;
+
+            rule.IntelligentCoreVictims++;
+            prototype = core;
+            return true;
+        }
+
+        return false;
     }
 
     public (int Carriers, int Broods, int Offspring, int Reservoirs) CountThreats(ProtoId<VirusSymptomPrototype> symptom)
@@ -145,6 +196,13 @@ public sealed partial class VirusEpidemicRuleSystem : GameRuleSystem<VirusEpidem
         }
 
         var sources = EntityQueryEnumerator<VirusReservoirComponent>();
+        var larvae = EntityQueryEnumerator<RotLarvaComponent>();
+        while (larvae.MoveNext(out var larvaUid, out var larva))
+        {
+            if (!_mobState.IsDead(larvaUid) && ContainsSymptom(larva.Strain, symptom))
+                offspring++;
+        }
+
         while (sources.MoveNext(out _, out var source))
         {
             if (ContainsSymptom(source.Strain, symptom))

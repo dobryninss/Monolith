@@ -25,3 +25,8 @@
     Radiation: 0.1
     Poison: 0.1
     Caustic: 0.5
+
+- type: damageModifierSet
+  id: ShipRepairDroneHeatResistant
+  coefficients:
+    Heat: 0.05

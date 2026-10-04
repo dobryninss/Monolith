@@ -5,12 +5,16 @@ using Content.Shared._Exodus.Virology.Lifecycle;
 using Content.Shared.Atmos.Rotting;
 using Content.Shared.Body.Components;
 using Content.Shared.Examine;
+using Content.Shared.EntityTable;
+using Content.Shared.EntityTable.EntitySelectors;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Exodus.Virology.Lifecycle;
 
@@ -29,6 +33,8 @@ public sealed partial class VirusLifecycleSystem : EntitySystem
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private EntityTableSystem _tables = default!;
+    [Dependency] private VirusEpidemicRuleSystem _epidemic = default!;
 
     private TimeSpan _nextUpdate;
     private TimeSpan _nextExposure;
@@ -53,7 +59,15 @@ public sealed partial class VirusLifecycleSystem : EntitySystem
     private void OnBroodMobState(Entity<VirusBroodComponent> ent, ref MobStateChangedEvent args)
     {
         if (args.NewMobState == MobState.Dead)
+        {
             BeginIncubation(ent);
+            if (!ent.Comp.IntelligentCoreClaimed && Transform(ent).MapUid != null
+                && _epidemic.TryClaimIntelligentCore(ent, out var prototype))
+            {
+                ent.Comp.IntelligentCoreClaimed = true;
+                Spawn(prototype, Transform(ent).Coordinates);
+            }
+        }
         else
             ent.Comp.Incubating = false;
     }
@@ -132,6 +146,7 @@ public sealed partial class VirusLifecycleSystem : EntitySystem
         var coordinates = Transform(ent).Coordinates;
         var count = GetOffspringCount(ent);
         var offspring = ent.Comp.Offspring;
+        var offspringTable = ent.Comp.OffspringTable;
         var burst = ent.Comp.BurstEffect;
         ent.Comp.Hatched = true;
         _body.GibBody(ent.Owner);
@@ -146,15 +161,42 @@ public sealed partial class VirusLifecycleSystem : EntitySystem
 
         for (var i = 0; i < count; i++)
         {
-            var child = Spawn(offspring, coordinates);
-            var vector = EnsureComp<VirusOffspringComponent>(child);
-            vector.Strain = descriptor.Clone();
-            vector.ExpiresAt = _timing.CurTime + vector.Lifetime;
+            SpawnOffspring(coordinates, descriptor, offspring, offspringTable);
         }
+    }
+
+    public void SpawnOffspring(EntityCoordinates coordinates, VirusDescriptor strain, EntProtoId fallback,
+        EntityTableSelector? table = null, EntityUid? parent = null)
+    {
+        if (table == null)
+        {
+            SpawnVector(fallback, coordinates, strain, parent);
+            return;
+        }
+
+        foreach (var prototype in _tables.GetSpawns(table))
+            SpawnVector(prototype, coordinates, strain, parent);
+    }
+
+    private void SpawnVector(EntProtoId prototype, EntityCoordinates coordinates, VirusDescriptor strain, EntityUid? parent)
+    {
+        var child = Spawn(prototype, coordinates);
+        if (parent is { } source)
+        {
+            var spawned = new VirusOffspringSpawnedEvent(child);
+            RaiseLocalEvent(source, ref spawned);
+        }
+        var vector = EnsureComp<VirusOffspringComponent>(child);
+        vector.Strain = FreshInfection(strain);
+        if (vector.Lifetime is { } lifetime)
+            vector.ExpiresAt = _timing.CurTime + lifetime;
     }
 
     private int GetOffspringCount(Entity<VirusBroodComponent> ent)
     {
+        if (ent.Comp.OffspringCount is { } count)
+            return Math.Max(1, count);
+
         if (ent.Comp.HealthPerOffspring <= 0)
         {
             Log.Error($"Virus brood on {ToPrettyString(ent)} has non-positive healthPerOffspring.");

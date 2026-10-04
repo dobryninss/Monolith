@@ -5,14 +5,14 @@ namespace Content.Server._Exodus.Virology;
 
 public sealed partial class VirologySystem
 {
-    private void ReconcileSymptoms(Entity<VirusHolderComponent> ent)
+    private void ReconcileSymptoms(Entity<VirusHolderComponent> ent, bool restoreOwnership = false)
     {
         var desired = new ComponentRegistry();
         var priorities = new Dictionary<string, (int Stage, string Symptom)>();
         var species = GetSpecies(ent.Owner);
         foreach (var virus in EnumerateStrains(ent.Comp))
         {
-            if (virus.Comp.SuppressedUntil != null)
+            if (virus.Comp.SuppressedUntil != null || virus.Comp.IncubationEndsAt != null)
                 continue;
 
             foreach (var (id, state) in virus.Comp.SymptomStates)
@@ -33,6 +33,22 @@ public sealed partial class VirologySystem
                 }
             }
         }
+
+        // Only reclaim components explicitly owned by the saved infection. Innate symptoms remain independent.
+        if (restoreOwnership)
+        {
+            foreach (var name in ent.Comp.SavedGrantedComponents)
+            {
+                if (!_factory.TryGetRegistration(name, out var registration)
+                    || !EntityManager.TryGetComponent(ent.Owner, registration.Type, out var instance))
+                    continue;
+                if (desired.TryGetValue(name, out var entry))
+                    ent.Comp.GrantedComponents[name] = new GrantedVirusComponent(instance, entry.Component);
+                else
+                    RemCompDeferred(ent.Owner, instance);
+            }
+        }
+        ent.Comp.SavedGrantedComponents.Clear();
 
         var retained = new Dictionary<string, GrantedVirusComponent>();
         foreach (var (name, granted) in ent.Comp.GrantedComponents)

@@ -211,7 +211,7 @@ public sealed partial class NPCSteeringSystem
         // TODO: Consider melee range or the likes.
         else
         {
-            arrived = direction.Length() <= SharedInteractionSystem.InteractionRange - 0.05f;
+            arrived = direction.Length() <= (steering.ObstacleRange ?? SharedInteractionSystem.InteractionRange - 0.05f); // Exodus: configurable obstacle approach distance.
         }
 
         // Are we in range
@@ -583,11 +583,13 @@ public sealed partial class NPCSteeringSystem
         var detectionRadius = MathF.Max(0.35f, agentRadius + objectRadius);
         var ents = _entSetPool.Get();
         _lookup.GetEntitiesInRange(uid, detectionRadius, ents, LookupFlags.Dynamic | LookupFlags.Static | LookupFlags.Approximate);
+        var ignoreThrusterObstacles = IsRepairDroneIgnoringThrusters(uid); // Exodus: active thruster sensors are passable to repair drones
 
         foreach (var ent in ents)
         {
             // TODO: If we can access the door or smth.
-            if (!_physicsQuery.TryGetComponent(ent, out var otherBody) ||
+            if ((ignoreThrusterObstacles && IsActiveThruster(ent)) ||
+                !_physicsQuery.TryGetComponent(ent, out var otherBody) ||
                 !otherBody.Hard ||
                 !otherBody.CanCollide ||
                 otherBody.BodyType == BodyType.KinematicController ||

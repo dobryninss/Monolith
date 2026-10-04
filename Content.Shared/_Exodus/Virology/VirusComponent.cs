@@ -3,6 +3,7 @@
 using Content.Shared.Chemistry.Reagent;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared._Exodus.Virology;
 
@@ -24,6 +25,23 @@ public sealed partial class VirusComponent : Component
     /// <summary>How this strain spreads. Null = can't.</summary>
     [DataField]
     public VirusTransmission? Transmission;
+
+    /// <summary>Optional incubation before any of the strain's symptoms become active.</summary>
+    [DataField]
+    public VirusIncubation? Incubation;
+
+    /// <summary>Multiplier for stage durations, manifestation delays and periodic symptom effect intervals.</summary>
+    [DataField]
+    public float SymptomTimeMultiplier = 1f;
+
+    [ViewVariables]
+    public TimeSpan? IncubationEndsAt;
+
+    [ViewVariables]
+    public TimeSpan? HiddenUntil;
+
+    [ViewVariables]
+    public TimeSpan NextEffect;
 
     /// <summary>The infected host this strain sits in.</summary>
     [ViewVariables]
@@ -70,7 +88,7 @@ public sealed partial class VirusSymptomState
     public int Stage;
 
     /// <summary>When current stage began (per-stage timers measure from here).</summary>
-    [DataField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan StageStartTime;
 
     /// <summary>Reagent that accelerates symptom's stage up.</summary>
@@ -82,7 +100,7 @@ public sealed partial class VirusSymptomState
     public bool Revealed;
 
     /// <summary>When this symptom last rolled its manifestation emote/message.</summary>
-    [DataField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan LastEmote;
 
     /// <summary>Current randomised wait until the next emote (0 = roll a fresh one from the stage's range).</summary>

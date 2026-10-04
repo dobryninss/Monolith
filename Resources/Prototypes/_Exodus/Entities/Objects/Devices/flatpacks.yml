@@ -45,6 +45,24 @@
     entity: NebulaThruster
 
 - type: entity
+  parent: NebulaThrusterFlatpack
+  id: NebulaThrusterLargeFlatpack
+  name: large phasic thruster flatpack
+  description: A flatpack used for constructing a three-tile-wide phasic thruster.
+  components:
+  - type: Flatpack
+    entity: NebulaThrusterLarge
+
+- type: entity
+  parent: NebulaThrusterFlatpack
+  id: NebulaThrusterCornerFlatpack
+  name: corner phasic thruster flatpack
+  description: A flatpack used for constructing a corner phasic thruster.
+  components:
+  - type: Flatpack
+    entity: NebulaThrusterCorner
+
+- type: entity
   parent: BaseFlatpack
   id: GunneryServerSuperFlatpack
   name: super-high-power gunnery control server flatpack
@@ -131,3 +149,29 @@
   - type: Sprite
     layers:
     - state: medical_lathe
+- type: entity
+  parent: BaseFlatpack
+  id: ShipRepairDroneStationFlatpack
+  name: ship-repair-drone-station-flatpack-name
+  description: ship-repair-drone-station-flatpack-description
+  components:
+  - type: Flatpack
+    entity: ShipRepairDroneStation
+
+- type: entity
+  parent: BaseFlatpack
+  id: MachineFtlSuppressorTsfFlatpack
+  name: BS-1000 "Bastion" bluespace suppressor flatpack
+  description: A flatpack used for constructing a BS-1000 "Bastion" bluespace suppressor.
+  components:
+  - type: Flatpack
+    entity: MachineFtlSuppressorTsf
+
+- type: entity
+  parent: BaseFlatpack
+  id: MachineFtlSuppressorPdvFlatpack
+  name: '"Lasso" bluespace suppressor flatpack'
+  description: A flatpack used for constructing a "Lasso" bluespace suppressor.
+  components:
+  - type: Flatpack
+    entity: MachineFtlSuppressorPdv

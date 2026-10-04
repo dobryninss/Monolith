@@ -1,3 +1,4 @@
+using Content.Shared._Exodus.Virology.Behaviors;
 using Content.Shared._Shitmed.Targeting;
 // Shitmed Change
 using Content.Shared.Body.Systems;
@@ -193,7 +194,7 @@ namespace Content.Shared.Damage
             // Shitmed Change
             bool? canSever = true, bool? canEvade = false, float? partMultiplier = 1.00f, TargetBodyPart? targetPart = null, EntityUid? tool = null,
             // Mono: arg to ID indirect damage sources
-            DamageOriginFlag? originFlag = null)
+            DamageOriginFlag? originFlag = null, EntityUid? damageSource = null) // Exodus: beam/projectile properties without losing weapon attribution.
         {
             if (!uid.HasValue || !_damageableQuery.Resolve(uid.Value, ref damageable, false))
             {
@@ -208,7 +209,7 @@ namespace Content.Shared.Damage
             }
 
             var before = new BeforeDamageChangedEvent(damage, origin, targetPart, //Shitmed Change
-                false, originFlag); // Mono: originFlag
+                false, originFlag, tool, damageSource); // Exodus: keep the damage tool and ammunition distinct.
             RaiseLocalEvent(uid.Value, ref before);
 
             if (before.Cancelled)
@@ -396,6 +397,11 @@ namespace Content.Shared.Damage
 
         private void OnIrradiated(EntityUid uid, DamageableComponent component, OnIrradiatedEvent args)
         {
+            // Exodus: radiophasia symptome tweak begin
+            if (TryComp<VirusRadiophasiaComponent>(uid, out var radiophasia)
+                && radiophasia.RadImmunity)
+                return;
+            // Exodus: radiophasia symptome tweak end
             var damageValue = FixedPoint2.New(args.TotalRads);
 
             // Radiation should really just be a damage group instead of a list of types.
@@ -405,7 +411,23 @@ namespace Content.Shared.Damage
                 damage.DamageDict.Add(typeId, damageValue);
             }
 
-            TryChangeDamage(uid, damage, interruptsDoAfters: false, origin: args.Origin);
+            // Exodus-begin: notify radiation reactions only about damage that passed protection.
+            var applied = TryChangeDamage(uid, damage, interruptsDoAfters: false, origin: args.Origin);
+            if (!_netMan.IsServer || applied == null || TerminatingOrDeleted(uid))
+                return;
+
+            var received = FixedPoint2.Zero;
+            foreach (var amount in applied.DamageDict.Values)
+            {
+                if (amount > FixedPoint2.Zero)
+                    received += amount;
+            }
+            if (received > FixedPoint2.Zero)
+            {
+                var ev = new Content.Shared._Exodus.Radiation.RadiationDamageReceivedEvent(received);
+                RaiseLocalEvent(uid, ref ev);
+            }
+            // Exodus-end
         }
 
         private void OnRejuvenate(EntityUid uid, DamageableComponent component, RejuvenateEvent args)
@@ -472,7 +494,12 @@ namespace Content.Shared.Damage
         EntityUid? Origin = null,
         TargetBodyPart? TargetPart = null, // Shitmed Change
         bool Cancelled = false,
-        DamageOriginFlag? OriginFlag = null); // Mono: OriginFlag
+        DamageOriginFlag? OriginFlag = null,
+        EntityUid? Tool = null,
+        EntityUid? DamageSource = null) : IInventoryRelayEvent // Exodus: ammunition metadata; preserve the original damage tool.
+    {
+        public SlotFlags TargetSlots => ~SlotFlags.POCKET;
+    }
 
     /// <summary>
     ///     Shitmed Change: Raised on parts before damage is done so we can cancel the damage if they evade.

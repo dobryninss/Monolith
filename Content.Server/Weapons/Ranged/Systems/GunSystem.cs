@@ -147,7 +147,7 @@ public sealed partial class GunSystem : SharedGunSystem
                     if (!cartridge.Spent)
                     {
                         var uid = Spawn(cartridge.Prototype, fromEnt);
-                        CreateAndFireProjectiles(uid, offset, cartridge.MuzzleFlash);
+                        CreateAndFireProjectiles(uid, offset, cartridge.MuzzleFlash, cartridge.SoundGunshot);
 
                         RaiseLocalEvent(ent!.Value, new AmmoShotEvent()
                         {
@@ -201,7 +201,7 @@ public sealed partial class GunSystem : SharedGunSystem
             FiredProjectiles = shotProjectiles,
         });
 
-        void CreateAndFireProjectiles(EntityUid ammoEnt, float offset = 0f, EntProtoId? muzzle = null)
+        void CreateAndFireProjectiles(EntityUid ammoEnt, float offset = 0f, EntProtoId? muzzle = null, SoundSpecifier? sound = null)
         {
             if (TryComp<ProjectileSpreadComponent>(ammoEnt, out var ammoSpreadComp))
             {
@@ -227,7 +227,7 @@ public sealed partial class GunSystem : SharedGunSystem
                 shotProjectiles.Add(ammoEnt);
             }
             MuzzleFlash(gunUid, muzzle, mapDirection.ToAngle(), user);
-            Audio.PlayPredicted(gun.SoundGunshotModified, gunUid, audioUser); // Exodus: fire-control shots need broadcast audio.
+            Audio.PlayPredicted(sound ?? gun.SoundGunshotModified, gunUid, audioUser); // Exodus: preserve fire-control broadcast audio.
         }
     }
 
@@ -242,10 +242,13 @@ public sealed partial class GunSystem : SharedGunSystem
         }
 
         // mono
+        var damageModifier = new GunDamageModifierEvent(gun.DamageModifier);
+        RaiseLocalEvent(gunUid, ref damageModifier);
+
         if (HasComp<HitscanAmmoComponent>(uid))
         {
             if (_hitscanDamageQuery.TryComp(uid, out var hitscanDamageComp))
-                hitscanDamageComp.Damage *= gun.DamageModifier;
+                hitscanDamageComp.Damage *= damageModifier.Modifier;
 
             ShootHitscan(
                 uid,
@@ -275,7 +278,7 @@ public sealed partial class GunSystem : SharedGunSystem
             predicted.ClientEnt = user;
         }
 
-        projectileComp.Damage *= gun.DamageModifier;
+        projectileComp.Damage *= damageModifier.Modifier;
 
         ShootProjectile(uid,
             mapDirection,
